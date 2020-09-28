@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
+using BobReactRemaster.EventBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,10 +35,13 @@ namespace BobReactRemaster
                      mysqlOptions.ServerVersion(new Version(10, 3, 8), ServerType.MariaDb);
                  })
              );
-            services.AddIdentity<Member, IdentityRole>()
+
+            services.AddDefaultIdentity<Member>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddIdentityServer()
-                .AddApiAuthorization<Member, ApplicationDbContext>();
+            .AddApiAuthorization<Member, ApplicationDbContext>();
+
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -50,6 +54,7 @@ namespace BobReactRemaster
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            services.AddSingleton<IMessageBus, MessageBus>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
