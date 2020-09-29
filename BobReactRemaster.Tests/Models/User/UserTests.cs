@@ -12,7 +12,7 @@ namespace BobRemastered.Tests
         [SetUp]
         public void Setup()
         {
-            user = new Member("chromos33");
+            user = new Member("chromos33","password",UserRole.Admin);
         }
 
         [Test]

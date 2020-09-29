@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace BobReactRemaster.EventBus.MessageDataTypes
 {
-    public class ChatMessageToStreamChat: BaseMessageData
+    public class ChatMessageToStreamChat : BaseMessageData
     {
         public string Message;
+
         public string StreamName;
+
         //Class of Database Entry
         public string StreamType;
     }

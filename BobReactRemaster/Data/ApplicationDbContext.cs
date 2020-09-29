@@ -13,19 +13,18 @@ using Microsoft.Extensions.Options;
 
 namespace BobReactRemaster.Data
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<Member>
+    public class ApplicationDbContext : DbContext
     {
-        DbSet<TwitchStream> TwitchStreams { get; set; }
-        DbSet<Member> Members { get; set; }
-        DbSet<StreamSubscription> StreamSubscriptions { get; set; }
-        DbSet<TextChannel> DiscordTextChannels { get; set; }
+        public DbSet<TwitchStream> TwitchStreams { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<StreamSubscription> StreamSubscriptions { get; set; }
+        public DbSet<TextChannel> DiscordTextChannels { get; set; }
 
-        DbSet<DiscordCredentials> DiscordCredentials { get; set; }
+        public DbSet<DiscordCredentials> DiscordCredentials { get; set; }
 
-        DbSet<TwitchCredentials> TwitchCredentials { get; set; }
+        public DbSet<TwitchCredentials> TwitchCredentials { get; set; }
         public ApplicationDbContext(
-            DbContextOptions options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+            DbContextOptions options) : base(options)
         {
         }
 

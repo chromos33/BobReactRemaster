@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BobReactRemaster.Data.Models.Relay
+namespace BobReactRemaster.Data.Models.User
 {
-    public class DiscordRelayChannel
+    public enum UserRole
     {
+        Admin,
+        User
     }
 }

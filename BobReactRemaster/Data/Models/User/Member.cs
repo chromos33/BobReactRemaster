@@ -2,21 +2,30 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BobReactRemaster.Data.Models.User
 {
-    public class Member : IdentityUser
+    public class Member
     {
         public List<StreamSubscription> StreamSubscriptions { get; private set; }
-        private Member ()
+
+        [Key]
+        public string UserName { get; private set; }
+        public string Password { get; set; }
+        public UserRole UserRole { get; set; }
+
+        private Member()
         {
 
         }
-        public Member(string UserName)
+        public Member(string username,string password, UserRole userRole)
         {
-            this.UserName = UserName;
+            UserName = username;
+            Password = password;
+            UserRole = userRole;
             StreamSubscriptions = new List<StreamSubscription>();
         }
 

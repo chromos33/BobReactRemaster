@@ -12,19 +12,19 @@ namespace BobReactRemaster.Data.Models.Stream
     {
         public int Id { get; set; }
 
-        public List<StreamSubscription> Subscriptions  { get; private set; }
+        public List<StreamSubscription> Subscriptions { get; private set; }
 
         public string URL { get; private set; }
 
-        public DateTime Started  { get; private set; }
+        public DateTime Started { get; private set; }
 
-        public DateTime Stopped  { get; private set; }
+        public DateTime Stopped { get; private set; }
 
         public StreamState State { get; private set; }
 
-        public TextChannel RelayChannel  { get; private set; }
+        public TextChannel RelayChannel { get; private set; }
 
-        public string StreamName  { get; private set; }
+        public string StreamName { get; private set; }
 
         public TwitchStream(string StreamName)
         {
@@ -48,6 +48,7 @@ namespace BobReactRemaster.Data.Models.Stream
             State = StreamState.Running;
             SetStreamStarted(DateTime.Now);
         }
+
         public void SetStreamStarted(DateTime date)
         {
             Started = date;

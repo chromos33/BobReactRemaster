@@ -10,30 +10,15 @@ namespace BobReactRemaster.Data
 {
     public class ApplicationDBInitializer
     {
-        public async static Task<bool> SeedUsers(IServiceProvider serviceProvider)
+        public static async Task<bool> SeedUsers(IServiceProvider serviceProvider)
         {
-            var _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<Member>>();
+            var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             
-            string[] roles = new string[] { "Manager", "Admin","User"};
-            foreach(string rolename in roles)
+            if (dbContext.Members.Count(x => x.UserName == "Master") == 0)
             {
-                if (await _roleManager.RoleExistsAsync(rolename))
-                {
-                    var role = new IdentityRole();
-                    role.Name = rolename;
-                    await _roleManager.CreateAsync(role);
-                }
-            }
-            
-            if(userManager.FindByNameAsync("Master").Result == null)
-            {
-                Member user = new Member("Master");
-                IdentityResult result = userManager.CreateAsync(user, "setuppw").Result;
-                if(result.Succeeded)
-                {
-                    await userManager.AddToRolesAsync(user,new string[] { "Manager", "Admin", "User" });
-                }
+                Member user = new Member("Master","setuppw",UserRole.Admin);
+                await dbContext.Members.AddAsync(user);
+                await dbContext.SaveChangesAsync();
             }
             return true;
         }

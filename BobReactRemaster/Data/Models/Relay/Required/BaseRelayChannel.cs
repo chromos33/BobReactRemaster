@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace BobReactRemaster.Data.Models.Relay.Required
 {
     public interface IRelayChannel
-    { 
-
+    {
     }
 }

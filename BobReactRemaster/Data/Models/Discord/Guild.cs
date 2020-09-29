@@ -8,8 +8,7 @@ namespace BobReactRemaster.Data.Models.Discord
 {
     public class Guild
     {
-        [Key]
-        public string Name { get; set; }
+        [Key] public string Name { get; set; }
         public List<TextChannel> TextChannels { get; set; }
     }
 }

@@ -10,8 +10,7 @@ namespace BobReactRemaster.Data.Models.Discord
     [Table("DiscordTextChannels")]
     public class TextChannel
     {
-        [Key]
-        public int id { get; set; }
+        [Key] public int id { get; set; }
 
         public string Name { get; set; }
 
@@ -20,28 +19,33 @@ namespace BobReactRemaster.Data.Models.Discord
         public bool IsRelayChannel { get; set; }
 
         public Guild Guild { get; set; }
+
         private TextChannel()
         {
-
         }
+
         public TextChannel(string Name)
         {
             this.Name = Name;
             IsPermanentRelayChannel = false;
             IsRelayChannel = false;
         }
+
         public void EnableRelayChannel()
         {
             throw new NotImplementedException();
         }
+
         public void DisableRelayChannel()
         {
             throw new NotImplementedException();
         }
+
         public void EnablePermanentRelayChannel()
         {
             throw new NotImplementedException();
         }
+
         public void DisablePermanentRelayChannel()
         {
             throw new NotImplementedException();

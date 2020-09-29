@@ -1,27 +1,41 @@
 ﻿import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
+import {setCookie} from "../helper/cookie";
 
 export function Login() {
     const history = useHistory();
     const [login, setLogin] = useState("");
     const [passwd,setPassword] = useState("");
     const handleLogin = async (evt) => {
-        var loginResult = await fetch("/Login/Login",{
+        var loginResult = await fetch("/User/Login",{
             method: 'POST',
             headers: {
-                Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
+            //Add auth to Headers not Body
+            //https://stackoverflow.com/questions/50275723/react-js-how-to-authenticate-credentials-via-a-fetch-statement
             body: JSON.stringify({
-                user: login,
-                pass: passwd,
+                username: login,
+                password: passwd,
             }),
         }).then(response => {
             return response.json();
         }).then(json => {
-            return JSON.parse(json).Response;
-        });
-        history.push("/Test");
+            if(json.token !== undefined)
+            {
+                return json.token;
+            }
+            return false;
+        }).catch((error) => {
+        })
+        if(loginResult !== false)
+        {
+            setCookie("Token",loginResult,1);
+            history.push("/Test");
+        }
+        else{
+            alert("error");
+        }
     }
     return (
         <div>

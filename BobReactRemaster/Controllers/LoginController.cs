@@ -1,50 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.JSONModels;
 using BobReactRemaster.Models;
+using IdentityServer4.Services;
+using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace BobReactRemaster.Controllers
 {
-    public class LoginController : Controller
+    [ApiController]
+    [Route("User")]
+    public class LoginController : ControllerBase
     {
-        private readonly UserManager<Member> _userManager;
-        private readonly SignInManager<Member> _signInManager;
         private readonly IMessageBus _eventBus;
-        private readonly ApplicationDbContext _dbcontext;
-        public LoginController(UserManager<Member> userManager,
-            SignInManager<Member> signInManager,
-            IMessageBus eventBus,
-            ApplicationDbContext dbcontext)
+        private readonly IConfiguration _config;
+        private readonly ApplicationDbContext _context;
+        public LoginController(IMessageBus eventBus, IConfiguration config, ApplicationDbContext context)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
             _eventBus = eventBus;
-            _dbcontext = dbcontext;
+            _config = config;
+            _context = context;
         }
-        public async Task<string> Login()
+
+        [HttpPost]
+        [Route("Login")]
+        [AllowAnonymous]
+        public IActionResult Login([FromBody] AuthData authData)
         {
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+            IActionResult response = Unauthorized();
+
+            Member user = AuthenticateUser(authData);
+            if(user != null)
             {
-                string json = await reader.ReadToEndAsync();
-                ReactLoginData data = JsonConvert.DeserializeObject<ReactLoginData>(json);
-                if (data.user != null && data.pass != null)
-                {
-                    var result = await _signInManager.PasswordSignInAsync(data.user, data.pass, true, false);
-                    return JsonConvert.SerializeObject(new ReactResponse() { Response = "true" });
-                }
+                string tokenString = GenerateJWTToken(user);
+                response = Ok(new{token = tokenString,userName = user.UserName});
             }
-            return JsonConvert.SerializeObject(new ReactResponse() { Response = "false" });
+
+            return response;
         }
+
+        [HttpGet]
+        [Route("Setup")]
+        [Authorize(Policy = Policies.Admin)]
+        public IActionResult Setup()
+        {
+            return Ok("This is a response from admin method");
+        }
+
+        private string GenerateJWTToken(Member user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+            var token = new JwtSecurityToken
+                (issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(24),
+                signingCredentials: credentials);
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private Member AuthenticateUser(AuthData authData)
+        {
+             Member user = _context.Members.SingleOrDefault(x => x.UserName == authData.UserName && x.Password == authData.Password);
+             return user;
+        }
+
     }
 }

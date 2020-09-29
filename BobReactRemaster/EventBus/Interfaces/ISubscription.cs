@@ -2,7 +2,7 @@
 
 namespace BobReactRemaster.EventBus
 {
-    interface ISubscription
+    internal interface ISubscription
     {
         void Publish(BaseMessageData data);
     }

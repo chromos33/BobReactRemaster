@@ -10,14 +10,13 @@ namespace BobReactRemaster.Data.Models.Stream
     public interface iLiveStream
     {
         public List<StreamSubscription> GetStreamSubscriptions();
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
         public List<StreamSubscription> Subscriptions { get; }
         public string URL { get; }
         public DateTime Started { get; }
         public DateTime Stopped { get; }
         public StreamState State { get; }
-        public TextChannel RelayChannel { get;}
+        public TextChannel RelayChannel { get; }
         public string StreamName { get; }
 
         public void SetURL(string URL);

@@ -15,14 +15,17 @@ namespace BobReactRemaster
     public class Program
     {
         public static void Main(string[] args)
-           => new Program().MainAsync(args).GetAwaiter().GetResult();
+        {
+            new Program().MainAsync(args).GetAwaiter().GetResult();
+        }
+
         public async Task MainAsync(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
-                IServiceProvider services = scope.ServiceProvider;
+                var services = scope.ServiceProvider;
                 try
                 {
                     await ApplicationDBInitializer.SeedUsers(services);
@@ -37,11 +40,10 @@ namespace BobReactRemaster
             host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+        }
     }
 }
