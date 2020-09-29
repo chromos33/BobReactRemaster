@@ -13,6 +13,7 @@ using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus;
 using IdentityServer4.Stores.Default;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,7 +40,7 @@ namespace BobReactRemaster
                      mysqlOptions.ServerVersion(new Version(10, 3, 8), ServerType.MariaDb);
                  })
              );
-
+            services.AddResponseCompression();
 
             services.AddAuthentication()
                 .AddJwtBearer(options =>
@@ -81,17 +82,29 @@ namespace BobReactRemaster
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseStaticFiles();
+                app.UseSpaStaticFiles();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                var cachePeriod = "604800";
+                var StaticFileOptions = new StaticFileOptions()
+                {
+                    OnPrepareResponse = ctx =>
+                    {
+                        ctx.Context.Response.Headers.Append("Cache-Control", $"public,max-age={cachePeriod}");
+                    }
+                };
+                app.UseStaticFiles(StaticFileOptions);
+                app.UseSpaStaticFiles(StaticFileOptions);
+                app.UseResponseCompression();
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            
 
             app.UseRouting();
 
