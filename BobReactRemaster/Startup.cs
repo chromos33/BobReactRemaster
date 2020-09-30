@@ -13,6 +13,7 @@ using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus;
 using IdentityServer4.Stores.Default;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +43,7 @@ namespace BobReactRemaster
              );
             services.AddResponseCompression();
 
-            services.AddAuthentication()
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;

@@ -4,7 +4,7 @@ using System;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.User;
 
-namespace BobRemastered.Tests
+namespace BobReactRemaster.Tests.Models.User
 {
     public class UserTests
     {
@@ -13,6 +13,15 @@ namespace BobRemastered.Tests
         public void Setup()
         {
             user = new Member("chromos33","password",UserRole.Admin);
+        }
+
+        [Test]
+        public void PasswordFunctions_ValidInputs_SucceedAssertions()
+        {
+            Assert.IsTrue(user.checkPassword("password"));
+            user.SetPassword("otherpassword");
+            Assert.IsFalse(user.checkPassword("password"));
+            Assert.IsTrue(user.checkPassword("otherpassword"));
         }
 
         [Test]

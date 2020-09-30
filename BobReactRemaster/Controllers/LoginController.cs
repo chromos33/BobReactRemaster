@@ -1,27 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
-using BobReactRemaster.EventBus;
-using BobReactRemaster.JSONModels;
-using BobReactRemaster.Models;
-using IdentityServer4.Services;
-using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 
 namespace BobReactRemaster.Controllers
 {
@@ -29,12 +17,10 @@ namespace BobReactRemaster.Controllers
     [Route("User")]
     public class LoginController : ControllerBase
     {
-        private readonly IMessageBus _eventBus;
         private readonly IConfiguration _config;
         private readonly ApplicationDbContext _context;
-        public LoginController(IMessageBus eventBus, IConfiguration config, ApplicationDbContext context)
+        public LoginController(IConfiguration config, ApplicationDbContext context)
         {
-            _eventBus = eventBus;
             _config = config;
             _context = context;
         }
@@ -58,10 +44,10 @@ namespace BobReactRemaster.Controllers
 
         [HttpGet]
         [Route("Setup")]
-        [Authorize(Policy = Policies.Admin)]
+        [Authorize(Policy = Policies.User)]
         public IActionResult Setup()
         {
-            return Ok("This is a response from admin method");
+            return Ok(new{Response= "This is a response from admin method"});
         }
 
         private string GenerateJWTToken(Member user)
@@ -71,7 +57,10 @@ namespace BobReactRemaster.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim("fullName", user.UserName),
+                new Claim("role",user.UserRole),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                
             };
             var token = new JwtSecurityToken
                 (issuer: _config["Jwt:Issuer"],
@@ -84,8 +73,13 @@ namespace BobReactRemaster.Controllers
 
         private Member AuthenticateUser(AuthData authData)
         {
-             Member user = _context.Members.SingleOrDefault(x => x.UserName == authData.UserName && x.Password == authData.Password);
-             return user;
+             Member user = _context.Members.SingleOrDefault(x => x.UserName == authData.UserName);
+             if (user != null && user.checkPassword(authData.Password))
+             {
+                return user;
+             }
+             return null;
+
         }
 
     }

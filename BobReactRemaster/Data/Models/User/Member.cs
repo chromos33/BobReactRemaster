@@ -14,8 +14,8 @@ namespace BobReactRemaster.Data.Models.User
 
         [Key]
         public string UserName { get; private set; }
-        public string Password { get; set; }
-        public UserRole UserRole { get; set; }
+        public string PasswordHash { get; private set; }
+        public string UserRole { get; set; }
 
         private Member()
         {
@@ -24,11 +24,24 @@ namespace BobReactRemaster.Data.Models.User
         public Member(string username,string password, UserRole userRole)
         {
             UserName = username;
-            Password = password;
-            UserRole = userRole;
+            PasswordHash = encryptPassword(password);
+            UserRole = userRole.ToString();
             StreamSubscriptions = new List<StreamSubscription>();
         }
+        public void SetPassword(string password)
+        {
+            PasswordHash = encryptPassword(password);
+        }
 
+        private string encryptPassword(string password)
+        {
+           return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        public bool checkPassword(string passwordtocheck)
+        {
+            return BCrypt.Net.BCrypt.Verify(passwordtocheck, PasswordHash);
+        }
 
         public bool HasSubscriptions()
         {

@@ -18,7 +18,9 @@ namespace BobReactRemaster.Auth
 
         public static AuthorizationPolicy UserPolicy()
         {
-            return new AuthorizationPolicyBuilder().RequireAuthenticatedUser().RequireRole(User).Build();
+            //Because an Admin is also an User
+            string[] Roles = { Admin,User};
+            return new AuthorizationPolicyBuilder().RequireAuthenticatedUser().RequireRole(Roles).Build();
         }
     }
 }

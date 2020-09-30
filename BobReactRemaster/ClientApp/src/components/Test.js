@@ -1,10 +1,26 @@
 import React from "react";
-import {getCookie} from "../helper/cookie";
+import { getCookie } from "../helper/cookie";
 
 export function Test() {
 
-    console.log(getCookie("Token"));
+    const Test = async () => {
+        var afterAuthResult = await fetch("/User/Setup", {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            },
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            if (json.Response !== undefined) {
+                return json.Response;
+            }
+            return false;
+        }).catch((error) => { })
+        console.log(afterAuthResult);
+    }
+    Test();
     return (
-               <span>logged in</span>
-);
+        <span>Test</span>
+    );
 }
