@@ -37,6 +37,8 @@ export function Login() {
             alert("error");
         }
     }
+
+    return (<div></div>);
     return (
         <div>
             <input name="login" onChange={(e) => setLogin(e.target.value)} type="text" />

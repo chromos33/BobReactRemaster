@@ -1,0 +1,57 @@
+.NaviLinkIcon {
+    background: #272c2e;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    min-width: 40px;
+    height:30px;
+    line-height:30px;
+    text-align: center;
+    transition: 0.15s ease all;
+    vertical-align: center;
+}
+.NaviLinkIcon svg{
+    transition: 0.15s ease all;
+}
+.NaviLinkIcon.open{
+    background:black;
+}
+.NaviLinkIcon.open svg{
+    color:white;
+}
+.NaviLink{
+    position:relative;
+}
+.NaviLink > div{
+    position:absolute;
+    top:-6px;
+    left:100%;
+    width:0;
+    height:100%;
+    transition: 0.15s ease all;
+    overflow: hidden;
+}
+.naviTitle
+{
+    display:table-cell;
+    vertical-align: middle;
+    padding:0 20px;
+    text-align: center;
+    background:black;
+    color:#BAC6D1;
+    height:30px;
+}
+.contentDimensions
+{
+    position:absolute;
+    top:0;
+    left:0;
+}
+.submenu{
+    background:#272c2e;
+}
+/* remove after testing */
+.submenu > span
+{
+    display:block;
+}
