@@ -1,45 +1,26 @@
-.NaviLinkIcon {
-    background: #272c2e;
-    display: inline-block;
-    cursor: pointer;
-    position: relative;
-    min-width: 40px;
-    height:30px;
-    line-height:30px;
-    text-align: center;
-    transition: 0.15s ease all;
-    vertical-align: center;
+.firstLevelLink
+{
+    display:inline-block;
+    width:40px;
 }
-.NaviLinkIcon svg{
-    transition: 0.15s ease all;
-}
-.NaviLinkIcon.open{
-    background:black;
-}
-.NaviLinkIcon.open svg{
-    color:white;
-}
-.NaviLink{
+.relative
+{
     position:relative;
 }
-.NaviLink > div{
-    position:absolute;
-    top:-6px;
-    left:100%;
-    width:0;
-    height:100%;
-    transition: 0.15s ease all;
-    overflow: hidden;
-}
-.naviTitle
+.linkContainer
 {
-    display:table-cell;
-    vertical-align: middle;
-    padding:0 20px;
+    
+}
+.iconSquare
+{
+    background:#272c2e;
+    min-width:40px;
     text-align: center;
-    background:black;
+    padding:10px 0;
+    height:20px;
+    display:inline-block;
+    cursor:pointer;
     color:#BAC6D1;
-    height:30px;
 }
 .contentDimensions
 {
@@ -47,11 +28,43 @@
     top:0;
     left:0;
 }
-.submenu{
-    background:#272c2e;
+.expandContainer
+{
+    position:absolute;
+    top:0;
+    left:40px;
+    width:0;
+    height:100%;
+    overflow:hidden;
+    transition:0.15s linear all;
 }
-/* remove after testing */
-.submenu > span
+.menuTitle
+{
+    height:20px;
+    padding:10px 20px;
+    display:block;
+    background:black;
+    color:#BAC6D1;
+    text-align: center;
+}
+.menuLinks a
 {
     display:block;
+    background-color:#272c2e;
+    color:#BAC6D1;
+    text-decoration: none;
+    white-space: nowrap;
+    padding:5px 10px;
+    border-bottom:1px solid #BAC6D1;
+}
+.menuLinks a svg
+{
+    margin-right:5px;
+}
+.menuLinks a:hover{
+    background-color:#1d2122;
+}
+.menuLinks a:last-child
+{
+    border-bottom:none;
 }

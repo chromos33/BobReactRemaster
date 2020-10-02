@@ -4,69 +4,105 @@ import '../../css/NaviLink.css';
 
 export function NaviLink(props)
 {
-    const [openWidth,SetOpenWidth] = useState(0);
-    const [Width,SetWidth] = useState(0);
-    const [openHeight,SetOpenHeight] = useState(0);
-    const [Height,SetHeight] = useState(30);
-    const [iconState,SetIconState] = useState("");
 
-    const openNaviLink = () => {
-        SetWidth(openWidth);
-        setTimeout(() => {SetHeight(openHeight);},150);
-        SetIconState("open");
+    const [width,setWidth] = useState(0);
+    const [linkWidth,setLinkWidth] = useState(40);
+    const [height,setHeight] = useState(40);
+    const [expandedWidth,setExpandedWidth] = useState(0);
+    const [expandedHeight,setExpandedHeight] = useState(0);
+    const openNav = () => {
+        setTimeout(() => {
+            setHeight(expandedHeight); 
+        },150);
+        setWidth(expandedWidth);
+        setLinkWidth(expandedWidth+40);
+        
+        
     }
-    const closeNaviLink = () => {
-        setTimeout(() => {SetWidth(0);},150)
-        SetHeight(30);
-        SetIconState("");
+    const closeNav = () => {
+        
+        setTimeout(() => {
+            setWidth(expandedWidth);
+            setWidth(0);
+            setLinkWidth(40);
+        },150);
+        setHeight(40);
+        
     }
-    useEffect(() => {
-        if(openWidth === 0 && props.SubLinks !== undefined && props.SubLinks.length)
-        {
-            var width = document.querySelector("#"+props.ID+" .contentDimensions").clientWidth;
-            var height = document.querySelector("#"+props.ID+" .contentDimensions").clientHeight;
-            SetOpenWidth(width);
-            SetOpenHeight(height);
-        }
-    },[openWidth,props.ID]);
-    if(props.SubLinks !== undefined && props.SubLinks.length > 0)
-    {
+    const renderFirstLevelLink = () => {
         return (
-            <span id={props.ID} className="NaviLink" onMouseLeave={closeNaviLink} onMouseEnter={openNaviLink}>
-                {props.icon !== undefined &&
-                <span className={"NaviLinkIcon " + iconState }>
-                    <FontAwesomeIcon icon={props.icon} />
-                </span>
-                }
-                {props.icon === undefined &&
-                <span className={"NaviLinkIcon " + iconState }>
-                    <span className="naviTitle">{props.Title}</span>
-                </span>
-                }
-                <div style={{width:Width+"px",height:Height+"px"}}>
-                    <div className="contentDimensions">
-                        {props.icon !== undefined &&
-                        <span className="naviTitle">{props.Title}</span>
-                        }
-                        {props.SubLinks !== undefined && props.SubLinks.length > 0 &&
-                        <div className="submenu">
-                            <span>Test</span>
-                            <span>Test</span>
-                        </div>
-                        }
-                    </div>
-                </div>
-                
-                <span></span>
+        <a style={{width:linkWidth+"px"}} onMouseEnter={() => {openNav()}} onMouseLeave={() => {closeNav()}} href={props.Link} className="firstLevelLink" id={props.ID}>
+            <div className="relative linkContainer">
+            <span className="iconSquare">
+                <FontAwesomeIcon icon={props.Icon}/>
             </span>
-            );
-    }
-    else
-    {
-        return(
-            <a className="NaviLink" href="/">SomeLink</a>
+            <div style={{width:width+"px",height: height+"px"}} className="expandContainer">
+                <div className="contentDimensions">
+                    <span className="menuTitle">{props.Title}</span>
+                </div>
+            </div>
+            </div>
+        </a>
         );
     }
-   
-   
+    const renderLinkWithMenu = () => {
+        const Menu = props.SubLinks.map((MenuLink) => {
+            console.log(MenuLink);
+            return <NaviLink key={MenuLink.ID} ID={MenuLink.ID} Icon={MenuLink.Icon} Title={MenuLink.Title} Link={MenuLink.Link}/>
+        });
+        return (
+            <div style={{width:linkWidth+"px"}} onMouseEnter={() => {openNav()}} onMouseLeave={() => {closeNav()}} className="firstLevelLink" id={props.ID}>
+                <div className="relative linkContainer">
+                <span className="iconSquare">
+                    <FontAwesomeIcon icon={props.Icon}/>
+                </span>
+                <div style={{width:width+"px",height: height+"px"}} className="expandContainer">
+                    <div className="contentDimensions">
+                        <span className="menuTitle">{props.Title}</span>
+                        <div className="menuLinks">
+                            {Menu}
+                        </div>
+                    </div>
+                    
+                </div>
+                </div>
+            </div>
+            );
+    }
+    const renderMenuLink = () => {
+        return (
+            <a href={props.Link}>{props.Icon != undefined && <FontAwesomeIcon icon={props.Icon}/>} {props.Title}</a>
+        );
+    }
+
+    useEffect(() => {
+        if(props.FirstLevel === true)
+        {
+            var Container = document.querySelector("#"+props.ID);
+            if(Container != null)
+            {
+                var dimensionGiver = Container.querySelector(".contentDimensions");
+                if(dimensionGiver != null)
+                {
+                    var width = dimensionGiver.clientWidth;
+                    var height = dimensionGiver.clientHeight;
+                    setExpandedWidth(width);
+                    setExpandedHeight(height);
+                }
+                
+            }
+            
+        }
+    },[expandedWidth,props.FirstLevel,props.ID])
+
+
+    if(props.SubLinks !== undefined)
+    {
+        return renderLinkWithMenu();
+    }
+    if(props.FirstLevel === true)
+    {
+        return renderFirstLevelLink();
+    }
+    return renderMenuLink();
 }
