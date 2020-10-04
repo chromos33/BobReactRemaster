@@ -1,7 +1,10 @@
 import React from 'react';
-import {NaviLink} from './NaviLink';
+import NaviLink from './NaviLink';
 import '../../css/Navi.css';
-
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUser, faFilm  } from '@fortawesome/free-solid-svg-icons'
+library.add(faUser);
+library.add(faFilm);
 export function Navi(props)
 {
     const Links = 
@@ -49,3 +52,4 @@ export function Navi(props)
         </div>
         )
 }
+export default Navi;

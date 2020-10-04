@@ -71,7 +71,7 @@ export function NaviLink(props)
     }
     const renderMenuLink = () => {
         return (
-            <a href={props.Link}>{props.Icon != undefined && <FontAwesomeIcon icon={props.Icon}/>} {props.Title}</a>
+            <a href={props.Link}>{props.Icon !== undefined && <FontAwesomeIcon icon={props.Icon}/>} {props.Title}</a>
         );
     }
 
@@ -106,3 +106,4 @@ export function NaviLink(props)
     }
     return renderMenuLink();
 }
+export default NaviLink;

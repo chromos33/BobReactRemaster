@@ -24,3 +24,4 @@ export function Test() {
         <span>Test</span>
     );
 }
+export default Test;
