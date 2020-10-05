@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+body{
+    font-family: 'Roboto';
+    font-size:16px;
+}
+input[type="text"]{
+    background:#BAC6D1;
+    margin-bottom:10px;
+    font-size:16px;
+    max-width:100%;
+}
+label{
+    color:#BAC6D1;
+}
+
+.h1
+{
+    font-size:22px;
+    color:#BAC6D1;
+    font-weight: bold;
+}

@@ -1,0 +1,13 @@
+
+.LayoutContainer
+{
+    display:flex;
+}
+.NaviContainer
+{
+    flex:0 0 45px;
+}
+.Content
+{
+    flex: 0 0 calc(100% - 45px);
+}

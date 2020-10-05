@@ -47,7 +47,6 @@ export function NaviLink(props)
     }
     const renderLinkWithMenu = () => {
         const Menu = props.SubLinks.map((MenuLink) => {
-            console.log(MenuLink);
             return <NaviLink key={MenuLink.ID} ID={MenuLink.ID} Icon={MenuLink.Icon} Title={MenuLink.Title} Link={MenuLink.Link}/>
         });
         return (
@@ -79,10 +78,10 @@ export function NaviLink(props)
         if(props.FirstLevel === true)
         {
             var Container = document.querySelector("#"+props.ID);
-            if(Container != null)
+            if(Container !== null)
             {
                 var dimensionGiver = Container.querySelector(".contentDimensions");
-                if(dimensionGiver != null)
+                if(dimensionGiver !== null)
                 {
                     var width = dimensionGiver.clientWidth;
                     var height = dimensionGiver.clientHeight;

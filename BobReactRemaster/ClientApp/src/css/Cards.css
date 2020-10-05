@@ -1,0 +1,12 @@
+.card 
+{
+    padding:10px;
+    background:#272c2e;
+    display:inline-block;
+    border-radius:3px;
+}
+.card input[type="submit"]
+{
+    background:black !important;
+    color:#BAC6D1;
+}

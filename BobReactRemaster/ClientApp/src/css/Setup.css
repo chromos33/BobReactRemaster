@@ -1,0 +1,16 @@
+.DiscordTokenForm label,
+.DiscordTokenForm input
+{
+    display:block;
+}
+.DiscordTokenForm input[type="submit"]
+{
+    background: #272c2e !important;
+    font-size: 16px !important;
+    line-height: 16px !important;
+    padding: 10px 20px !important;
+    cursor: pointer;
+    display: inline-block;
+    border:none;
+    border-radius:5px;
+}

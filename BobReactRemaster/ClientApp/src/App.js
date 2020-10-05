@@ -4,6 +4,7 @@ import './css/App.css';
 const Layout = lazy(()=> import('./components/Layout')) ;
 const Login = lazy(() => import('./components/Login'));
 const Test = lazy(() => import('./components/Test'));
+const Setup = lazy(() => import('./components/Setup/Setup'));
 
 export default function App()  {
 
@@ -15,6 +16,7 @@ export default function App()  {
               <Switch>
                 <Route exact path='/' component={Login} />
                 <Route exact path='/Test' component={Test} />
+                <Route exact path='/SetupView' component={Setup} />
               </Switch>
             </Suspense>
           </Router>

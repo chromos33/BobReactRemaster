@@ -2,9 +2,10 @@ import React from 'react';
 import NaviLink from './NaviLink';
 import '../../css/Navi.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUser, faFilm  } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faFilm, faCogs  } from '@fortawesome/free-solid-svg-icons'
 library.add(faUser);
 library.add(faFilm);
+library.add(faCogs);
 export function Navi(props)
 {
     const Links = 
@@ -14,6 +15,13 @@ export function Navi(props)
             Title:"Streams",
             Icon: ["fas","film"],
             Link: "Streams",
+            FirstLevel: true
+        },
+        {
+            ID:"Setup",
+            Title: "Setup",
+            Icon: ["fas","cogs"],
+            Link: "/SetupView",
             FirstLevel: true
         },
         {

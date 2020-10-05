@@ -30,17 +30,15 @@ export function Login() {
         })
         if(loginResult !== false)
         {
-            setCookie("Token",loginResult,1);
+            setCookie("Token",loginResult,30);
             history.push("/Test");
         }
         else{
             alert("error");
         }
     }
-
-    return (<div></div>);
     return (
-        <div>
+        <div className="card">
             <input name="login" onChange={(e) => setLogin(e.target.value)} type="text" />
             <input onChange= {(e) => setPassword(e.target.value)} name="password" type="password" />
             <span onClick={handleLogin}>Login</span>
