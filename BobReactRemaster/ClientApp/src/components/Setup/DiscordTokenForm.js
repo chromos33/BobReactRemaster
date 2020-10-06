@@ -28,10 +28,8 @@ export function DiscordTokenForm(props)
                 'Authorization': 'Bearer ' + getCookie("Token"),
             }
         }).then(response => {
-            console.log(response);
             return response.json();
         }).then(json => {
-            console.log(json);
             setClientID(json.clientID);
             setToken(json.token);
             //TODO when Data is stored and returned here setToken/ClientID
