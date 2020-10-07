@@ -22,7 +22,7 @@ namespace BobReactRemaster.Data
 
         public DbSet<DiscordCredentials> DiscordCredentials { get; set; }
 
-        public DbSet<TwitchCredentials> TwitchCredentials { get; set; }
+        public DbSet<TwitchCredential> TwitchCredentials { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {

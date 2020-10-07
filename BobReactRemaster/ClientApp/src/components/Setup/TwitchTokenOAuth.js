@@ -27,7 +27,24 @@ export function TwitchTokenOAuth(props)
         )
     });
     const handleSubmit = (e) => {
-        
+        e.preventDefault();
+        fetch("/Twitch/TwitchOAuthStartAdmin",{
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            },
+            body: JSON.stringify({
+                    ClientID: clientID,
+                    Secret: Secret,
+                    Scopes: Scopes
+                })
+            
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            window.location.href = json.link;
+        });
     }
     return(
         <form className="TwitchOAuthForm" onSubmit={handleSubmit}>
