@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.Data.Models.Stream.Twitch;
+using Discord;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace BobReactRemaster.Controllers
 {
@@ -23,6 +26,21 @@ namespace BobReactRemaster.Controllers
             _context = context;
             _configuration = configuration;
         }
+
+        [HttpGet]
+        [Route("GetTwitchMainTokenData")]
+        [Authorize(Policy = Policies.Admin)]
+        public IActionResult GetTwitchMainTokenData()
+        {
+            var Credential = _context.TwitchCredentials.FirstOrDefault(x => x.isMainAccount);
+            if (Credential != null)
+            {
+                return Ok(new { ClientID = Credential.ClientID, Secret = Credential.Secret });
+            }
+            return NotFound();
+        }
+
+
         [HttpPost]
         [Route("TwitchOAuthStartAdmin")]
         [Authorize(Policy = Policies.Admin)]
@@ -49,22 +67,32 @@ namespace BobReactRemaster.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> TwitchOAuthReturn(string code, string scope, string state)
         {
-            //TODO get TwitchCredentials where validationKey is equal to state and store continue if true
-            /* old code
-            var savedtoken = _context.SecurityTokens.Where(st => st.service == TokenType.Twitch).FirstOrDefault();
-            savedtoken.code = code;
-            var client = new HttpClient();
-            string baseUrl = _configuration.GetValue<string>("WebServerWebAddress");
-            string url = $"https://id.twitch.tv/oauth2/token?client_id={savedtoken.ClientID}&client_secret={savedtoken.secret}&code={code}&grant_type=authorization_code&redirect_uri={baseUrl}/Admin/TwitchReturnUrlAction";
-            var response = await client.PostAsync(url, new StringContent("", System.Text.Encoding.UTF8, "text/plain"));
-            var responsestring = await response.Content.ReadAsStringAsync();
-            JSONObjects.TwitchAuthToken authtoken = JsonConvert.DeserializeObject<JSONObjects.TwitchAuthToken>(responsestring);
-            savedtoken.token = authtoken.access_token;
-            savedtoken.RefreshToken = authtoken.refresh_token;
-            await _context.SaveChangesAsync();
+            var Credential = _context.TwitchCredentials.FirstOrDefault(x => x.validationKey == state);
 
-            */
-            return Ok();
+            if (Credential != null && code != null)
+            {
+                var client = new HttpClient();
+                string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
+                string returnurl = Credential.getTwitchReturnURL(WebserverAddress);
+                string url = $"https://id.twitch.tv/oauth2/token?client_id={Credential.ClientID}&client_secret={Credential.Secret}&code={code}&grant_type=authorization_code&redirect_uri={returnurl}";
+                var response = await client.PostAsync(url, new StringContent("", System.Text.Encoding.UTF8, "text/plain"));
+                var responsestring = await response.Content.ReadAsStringAsync();
+                TwitchAuthToken authtoken = JsonConvert.DeserializeObject<TwitchAuthToken>(responsestring);
+                Credential.Token = authtoken.access_token;
+                Credential.ExpireDate = DateTime.Now.AddSeconds(authtoken.expires_in);
+                Credential.RefreshToken = authtoken.refresh_token;
+                await _context.SaveChangesAsync();
+
+                if (Credential.isMainAccount)
+                {
+                    return Redirect("/SetupView");
+                }
+                //replace Redirect with Link to Stream overview
+                return Redirect("/");
+            }
+            //replace Redirect with Link to Stream overview
+            return Redirect("/");
+
         }
 
     }

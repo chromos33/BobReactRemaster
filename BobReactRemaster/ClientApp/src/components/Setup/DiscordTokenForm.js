@@ -32,8 +32,6 @@ export function DiscordTokenForm(props)
         }).then(json => {
             setClientID(json.clientID);
             setToken(json.token);
-            //TODO when Data is stored and returned here setToken/ClientID
-            return json;
         }).catch((error) => {
         });
         setInit(true);

@@ -16,6 +16,7 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
         public string Secret { get; set; }
         public string validationKey { get; set; }
         public string RefreshToken { get; set; }
+        public DateTime ExpireDate { get; set; }
 
         //May only be Changed in Setup/Admin
         public bool isMainAccount { get; set; }
@@ -26,10 +27,24 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
             Secret = data.Secret;
         }
 
+        public string getTwitchReturnURL(string webserverAddress)
+        {
+            string returnurl = webserverAddress;
+            if (returnurl.Substring(returnurl.Length - 1) != "/")
+            {
+                returnurl += "/";
+            }
+
+            returnurl += "Twitch/TwitchOAuthReturn";
+            return returnurl;
+        }
+
         public string getTwitchAuthLink(TwitchOauthStoreData data, string webserverAddress)
         {
             string state = Guid.NewGuid().ToString();
-            string link = $"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id={ClientID}&redirect_uri={webserverAddress}/Admin/TwitchReturnUrlAction";
+            validationKey = state;
+            string returnurl = getTwitchReturnURL(webserverAddress);
+            string link = $"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id={ClientID}&redirect_uri={returnurl}";
             if (!string.IsNullOrEmpty(data.Scopes))
             {
                 link += "&scope=";

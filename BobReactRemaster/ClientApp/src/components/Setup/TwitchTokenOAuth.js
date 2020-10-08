@@ -4,6 +4,7 @@ export function TwitchTokenOAuth(props)
 {
     const [clientID,setClientID] = useState("");
     const [Secret,setSecret] = useState("");
+    const [init,setInit] = useState(false);
     var Scopes = "";
     const toggleScope = (e) => {
         if(Scopes.includes(e.target.value))
@@ -46,12 +47,33 @@ export function TwitchTokenOAuth(props)
             window.location.href = json.link;
         });
     }
+    const loadDataFromServer = async () => {
+        
+        await fetch("/Twitch/GetTwitchMainTokenData",{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            }
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            setClientID(json.clientID);
+            setSecret(json.secret);
+        }).catch((error) => {
+        });
+        setInit(true);
+    };
+    if(!init)
+    {
+        loadDataFromServer();
+    }
     return(
         <form className="TwitchOAuthForm" onSubmit={handleSubmit}>
             <label>ClientID</label>
-            <input name="ClientID" value={clientID} onChange={e => setClientID(e.target.value)}/>
+            <input type="text" name="ClientID" value={clientID} onChange={e => setClientID(e.target.value)}/>
             <label>Secret</label>
-            <input name="Secret" value={Secret} onChange={e => setSecret(e.target.value)}/>
+            <input type="text" name="Secret" value={Secret} onChange={e => setSecret(e.target.value)}/>
             {props.TwitchScopes.length > 0 && (<div>
                 <label>Scopes</label>
                 {ScopeOptions}

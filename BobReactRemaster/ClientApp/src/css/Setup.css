@@ -8,6 +8,11 @@
 {
     display:inline-block;
 }
+.card input[type="text"]
+{
+    width: calc(100% - 5px);
+    font-size:14px;
+}
 .card input[type="submit"]
 {
     background: #272c2e !important;
