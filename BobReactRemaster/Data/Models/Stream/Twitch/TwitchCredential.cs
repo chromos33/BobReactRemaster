@@ -12,6 +12,7 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
     {
         [Key] public int id { get; set; }
         public string ClientID { get; set; }
+        public string ChatUserName { get; set; }
         public string Token { get; set; }
         public string Code { get; set; }
         public string Secret { get; set; }
@@ -65,6 +66,7 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
         
         public ConnectionCredentials GetRelayConnectionCredentials()
         {
+            //TODO add Twitchusername to setup
             return new ConnectionCredentials("bobreacttest","oauth:" + Token);
         }
     }
