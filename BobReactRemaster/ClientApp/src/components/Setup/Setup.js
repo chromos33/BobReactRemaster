@@ -9,7 +9,11 @@ export function Setup()
     const TwitchScopes = [
         "bits:read",
         "channel:manage:broadcast",
-        "clips:edit"
+        "clips:edit",
+        "chat:edit",
+        "chat:read",
+        "whispers:read",
+        "whispers:edit"
     ];
     return (<div className="flexmasonry">
         <div className="card">

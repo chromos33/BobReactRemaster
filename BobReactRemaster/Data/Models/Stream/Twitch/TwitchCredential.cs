@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Controllers;
+using TwitchLib.Client.Models;
 
 namespace BobReactRemaster.Data.Models.Stream.Twitch
 {
@@ -60,6 +61,11 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
 
             link += $"&state={state}";
             return link;
+        }
+        
+        public ConnectionCredentials GetRelayConnectionCredentials()
+        {
+            return new ConnectionCredentials("bobreacttest","oauth:" + Token);
         }
     }
 }

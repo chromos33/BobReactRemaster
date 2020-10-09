@@ -1,7 +1,7 @@
-﻿using BobReactRemaster.EventBus.BaseClasses;
-using System;
+﻿using System;
+using BobReactRemaster.EventBus.BaseClasses;
 
-namespace BobReactRemaster.EventBus
+namespace BobReactRemaster.EventBus.Interfaces
 {
     public interface IMessageBus
     {

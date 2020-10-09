@@ -1,6 +1,6 @@
 ﻿using BobReactRemaster.EventBus.BaseClasses;
 
-namespace BobReactRemaster.EventBus
+namespace BobReactRemaster.EventBus.Interfaces
 {
     internal interface ISubscription
     {

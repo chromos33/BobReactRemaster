@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services.Chat.Discord;
+using BobReactRemaster.Services.Chat.Twitch;
 using IdentityServer4.Stores.Default;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -74,6 +77,8 @@ namespace BobReactRemaster
                 configuration.RootPath = "ClientApp/build";
             });
             services.AddSingleton<IMessageBus, MessageBus>();
+            services.AddSingleton<IHostedService, DiscordChat>();
+            services.AddSingleton<IHostedService, TwitchRelay>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

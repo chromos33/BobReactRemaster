@@ -1,5 +1,6 @@
 ﻿using BobReactRemaster.EventBus.BaseClasses;
 using System;
+using BobReactRemaster.EventBus.Interfaces;
 
 namespace BobReactRemaster.EventBus
 {

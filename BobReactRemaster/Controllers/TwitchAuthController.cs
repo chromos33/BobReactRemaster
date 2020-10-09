@@ -7,6 +7,7 @@ using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.Data.Models.Stream.Twitch;
+using BobReactRemaster.JSONModels.Twitch;
 using Discord;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
