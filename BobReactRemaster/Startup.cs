@@ -13,6 +13,7 @@ using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services.Chat;
 using BobReactRemaster.Services.Chat.Discord;
 using BobReactRemaster.Services.Chat.Twitch;
 using IdentityServer4.Stores.Default;
@@ -79,6 +80,7 @@ namespace BobReactRemaster
             services.AddSingleton<IMessageBus, MessageBus>();
             services.AddSingleton<IHostedService, DiscordChat>();
             services.AddSingleton<IHostedService, TwitchRelay>();
+            services.AddSingleton<RelayRouter, RelayRouter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

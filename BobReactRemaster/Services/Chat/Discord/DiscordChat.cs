@@ -20,24 +20,31 @@ namespace BobReactRemaster.Services.Chat.Discord
         private DiscordSocketClient _client;
         private IMessageBus MessageBus;
         private readonly IServiceScopeFactory _scopeFactory;
+        private RelayRouter RelayRouter;
 
-        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory)
+        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayRouter relayRouter)
         {
             InitClient();
             InitEvents();
             MessageBus = messageBus;
             _scopeFactory = scopeFactory;
+            RelayRouter = relayRouter;
             SubscribeToBusEvents();
         }
 
         private void SubscribeToBusEvents()
         {
-            MessageBus.RegisterToEvent<RelayMessageFromStreamChat>(RelayMessageReceived);
+            MessageBus.RegisterToEvent<DiscordRelayMessageData>(RelayMessageReceived);
         }
 
-        private void RelayMessageReceived(RelayMessageFromStreamChat obj)
+        private void RelayMessageReceived(DiscordRelayMessageData obj)
         {
-            //TODO implement after DB has Discordservers, channels and stuff  so we can decide where to Relay Message to
+            _client
+                .Guilds.FirstOrDefault(x =>
+                    string.Equals(x.Name, obj.DiscordServer, StringComparison.CurrentCultureIgnoreCase))?
+                .TextChannels.FirstOrDefault(x =>
+                    string.Equals(x.Name, obj.DiscordChannel, StringComparison.CurrentCultureIgnoreCase))?
+                .SendMessageAsync(obj.Message);
         }
 
         private void InitClient()
@@ -54,26 +61,31 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private async Task MessageReceived(SocketMessage arg)
         {
-            //TODO: If Message should be relayed aka if originated from Server/Channel configured in a stream
-            if (isMessageToBeRelayed(arg))
+            if (isMessage(arg))
             {
-                var message = ExtractRelayMessage(arg);
-                RelayMessage(message);
+                try
+                {
+                    var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
+                    RelayRouter.RelayMessage(new RelayMessage()
+                    {
+                        server = GuildName,
+                        channel = arg.Channel.Name,
+                        message = arg.Content
+                    });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                
             }
         }
-        private bool isMessageToBeRelayed(SocketMessage arg)
+
+        private bool isMessage(SocketMessage arg)
         {
-            //TODO Implement
-            throw new NotImplementedException();
-            return false;
-        }
-        private ChatMessageToStreamChat ExtractRelayMessage(SocketMessage arg)
-        {
-            return new ChatMessageToStreamChat() { Message = arg.Content, StreamName = "test", StreamType = "Test" };
-        }
-        private void RelayMessage(ChatMessageToStreamChat message)
-        {
-            MessageBus.Publish(message);
+            //aka does not contain Command
+            return true;
         }
 
         private async Task<bool> Connect()

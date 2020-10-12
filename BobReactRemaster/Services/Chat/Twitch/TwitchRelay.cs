@@ -20,11 +20,13 @@ namespace BobReactRemaster.Services.Chat.Twitch
         private IMessageBus MessageBus;
         private TwitchClient client;
         private readonly IServiceScopeFactory _scopeFactory;
+        private RelayRouter RelayRouter;
         #region Initialisation
-        public TwitchRelay(IMessageBus messageBus, IServiceScopeFactory scopeFactory)
+        public TwitchRelay(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayRouter relayRouter)
         {
             MessageBus = messageBus;
             _scopeFactory = scopeFactory;
+            RelayRouter = relayRouter;
             SubscribeToBusEvents();
             client = new TwitchClient();
         }
@@ -38,24 +40,6 @@ namespace BobReactRemaster.Services.Chat.Twitch
             client.OnConnectionError += NotConnected;
             client.OnError += Errored;
             client.OnIncorrectLogin += LoginAuthFailed;
-            client.OnFailureToReceiveJoinConfirmation += NoJoinConf;
-            client.OnNoPermissionError += NoPermission;
-            client.OnExistingUsersDetected += ExistingUSerDetected;
-        }
-
-        private void ExistingUSerDetected(object? sender, OnExistingUsersDetectedArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void NoPermission(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void NoJoinConf(object? sender, OnFailureToReceiveJoinConfirmationArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private void LoginAuthFailed(object? sender, OnIncorrectLoginArgs e)
@@ -83,8 +67,8 @@ namespace BobReactRemaster.Services.Chat.Twitch
 
         private void ChannelJoined(object sender, OnJoinedChannelArgs e)
         {
-            Console.WriteLine("Joined");
-            client.SendMessage(e.Channel,"Test");
+            //TODO create/add channel that handles when to send messages
+            //or Subscribe to MessageBus Event for Stream Started that handles creation of said channel object
         }
 
         private void Connected(object sender, OnConnectedArgs e)
@@ -111,29 +95,21 @@ namespace BobReactRemaster.Services.Chat.Twitch
         }
         private void SubscribeToBusEvents()
         {
-            MessageBus.RegisterToEvent<ChatMessageToStreamChat>(RelayMessageReceived);
+            MessageBus.RegisterToEvent<TwitchRelayMessageData>(RelayMessageReceived);
         }
         #endregion
         #region Events
-        private void RelayMessageReceived(ChatMessageToStreamChat obj)
+        private void RelayMessageReceived(TwitchRelayMessageData obj)
         {
-            //TODO use Dictionary With RelayChannel objects add Message to Corresponding RelayChannel Message "TODO"-List
-            throw new NotImplementedException();
+            client.SendMessage("chromos",obj.Message);
         }
 
         private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            RelayMessage(e.ChatMessage.Message, e.ChatMessage.Channel);
+            RelayRouter.RelayMessage(new RelayMessage(){channel= e.ChatMessage.Channel,message= e.ChatMessage.Message,SourceType = SourceType.Twitch});
         }
         #endregion
         #region Functions or something rename
-        //TODO
-        //Needs Timer
-        //TODO loop through Dictionary if RelayChannel has ElevatedPermissions (i.e. is Mod) forgo the burst protection otherwise 1 channel/message at a time
-        private void RelayMessage(string message, string streamname)
-        {
-            MessageBus.Publish(new RelayMessageFromStreamChat() { Message = message, DiscordChannel = streamname });
-        }
         private bool SendMessage(string channelName, string message)
         {
             //Try catch here in case
