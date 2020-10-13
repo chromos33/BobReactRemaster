@@ -15,18 +15,18 @@ using TwitchLib.Communication.Events;
 
 namespace BobReactRemaster.Services.Chat.Twitch
 {
-    public class TwitchRelay : BackgroundService
+    public class TwitchChat : BackgroundService
     {
         private IMessageBus MessageBus;
         private TwitchClient client;
         private readonly IServiceScopeFactory _scopeFactory;
-        private RelayRouter RelayRouter;
+        private RelayService _relayService;
         #region Initialisation
-        public TwitchRelay(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayRouter relayRouter)
+        public TwitchChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayService relayService)
         {
             MessageBus = messageBus;
             _scopeFactory = scopeFactory;
-            RelayRouter = relayRouter;
+            _relayService = relayService;
             SubscribeToBusEvents();
             client = new TwitchClient();
         }
@@ -101,12 +101,13 @@ namespace BobReactRemaster.Services.Chat.Twitch
         #region Events
         private void RelayMessageReceived(TwitchRelayMessageData obj)
         {
-            client.SendMessage("chromos",obj.Message);
+            //TODO Replace with MessageQueue like classic
+            client.SendMessage(obj.StreamName,obj.Message);
         }
 
         private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            RelayRouter.RelayMessage(new RelayMessage(){channel= e.ChatMessage.Channel,message= e.ChatMessage.Message,SourceType = SourceType.Twitch});
+            _relayService.RelayMessage(new TwitchRelayMessage(e.ChatMessage.Channel,e.ChatMessage.Message));
         }
         #endregion
         #region Functions or something rename

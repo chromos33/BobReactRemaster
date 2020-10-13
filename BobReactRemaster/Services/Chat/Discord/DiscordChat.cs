@@ -8,6 +8,7 @@ using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
+using BobReactRemaster.Services.Chat.Twitch;
 using Discord.WebSocket;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,15 +21,15 @@ namespace BobReactRemaster.Services.Chat.Discord
         private DiscordSocketClient _client;
         private IMessageBus MessageBus;
         private readonly IServiceScopeFactory _scopeFactory;
-        private RelayRouter RelayRouter;
+        private RelayService _relayService;
 
-        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayRouter relayRouter)
+        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayService relayService)
         {
             InitClient();
             InitEvents();
             MessageBus = messageBus;
             _scopeFactory = scopeFactory;
-            RelayRouter = relayRouter;
+            _relayService = relayService;
             SubscribeToBusEvents();
         }
 
@@ -66,12 +67,12 @@ namespace BobReactRemaster.Services.Chat.Discord
                 try
                 {
                     var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
-                    RelayRouter.RelayMessage(new RelayMessage()
-                    {
-                        server = GuildName,
-                        channel = arg.Channel.Name,
-                        message = arg.Content
-                    });
+                    _relayService.RelayMessage(new DiscordRelayMessage(
+                    
+                        GuildName,
+                        arg.Channel.Name,
+                        arg.Content
+                    ));
                 }
                 catch (Exception e)
                 {

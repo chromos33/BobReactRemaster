@@ -79,8 +79,8 @@ namespace BobReactRemaster
             });
             services.AddSingleton<IMessageBus, MessageBus>();
             services.AddSingleton<IHostedService, DiscordChat>();
-            services.AddSingleton<IHostedService, TwitchRelay>();
-            services.AddSingleton<RelayRouter, RelayRouter>();
+            services.AddSingleton<IHostedService, TwitchChat>();
+            services.AddSingleton<RelayService, RelayService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

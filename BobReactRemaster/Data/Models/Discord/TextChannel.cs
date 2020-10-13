@@ -18,7 +18,7 @@ namespace BobReactRemaster.Data.Models.Discord
 
         public bool IsRelayChannel { get; set; }
 
-        public Guild Guild { get; set; }
+        public string Guild { get; set; }
 
         private TextChannel()
         {
