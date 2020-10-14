@@ -67,7 +67,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                 try
                 {
                     var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
-                    _relayService.RelayMessage(new DiscordRelayMessage(
+                    _relayService.RelayMessage(new RelayMessageFromDiscord(
                     
                         GuildName,
                         arg.Channel.Name,

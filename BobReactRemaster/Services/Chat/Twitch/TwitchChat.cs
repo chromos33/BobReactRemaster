@@ -21,6 +21,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
         private TwitchClient client;
         private readonly IServiceScopeFactory _scopeFactory;
         private RelayService _relayService;
+        public bool IsAuthed = false;
         #region Initialisation
         public TwitchChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayService relayService)
         {
@@ -28,23 +29,30 @@ namespace BobReactRemaster.Services.Chat.Twitch
             _scopeFactory = scopeFactory;
             _relayService = relayService;
             SubscribeToBusEvents();
-            client = new TwitchClient();
         }
 
         private void InitTwitchClient()
         {
-            
+            client = new TwitchClient();
             client.OnMessageReceived += OnMessageReceived;
             client.OnConnected += Connected;
             client.OnJoinedChannel += ChannelJoined;
             client.OnConnectionError += NotConnected;
             client.OnError += Errored;
             client.OnIncorrectLogin += LoginAuthFailed;
+            client.OnNoPermissionError += NoPermissionError;
+        }
+
+        private void NoPermissionError(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void LoginAuthFailed(object? sender, OnIncorrectLoginArgs e)
         {
             ConnectionChangeInProgress = false;
+            IsAuthed = false;
+            client.Disconnect();
         }
 
         private void Errored(object sender, OnErrorEventArgs e)
@@ -67,14 +75,15 @@ namespace BobReactRemaster.Services.Chat.Twitch
 
         private void ChannelJoined(object sender, OnJoinedChannelArgs e)
         {
+            client.SendMessage("chromos33","test");
             //TODO create/add channel that handles when to send messages
             //or Subscribe to MessageBus Event for Stream Started that handles creation of said channel object
         }
 
         private void Connected(object sender, OnConnectedArgs e)
         {
-            Console.WriteLine("Connected");
             ConnectionChangeInProgress = false;
+            IsAuthed = true;
             client.JoinChannel("chromos33");
         }
 
@@ -107,7 +116,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
 
         private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            _relayService.RelayMessage(new TwitchRelayMessage(e.ChatMessage.Channel,e.ChatMessage.Message));
+            _relayService.RelayMessage(new RelayMessageFromTwitch(e.ChatMessage.Channel,e.ChatMessage.Message));
         }
         #endregion
         #region Functions or something rename
@@ -131,7 +140,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             while (!stoppingToken.IsCancellationRequested)
             {
                 //Reconnect on Disconnect
-                if (!client.IsConnected && !ConnectionChangeInProgress)
+                if (!IsAuthed && !ConnectionChangeInProgress)
                 {
                     InitTwitchClient();
                     Connect();
