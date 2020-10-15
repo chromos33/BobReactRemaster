@@ -67,11 +67,12 @@ namespace BobReactRemaster.Services.Chat.Discord
                 try
                 {
                     var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
+                    string MessageWithUserName = $"{arg.Author.Username}:{arg.Content}";
                     _relayService.RelayMessage(new RelayMessageFromDiscord(
                     
                         GuildName,
                         arg.Channel.Name,
-                        arg.Content
+                        MessageWithUserName
                     ));
                 }
                 catch (Exception e)

@@ -10,8 +10,10 @@ using BobReactRemaster.EventBus.MessageDataTypes;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
+using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Events;
+using Timer = System.Timers.Timer;
 
 namespace BobReactRemaster.Services.Chat.Twitch
 {
@@ -22,6 +24,8 @@ namespace BobReactRemaster.Services.Chat.Twitch
         private readonly IServiceScopeFactory _scopeFactory;
         private RelayService _relayService;
         public bool IsAuthed = false;
+        private List<TwitchMessageQueue> Queues = new List<TwitchMessageQueue>();
+        private const int BurstLimit = 4;
         #region Initialisation
         public TwitchChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayService relayService)
         {
@@ -37,6 +41,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             client.OnMessageReceived += OnMessageReceived;
             client.OnConnected += Connected;
             client.OnJoinedChannel += ChannelJoined;
+            client.OnLeftChannel += ChannelLeft;
             client.OnConnectionError += NotConnected;
             client.OnError += Errored;
             client.OnIncorrectLogin += LoginAuthFailed;
@@ -75,19 +80,38 @@ namespace BobReactRemaster.Services.Chat.Twitch
 
         private void ChannelJoined(object sender, OnJoinedChannelArgs e)
         {
-            client.SendMessage("chromos33","test");
-            //TODO create/add channel that handles when to send messages
-            //or Subscribe to MessageBus Event for Stream Started that handles creation of said channel object
+            if (!MessageQueueExists(e.Channel))
+            {
+                Queues.Add(new TwitchMessageQueue(e.Channel,false,TimeSpan.FromMilliseconds(200)));
+            }
+            client.SendMessage(e.Channel,"Relay enabled");
+        }
+        private void ChannelLeft(object? sender, OnLeftChannelArgs e)
+        {
+            if (MessageQueueExists(e.Channel))
+            {
+                var tmp = Queues.FirstOrDefault(x => x.ChannelName.ToLower() == e.Channel.ToLower());
+                if (tmp != null)
+                {
+                    Queues.Remove(tmp);
+                }
+            }
+        }
+
+        private bool MessageQueueExists(string channelname)
+        {
+            return Queues.FirstOrDefault(x => String.Equals(x.ChannelName, channelname, StringComparison.CurrentCultureIgnoreCase)) != null;
         }
 
         private void Connected(object sender, OnConnectedArgs e)
         {
             ConnectionChangeInProgress = false;
             IsAuthed = true;
-            client.JoinChannel("chromos33");
         }
 
         private bool ConnectionChangeInProgress;
+        private Timer _MessageTimer;
+
         private void Connect()
         {
             if (!ConnectionChangeInProgress)
@@ -105,24 +129,36 @@ namespace BobReactRemaster.Services.Chat.Twitch
         private void SubscribeToBusEvents()
         {
             MessageBus.RegisterToEvent<TwitchRelayMessageData>(RelayMessageReceived);
+            MessageBus.RegisterToEvent<TwitchRelayPulseMessageData>(HandleRelayPulse);
+            MessageBus.RegisterToEvent<TwitchStreamStopMessageData>(HandleRelayStop);
         }
+
         #endregion
         #region Events
         private void RelayMessageReceived(TwitchRelayMessageData obj)
         {
-            //TODO Replace with MessageQueue like classic
-            client.SendMessage(obj.StreamName,obj.Message);
+            Queues.FirstOrDefault(x => String.Equals(x.ChannelName, obj.StreamName, StringComparison.CurrentCultureIgnoreCase))
+                ?.AddMessage(obj.Message);
         }
 
         private void OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            _relayService.RelayMessage(new RelayMessageFromTwitch(e.ChatMessage.Channel,e.ChatMessage.Message));
+            HandleQueueModeratorStatus(e);
+            string MessageWithUserName = $"{e.ChatMessage.Username}: {e.ChatMessage.Message}";
+            _relayService.RelayMessage(new RelayMessageFromTwitch(e.ChatMessage.Channel,MessageWithUserName));
+        }
+
+        private void HandleQueueModeratorStatus(OnMessageReceivedArgs e)
+        {
+            if (e.ChatMessage.IsMe && e.ChatMessage.IsModerator)
+            {
+                Queues.FirstOrDefault(x => String.Equals(x.ChannelName, e.ChatMessage.Channel, StringComparison.CurrentCultureIgnoreCase))?.EnableModeratorMode();
+            }
         }
         #endregion
         #region Functions or something rename
         private bool SendMessage(string channelName, string message)
         {
-            //Try catch here in case
             try
             {
                 client.SendMessage(client.JoinedChannels.Where(x => x.Channel.ToLower() == channelName.ToLower()).First(), message);
@@ -135,8 +171,12 @@ namespace BobReactRemaster.Services.Chat.Twitch
         }
         #endregion
 
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _MessageTimer = new System.Timers.Timer(50);
+            _MessageTimer.Elapsed += (sender, args) => MessageClock();
+            _MessageTimer.Start();
             while (!stoppingToken.IsCancellationRequested)
             {
                 //Reconnect on Disconnect
@@ -146,6 +186,70 @@ namespace BobReactRemaster.Services.Chat.Twitch
                     Connect();
                 }
                 await Task.Delay(5000, stoppingToken);
+            }
+        }
+        private void HandleRelayStop(TwitchStreamStopMessageData obj)
+        {
+            if (IsAuthed && client.IsConnected)
+            {
+                SendMessage(obj.StreamName, "Relay disabled");
+                client.LeaveChannel(obj.StreamName);
+            }
+        }
+        private void HandleRelayPulse(TwitchRelayPulseMessageData obj)
+        {
+            if (IsAuthed && client.IsConnected)
+            {
+                client.JoinChannel(obj.StreamName);
+            }
+        }
+
+        private bool MessagesInProgress = false;
+        private async void MessageClock()
+        {
+            //Do not need to wait as Moderator has less stringent limits
+            handleModeratorQueues();
+            if (!MessagesInProgress)
+            {
+                MessagesInProgress = true;
+                
+                await handleNormalQueues();
+                MessagesInProgress = false;
+            }
+            
+
+        }
+
+        private async Task handleNormalQueues()
+        {
+            int burstcount = 0;
+            foreach (TwitchMessageQueue NormalQueues in Queues.Where(x => !x.isModerator))
+            {
+                var nextMessage = NormalQueues.NextQueuedMessage();
+                if (nextMessage != null)
+                {
+                    SendMessage(NormalQueues.ChannelName, nextMessage);
+                }
+                burstcount++;
+                if (BurstLimit == burstcount)
+                {
+                    await Task.Delay(2000);
+                    burstcount = 0;
+                }
+                
+            }
+        }
+
+        private void handleModeratorQueues()
+        {
+            foreach (TwitchMessageQueue ModeratorQueue in Queues.Where(x => x.isModerator))
+            {
+                var nextMessage = ModeratorQueue.NextQueuedMessage();
+                if (nextMessage != null)
+                {
+                    SendMessage(ModeratorQueue.ChannelName, nextMessage);
+                }
+                
             }
         }
     }
