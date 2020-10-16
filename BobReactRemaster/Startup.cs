@@ -16,6 +16,7 @@ using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.Services.Chat;
 using BobReactRemaster.Services.Chat.Discord;
 using BobReactRemaster.Services.Chat.Twitch;
+using BobReactRemaster.Services.Stream;
 using IdentityServer4.Stores.Default;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -80,6 +81,7 @@ namespace BobReactRemaster
             services.AddSingleton<IMessageBus, MessageBus>();
             services.AddSingleton<IHostedService, DiscordChat>();
             services.AddSingleton<IHostedService, TwitchChat>();
+            services.AddSingleton<IHostedService, StreamCheckerService>();
             services.AddSingleton<RelayService, RelayService>();
         }
 

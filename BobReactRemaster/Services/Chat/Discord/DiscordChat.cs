@@ -60,7 +60,7 @@ namespace BobReactRemaster.Services.Chat.Discord
             _client.MessageReceived += MessageReceived;
         }
 
-        private async Task MessageReceived(SocketMessage arg)
+        private Task MessageReceived(SocketMessage arg)
         {
             if (isMessage(arg))
             {
@@ -82,6 +82,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                 }
                 
             }
+            return Task.CompletedTask;
         }
 
         private bool isMessage(SocketMessage arg)

@@ -43,27 +43,17 @@ namespace BobReactRemaster.Services.Chat.Twitch
             client.OnJoinedChannel += ChannelJoined;
             client.OnLeftChannel += ChannelLeft;
             client.OnConnectionError += NotConnected;
-            client.OnError += Errored;
             client.OnIncorrectLogin += LoginAuthFailed;
-            client.OnNoPermissionError += NoPermissionError;
         }
 
-        private void NoPermissionError(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
-        private void LoginAuthFailed(object? sender, OnIncorrectLoginArgs e)
+        private void LoginAuthFailed(object sender, OnIncorrectLoginArgs e)
         {
             ConnectionChangeInProgress = false;
             IsAuthed = false;
             client.Disconnect();
         }
 
-        private void Errored(object sender, OnErrorEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         private void NotConnected(object sender, OnConnectionErrorArgs e)
         {
@@ -86,7 +76,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             }
             client.SendMessage(e.Channel,"Relay enabled");
         }
-        private void ChannelLeft(object? sender, OnLeftChannelArgs e)
+        private void ChannelLeft(object sender, OnLeftChannelArgs e)
         {
             if (MessageQueueExists(e.Channel))
             {
