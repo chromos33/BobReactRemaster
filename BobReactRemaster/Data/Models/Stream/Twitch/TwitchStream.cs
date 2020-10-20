@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.JSONModels.Twitch;
 
 namespace BobReactRemaster.Data.Models.Stream
 {
@@ -32,6 +33,11 @@ namespace BobReactRemaster.Data.Models.Stream
             this.StreamName = StreamName;
             Subscriptions = new List<StreamSubscription>();
             State = StreamState.Stopped;
+        }
+
+        public TwitchStreamListData GetStreamListData()
+        {
+            return new TwitchStreamListData(){ID = Id,Name = StreamName,StreamState = State};
         }
 
         public List<StreamSubscription> GetStreamSubscriptions()

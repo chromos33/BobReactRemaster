@@ -5,8 +5,20 @@
     display:inline-block;
     border-radius:3px;
 }
+.tab_card
+{
+    background:#272c2e;
+    display:inline-block;
+    border-radius:3px;
+}
 .card input[type="submit"]
 {
     background:black !important;
     color:#BAC6D1;
+}
+.card_top
+{
+    padding:10px;
+    position: relative;
+    border-bottom:1px solid #BAC6D1;
 }

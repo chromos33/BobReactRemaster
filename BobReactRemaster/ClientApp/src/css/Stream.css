@@ -1,0 +1,11 @@
+.addStreamBtn
+{
+    font-size:26px;
+    margin-left:20px;
+    color:#BAC6D1;
+    cursor:pointer;
+}
+.addStreamBtn:hover
+{
+    color:#485358;
+}
