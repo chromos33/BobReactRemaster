@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusSquare  } from '@fortawesome/free-solid-svg-icons';
 import TwitchStream from './Stream';
 
-export function TwitchStreamList(){
+export function TwitchStreamSetup(){
     const [init,setInit] = useState(false);
     const [Streams,setStreams] = useState(null);
 
@@ -31,6 +31,9 @@ export function TwitchStreamList(){
         });
         setInit(true);
     };
+    const switchSetupView = (e) => {
+        console.log(e);
+    }
     if(!init)
     {
         loadStreamsFromServer();
@@ -38,7 +41,7 @@ export function TwitchStreamList(){
     if(Streams != null)
     {
         var StreamsList = Streams.map((stream) => {
-            return (<TwitchStream key={stream.id} StreamID={stream.id} StreamName={stream.name} StreamState={stream.streamState}/>);
+            return (<TwitchStream handleSetupView={switchSetupView} key={stream.id} StreamID={stream.id} StreamName={stream.name} StreamState={stream.streamState}/>);
         })
         return (<div className="tab_card">
             <div className="card_top">
@@ -64,4 +67,4 @@ export function TwitchStreamList(){
 
     
 }
-export default TwitchStreamList;
+export default TwitchStreamSetup;

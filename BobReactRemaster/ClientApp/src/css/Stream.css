@@ -9,3 +9,67 @@
 {
     color:#485358;
 }
+.statedisplay
+{
+    height:10px;
+    width:10px;
+    border-radius: 9999px;
+    display:block;
+    position: absolute;
+    top:50%;
+    right:50px;
+    transform:translateY(-50%);
+}
+.bg_green
+{
+    background-color: green;
+}
+.bg_red
+{
+    background-color: red;
+}
+.stream{
+    color:#BAC6D1;
+    position:relative;
+    cursor:pointer;
+}
+.stream svg{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+}
+.stream_header
+{
+    padding:5px;
+}
+.streamNavi
+{
+    transition:0.5s ease all;
+    overflow: hidden;
+    padding-left:10px;
+    padding-right:10px;
+    background:black;
+}
+.streamNavi .heightgiver
+{
+    padding:10px 0 ;
+}
+.streamNavi_Link
+{
+    display:block;
+    background:#485358;
+    border-radius:5px;
+    margin-bottom:10px;
+    text-align: center;
+    font-size:20px;
+    cursor:pointer;
+}
+.streamNavi_Link:hover{
+    background: #BAC6D1;
+    color:black;
+}
+.streamNavi_Link:last-child
+{
+    margin-bottom:0;
+}
