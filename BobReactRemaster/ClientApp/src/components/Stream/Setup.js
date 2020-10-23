@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { getCookie } from "../../helper/cookie";
-import TwitchStreamSetup from './TwitchStreamList';
+import TwitchStreamSetup from './Twitch/TwitchStreamList';
 
 export function StreamSetup()
 {
