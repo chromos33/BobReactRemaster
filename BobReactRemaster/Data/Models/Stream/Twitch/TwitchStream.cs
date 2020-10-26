@@ -25,7 +25,7 @@ namespace BobReactRemaster.Data.Models.Stream
 
         public TextChannel RelayChannel { get; private set; }
 
-        public string StreamName { get; private set; }
+        public string StreamName { get; set; }
         public string StreamID { get; set; }
 
         public TwitchStream(string StreamName)

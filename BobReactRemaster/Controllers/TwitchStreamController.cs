@@ -37,5 +37,20 @@ namespace BobReactRemaster.Controllers
 
             return Ok(response);
         }
+        [HttpPost]
+        [Route("SaveTwitchGeneral")]
+        [Authorize(Policy = Policies.Admin)]
+        public IActionResult SaveTwitchGeneral([FromBody] TwitchGeneralData data)
+        {
+            var stream = _context.TwitchStreams.FirstOrDefault(x => x.Id == data.StreamID);
+            if (!String.Equals(stream.StreamName, data.StreamName, StringComparison.CurrentCultureIgnoreCase))
+            {
+                stream.StreamName = data.StreamName;
+                _context.SaveChanges();
+            }
+            return Ok();
+        }
     }
+
+    
 }

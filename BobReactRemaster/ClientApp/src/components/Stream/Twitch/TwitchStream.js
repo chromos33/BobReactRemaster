@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilRuler  } from '@fortawesome/free-solid-svg-icons';
 import Twitchmodal from './TwitchModal';
 export function TwitchStream(props){
-    const [isOpen,toggleOpen] = useState(false);
-    const [streamNaviHeight,setNaviHeight] = useState(0);
     const [modalOpen,setmodalOpen] = useState(false);
 
     const OpenEdit = () => {
@@ -14,7 +12,7 @@ export function TwitchStream(props){
     var modal = null;
     if(modalOpen)
     {
-        modal = <Twitchmodal/>
+        modal = <Twitchmodal CloseModal={() => setmodalOpen(false)} StreamID={props.StreamID} StreamName={props.StreamName} />
     }
 
     var StateClass = "statedisplay bg_red";
@@ -27,7 +25,6 @@ export function TwitchStream(props){
             <div className="relative stream_header">
                 <span>{props.StreamName}</span>
                 <span className={StateClass}></span>
-                {isOpen}
                 <FontAwesomeIcon icon={faPencilRuler} onClick={OpenEdit}/>
             </div>
             {modal}
