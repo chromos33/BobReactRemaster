@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.JSONModels.Twitch;
 using Microsoft.AspNetCore.Authorization;
@@ -49,6 +50,38 @@ namespace BobReactRemaster.Controllers
                 _context.SaveChanges();
             }
             return Ok();
+        }
+        [HttpPost]
+        [Route("CreateTwitchStream")]
+        [Authorize(Policy = Policies.Admin)]
+        public IActionResult CreateTwitchStream([FromBody] TwitchGeneralData data)
+        {
+            var stream = _context.TwitchStreams.FirstOrDefault(x => String.Equals(x.StreamName, data.StreamName, StringComparison.CurrentCultureIgnoreCase));
+            if (stream == null)
+            {
+                stream = new TwitchStream(data.StreamName);
+                _context.TwitchStreams.Add(stream);
+                _context.SaveChanges();
+            }
+            
+            return Ok(new { StreamID = stream.Id});
+        }
+        [HttpPost]
+        [Route("DeleteTwitchStream")]
+        [Authorize(Policy = Policies.Admin)]
+        public IActionResult DeleteTwitchStream([FromBody] TwitchGeneralData data)
+        {
+            var stream = _context.TwitchStreams.FirstOrDefault(x => x.Id == data.StreamID);
+            if (stream != null)
+            {
+                _context.TwitchStreams.Remove(stream);
+                _context.SaveChanges();
+                return Ok();
+            }
+
+            return NotFound();
+
+
         }
     }
 

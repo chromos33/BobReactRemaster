@@ -11,12 +11,15 @@ export function TwitchStreamSetup(){
     /* States */
     const [init,setInit] = useState(false);
     const [Streams,setStreams] = useState(null);
-    const [StreamID,setStreamID] = useState(0);
+    const [renderhack,setrenderhack] = useState(true);
 
 
     /* Event Handler */
     const handleAddStream = () => {
-        setStreamID(0);
+        var tmp = Streams;
+        tmp.push({id:0,name:"Name",streamState: 0});
+        setStreams(tmp)
+        setrenderhack(!renderhack);
     }
     const switchSetupView = (e) => {
     }
@@ -37,6 +40,20 @@ export function TwitchStreamSetup(){
         });
         setInit(true);
     };
+    const handleStreamDelete = (e) =>
+    {
+        var tmpArray = Streams;
+        var tmpIndex = null;
+        tmpArray.forEach((stream,index) => {
+            if(stream.id === e)
+            {
+                tmpIndex = index;
+            }
+        });
+        tmpArray.splice(tmpIndex,1);
+        setStreams(tmpArray);
+        setrenderhack(!renderhack);
+    }
     
     if(!init)
     {
@@ -45,7 +62,7 @@ export function TwitchStreamSetup(){
     if(Streams != null)
     {
         var Body = Streams.map((stream) => {
-            return (<TwitchStream handleSetupView={switchSetupView} key={stream.id} StreamID={stream.id} StreamName={stream.name} StreamState={stream.streamState}/>);
+            return (<TwitchStream StreamDelete={handleStreamDelete} handleSetupView={switchSetupView} key={stream.id} StreamID={stream.id} StreamName={stream.name} StreamState={stream.streamState}/>);
         })
         
         return (<div className="tab_card">

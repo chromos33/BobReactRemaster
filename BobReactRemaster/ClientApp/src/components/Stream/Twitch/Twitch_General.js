@@ -21,15 +21,28 @@ export function Twitch_General(props){
                     'Authorization': 'Bearer ' + getCookie("Token"),
                 },
                 body: JSON.stringify(data)
+            }).then(response => {
+                if(response.ok)
+                {
+                    props.StreamNameUpdate(StreamName);
+                }
             });
         }
         else{
-            //Create Stream
-        }
-        
-
-
-        
+            fetch("/TwitchStream/CreateTwitchStream",{
+                method: "POST",
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getCookie("Token"),
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                return response.json();
+            }).then(json => {
+                props.StreamCreated(json.streamID);
+                props.StreamNameUpdate(StreamName);
+            });
+        }    
     };
 
     return (<div className="streamGeneral">

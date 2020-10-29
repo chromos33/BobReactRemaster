@@ -19,7 +19,7 @@ export function TwitchModal(props){
     switch(tab)
     {
         case Tabs.GENERAL:
-            Body = <Twitch_General StreamID={props.StreamID} StreamName={props.StreamName} />
+            Body = <Twitch_General StreamCreated={props.StreamCreated} StreamNameUpdate={props.StreamNameUpdate} StreamID={props.StreamID} StreamName={props.StreamName} />
             break;
         case Tabs.RELAY:
             Body = <Twitch_Relay StreamID={props.StreamID} StreamName={props.StreamName} />

@@ -17,7 +17,7 @@
     display:block;
     position: absolute;
     top:50%;
-    right:50px;
+    right:60px;
     transform:translateY(-50%);
 }
 .bg_green
@@ -32,11 +32,21 @@
     color:#BAC6D1;
     position:relative;
 }
-.stream svg{
+.stream svg:nth-child(3){
     position:absolute;
     right:10px;
     top:50%;
     transform:translateY(-50%);
+}
+.stream svg:nth-child(4){
+    position:absolute;
+    right:40px;
+    top:50%;
+    transform:translateY(-50%);
+}
+.stream svg:nth-child(4).active
+{
+    color:red;
 }
 .stream_header
 {
