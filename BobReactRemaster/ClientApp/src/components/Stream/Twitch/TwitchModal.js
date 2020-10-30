@@ -4,12 +4,14 @@ import '../../../css/Stream.css';
 import Twitch_General from "./Twitch_General";
 import Twitch_Relay from "./Twitch_Relay";
 import Twitch_Quotes from "./Twitch_Quotes";
+import Twitch_Auth from "./Twitch_Auth";
 import { Tab } from 'bootstrap';
 
 const Tabs = {
     GENERAL: "General",
     RELAY: "Relay",
-    QUOTES: "Quotes"
+    QUOTES: "Quotes",
+    AUTH: "Auth"
 }
 
 export function TwitchModal(props){
@@ -27,6 +29,9 @@ export function TwitchModal(props){
         case Tabs.QUOTES:
             Body = <Twitch_Quotes StreamID={props.StreamID} StreamName={props.StreamName} />
             break;
+        case Tabs.AUTH:
+            Body = <Twitch_Auth StreamID={props.StreamID} StreamName={props.StreamName} />
+            break;
         default:
             Body = null;
             break;
@@ -36,6 +41,9 @@ export function TwitchModal(props){
             <div className="TwitchModal">
                 <div className="ModalHeader">
                     <span onClick={() => setTab(Tabs.GENERAL)}>General</span>
+                    {props.StreamID > 0 && 
+                        <span onClick={() => setTab(Tabs.AUTH)}>API</span>
+                    }
                     {props.StreamID > 0 && 
                         <span onClick={() => setTab(Tabs.RELAY)}>Relay</span>
                     }

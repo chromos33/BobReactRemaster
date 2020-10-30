@@ -2,6 +2,7 @@
 using System;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.Data.Models.Stream;
+using BobReactRemaster.Data.Models.Stream.Twitch;
 
 namespace BobRemastered.Tests.Models.Streams
 {

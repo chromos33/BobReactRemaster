@@ -153,7 +153,8 @@
 {
     border-right:none;
 }
-.streamGeneral
+.streamGeneral,
+.streamAuth
 {
     padding:10px;
 }
@@ -171,4 +172,17 @@
     border:none !important;
     border-radius:5px;
     cursor:pointer;
+}
+
+.streamAuth input[type="submit"]
+{
+    background: #272c2e !important;
+    font-size: 16px !important;
+    line-height: 16px !important;
+    padding: 10px 20px !important;
+    cursor: pointer;
+    display: inline-block;
+    border:none;
+    border-radius:5px;
+    color:#BAC6D1;
 }

@@ -3,8 +3,10 @@ using BobReactRemaster.Data.Models.Stream.Required;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.JSONModels.Twitch;
 
 namespace BobReactRemaster.Data.Models.Stream
@@ -27,12 +29,25 @@ namespace BobReactRemaster.Data.Models.Stream
 
         public string StreamName { get; set; }
         public string StreamID { get; set; }
+        public int? APICredentialId { get; set; }
+        public TwitchCredential APICredential { get; private set; }
 
         public TwitchStream(string StreamName)
         {
             this.StreamName = StreamName;
             Subscriptions = new List<StreamSubscription>();
             State = StreamState.Stopped;
+        }
+
+        public void SetTwitchCredential(TwitchCredential cred)
+        {
+            if (cred.isMainAccount)
+            {
+                throw new InvalidDataException("Credential cannot be the MainAccount use TwitchCredential.StreamClone()");
+            }
+
+            APICredential = cred;
+
         }
 
         public TwitchStreamListData GetStreamListData()

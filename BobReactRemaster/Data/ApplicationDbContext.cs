@@ -40,6 +40,11 @@ namespace BobReactRemaster.Data
                 .WithOne(ss => (TwitchStream) ss.LiveStream)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<TwitchStream>()
+                .HasOne(s => s.APICredential)
+                .WithOne(c => c.Stream)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

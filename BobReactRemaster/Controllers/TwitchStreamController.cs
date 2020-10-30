@@ -27,7 +27,7 @@ namespace BobReactRemaster.Controllers
         }
         [HttpPost]
         [Route("GetTwitchStreams")]
-        [Authorize(Policy = Policies.Admin)]
+        [Authorize(Policy = Policies.User)]
         public IActionResult GetTwitchStreams()
         {
             List<TwitchStreamListData> response = new List<TwitchStreamListData>();
@@ -40,7 +40,7 @@ namespace BobReactRemaster.Controllers
         }
         [HttpPost]
         [Route("SaveTwitchGeneral")]
-        [Authorize(Policy = Policies.Admin)]
+        [Authorize(Policy = Policies.User)]
         public IActionResult SaveTwitchGeneral([FromBody] TwitchGeneralData data)
         {
             var stream = _context.TwitchStreams.FirstOrDefault(x => x.Id == data.StreamID);
@@ -53,7 +53,7 @@ namespace BobReactRemaster.Controllers
         }
         [HttpPost]
         [Route("CreateTwitchStream")]
-        [Authorize(Policy = Policies.Admin)]
+        [Authorize(Policy = Policies.User)]
         public IActionResult CreateTwitchStream([FromBody] TwitchGeneralData data)
         {
             var stream = _context.TwitchStreams.FirstOrDefault(x => String.Equals(x.StreamName, data.StreamName, StringComparison.CurrentCultureIgnoreCase));
@@ -68,7 +68,7 @@ namespace BobReactRemaster.Controllers
         }
         [HttpPost]
         [Route("DeleteTwitchStream")]
-        [Authorize(Policy = Policies.Admin)]
+        [Authorize(Policy = Policies.User)]
         public IActionResult DeleteTwitchStream([FromBody] TwitchGeneralData data)
         {
             var stream = _context.TwitchStreams.FirstOrDefault(x => x.Id == data.StreamID);

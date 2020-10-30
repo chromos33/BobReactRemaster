@@ -15,9 +15,19 @@ namespace BobReactRemaster.Tests.Models.Streams
         {
             TwitchCredential cred = new TwitchCredential();
             cred.Token = "Test";
+            cred.ChatUserName = "bobreacttest";
             ConnectionCredentials testcred = cred.GetRelayConnectionCredentials();
             Assert.AreEqual("bobreacttest",testcred.TwitchUsername);
             Assert.AreEqual("oauth:Test",testcred.TwitchOAuth);
+        }
+        [Test]
+        public void StreamClone_ValidObjectState_CorrectClonedObject()
+        {
+            TwitchCredential cred = new TwitchCredential();
+            cred.Token = "Test";
+            cred.isMainAccount = true;
+            var clone = cred.StreamClone();
+            Assert.AreNotSame(clone,cred);
         }
     }
 }

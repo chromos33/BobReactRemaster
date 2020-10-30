@@ -65,7 +65,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Twitch
             queue.AddMessage(testmessage);
             queue.AddMessage(testmessage2);
             Assert.AreEqual(testmessage, queue.NextQueuedMessage());
-            Thread.Sleep(LimiterTime - 1);
+            Thread.Sleep(LimiterTime - 10);
             Assert.IsNull(queue.NextQueuedMessage());
         }
     }

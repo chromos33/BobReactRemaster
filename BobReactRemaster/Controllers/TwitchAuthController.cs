@@ -11,6 +11,7 @@ using BobReactRemaster.JSONModels.Twitch;
 using Discord;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -61,6 +62,34 @@ namespace BobReactRemaster.Controllers
             _context.SaveChanges();
 
             return Ok(new {Link= link});
+        }
+        [HttpPost]
+        [Route("TwitchOAuthStartUser")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult TwitchOAuthStartUser([FromBody] TwitchStreamOauthData Data)
+        {
+            var Stream = _context.TwitchStreams.FirstOrDefault(x => String.Equals(x.StreamName, Data.StreamName, StringComparison.CurrentCultureIgnoreCase));
+
+            if (Stream != null)
+            {
+                if (Stream.APICredential == null)
+                {
+                    var MainCredential = _context.TwitchCredentials.FirstOrDefault(x => x.isMainAccount);
+                    if (MainCredential != null)
+                    {
+                        Stream.SetTwitchCredential(MainCredential.StreamClone());
+                        _context.SaveChanges();
+                    }
+                }
+                if (Stream.APICredential != null)
+                {
+                    string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
+                    string link = Stream.APICredential.getTwitchAuthLink(Data, WebserverAddress);
+                    _context.SaveChanges();
+                    return Ok(new {Link = link});
+                }
+            }
+            return NotFound();
         }
 
         [HttpGet]

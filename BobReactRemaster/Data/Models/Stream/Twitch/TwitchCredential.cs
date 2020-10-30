@@ -19,6 +19,7 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
         public string validationKey { get; set; }
         public string RefreshToken { get; set; }
         public DateTime ExpireDate { get; set; }
+        public TwitchStream Stream { get; set; }
 
         //May only be Changed in Setup/Admin
         public bool isMainAccount { get; set; }
@@ -66,8 +67,17 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
         
         public ConnectionCredentials GetRelayConnectionCredentials()
         {
-            //TODO add Twitchusername to setup
-            return new ConnectionCredentials("bobreacttest","oauth:" + Token);
+            //TODO add Twitchusername to setup 
+            return new ConnectionCredentials(ChatUserName,"oauth:" + Token);
+        }
+
+        public TwitchCredential StreamClone()
+        {
+            TwitchCredential clone = new TwitchCredential();
+            clone.isMainAccount = false;
+            clone.Secret = Secret;
+            clone.ClientID = ClientID;
+            return clone;
         }
     }
 }
