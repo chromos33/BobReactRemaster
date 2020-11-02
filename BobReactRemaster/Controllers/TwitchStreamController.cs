@@ -7,9 +7,11 @@ using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.JSONModels.Twitch;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TwitchLib.Api;
 
 namespace BobReactRemaster.Controllers
 {
@@ -41,12 +43,22 @@ namespace BobReactRemaster.Controllers
         [HttpPost]
         [Route("SaveTwitchGeneral")]
         [Authorize(Policy = Policies.User)]
-        public IActionResult SaveTwitchGeneral([FromBody] TwitchGeneralData data)
+        public async Task<IActionResult> SaveTwitchGeneral([FromBody] TwitchGeneralData data)
         {
             var stream = _context.TwitchStreams.FirstOrDefault(x => x.Id == data.StreamID);
             if (!String.Equals(stream.StreamName, data.StreamName, StringComparison.CurrentCultureIgnoreCase))
             {
                 stream.StreamName = data.StreamName;
+                if (stream.StreamID.IsNullOrEmpty())
+                {
+                    stream.StreamID = await RequestTwitchClientID(stream.StreamName);
+                }
+                _context.SaveChanges();
+            }
+
+            if (stream.StreamID.IsNullOrEmpty())
+            {
+                stream.StreamID = await RequestTwitchClientID(stream.StreamName);
                 _context.SaveChanges();
             }
             return Ok();
@@ -54,17 +66,28 @@ namespace BobReactRemaster.Controllers
         [HttpPost]
         [Route("CreateTwitchStream")]
         [Authorize(Policy = Policies.User)]
-        public IActionResult CreateTwitchStream([FromBody] TwitchGeneralData data)
+        public async Task<IActionResult> CreateTwitchStream([FromBody] TwitchGeneralData data)
         {
             var stream = _context.TwitchStreams.FirstOrDefault(x => String.Equals(x.StreamName, data.StreamName, StringComparison.CurrentCultureIgnoreCase));
             if (stream == null)
             {
                 stream = new TwitchStream(data.StreamName);
+                stream.StreamID = await RequestTwitchClientID(stream.StreamName);
                 _context.TwitchStreams.Add(stream);
                 _context.SaveChanges();
             }
             
             return Ok(new { StreamID = stream.Id});
+        }
+
+        private async Task<string> RequestTwitchClientID(string StreamName)
+        {
+            var api = new TwitchAPI();
+            var cred = _context.TwitchCredentials.FirstOrDefault(x => x.isMainAccount);
+            api.Settings.AccessToken = cred.Token;
+            api.Settings.ClientId = cred.ClientID;
+            var result = await api.Helix.Users.GetUsersAsync(logins: new List<string>() {StreamName});
+            return result.Users.FirstOrDefault()?.Id;
         }
         [HttpPost]
         [Route("DeleteTwitchStream")]

@@ -78,7 +78,7 @@ namespace BobReactRemaster.Data.Models.Stream
 
         public void StopStream()
         {
-            Started = DateTime.Now;
+            Stopped = DateTime.Now;
             State = StreamState.Stopped;
         }
 

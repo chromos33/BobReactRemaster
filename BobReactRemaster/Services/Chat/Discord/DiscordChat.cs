@@ -36,6 +36,12 @@ namespace BobReactRemaster.Services.Chat.Discord
         private void SubscribeToBusEvents()
         {
             MessageBus.RegisterToEvent<DiscordRelayMessageData>(RelayMessageReceived);
+            MessageBus.RegisterToEvent<TwitchStreamStartMessageData>(StreamStarted);
+        }
+
+        private void StreamStarted(TwitchStreamStartMessageData obj)
+        {
+            _client.Guilds.FirstOrDefault()?.TextChannels.FirstOrDefault()?.SendMessageAsync(obj.Streamname);
         }
 
         private void RelayMessageReceived(DiscordRelayMessageData obj)

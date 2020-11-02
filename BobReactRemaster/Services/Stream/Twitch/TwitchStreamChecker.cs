@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.EventBus.MessageDataTypes;
+using IdentityServer4.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Api;
 
@@ -51,18 +52,54 @@ namespace BobReactRemaster.Services.Stream.Twitch
                     if (!Inited)
                     {
                         InitTwitchAPI();
+                        Inited = true;
                     }
-                    Inited = true;
+                    
+                    var scope = scopefactory.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    var StreamIDs = context.TwitchStreams.AsQueryable().Where(x => x.StreamID != null && x.StreamID != "").Select(x => x.StreamID).ToList();
+                    var requestData = await api.Helix.Streams.GetStreamsAsync(userIds: StreamIDs);
+                    HandleStreamStateChange(requestData.Streams);
                 }
 #pragma warning disable 168
                 catch (Exception e)
 #pragma warning restore 168
                 {
-
+                    Console.WriteLine("test2");
                 }
 
                 inProgress = false;
             }
+        }
+
+        private void HandleStreamStateChange(TwitchLib.Api.Helix.Models.Streams.Stream[] requestDataStreams)
+        {
+            var scope = scopefactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var Streams = context.TwitchStreams.AsQueryable().Where(x => x.StreamID != null && x.StreamID != "");
+            foreach (TwitchStream stream in Streams)
+            {
+                var requestData = requestDataStreams.FirstOrDefault(x => x.UserId == stream.StreamID);
+                if (requestData != null)
+                {
+                    if (stream.State == StreamState.Stopped)
+                    {
+                        stream.StartStream();
+                        bus.Publish(new TwitchStreamStartMessageData() { Title = requestData.Title, Streamname = requestData.UserName });
+                    }
+                    //TODO keep this split as we will need to handle Relays here for non Static relay Channels
+                }
+                else
+                {
+                    if (stream.State == StreamState.Running)
+                    {
+                        stream.StopStream();
+                        bus.Publish(new TwitchStreamStopMessageData(){StreamName = requestData.UserName});
+                    }
+                }
+            }
+
+            context.SaveChanges();
         }
     }
 }
