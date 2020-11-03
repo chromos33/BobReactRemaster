@@ -13,6 +13,7 @@ using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services;
 using BobReactRemaster.Services.Chat;
 using BobReactRemaster.Services.Chat.Discord;
 using BobReactRemaster.Services.Chat.Twitch;
@@ -46,7 +47,8 @@ namespace BobReactRemaster
                      mysqlOptions.ServerVersion(new Version(10, 3, 8), ServerType.MariaDb);
                  })
              );
-            services.AddResponseCompression();
+            //services.AddResponseCompression();
+            //services.AddResponseCaching();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -71,7 +73,7 @@ namespace BobReactRemaster
                 config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
                 config.AddPolicy(Policies.User, Policies.UserPolicy());
             });
-            services.AddControllersWithViews();
+            //services.AddControllersWithViews();
             services.AddRazorPages();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -79,6 +81,7 @@ namespace BobReactRemaster
                 configuration.RootPath = "ClientApp/build";
             });
             services.AddSingleton<IMessageBus, MessageBus>();
+            services.AddSingleton<UserRegistrationService, UserRegistrationService>();
             services.AddSingleton<IHostedService, DiscordChat>();
             services.AddSingleton<IHostedService, TwitchChat>();
             services.AddSingleton<IHostedService, StreamCheckerService>();
@@ -110,7 +113,6 @@ namespace BobReactRemaster
                 };
                 app.UseStaticFiles(StaticFileOptions);
                 app.UseSpaStaticFiles(StaticFileOptions);
-                app.UseResponseCompression();
             }
 
             app.UseHttpsRedirection();
@@ -120,6 +122,7 @@ namespace BobReactRemaster
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

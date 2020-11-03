@@ -10,9 +10,7 @@ using BobReactRemaster.EventBus.MessageDataTypes;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
-using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
-using TwitchLib.Communication.Events;
 using Timer = System.Timers.Timer;
 
 namespace BobReactRemaster.Services.Chat.Twitch

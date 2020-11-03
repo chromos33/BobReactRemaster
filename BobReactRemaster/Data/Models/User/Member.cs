@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace BobReactRemaster.Data.Models.User
 {
@@ -27,6 +29,39 @@ namespace BobReactRemaster.Data.Models.User
             PasswordHash = encryptPassword(password);
             UserRole = userRole.ToString();
             StreamSubscriptions = new List<StreamSubscription>();
+        }
+
+        public Member(string username, UserRole userRole = User.UserRole.User)
+        {
+            UserName = username;
+            UserRole = userRole.ToString();
+            StreamSubscriptions = new List<StreamSubscription>();
+        }
+
+        public string ResetPassword()
+        {
+            string password = GeneratePassword();
+            PasswordHash = encryptPassword(password);
+            return password;
+        }
+
+        public string GeneratePassword()
+        {
+            byte[] salt = new byte[128 / 8];
+            byte[] pwd = new byte[64];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+                rng.GetBytes(pwd);
+            }
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: pwd.ToString(),
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA1,
+                    iterationCount: 10000,
+                    numBytesRequested: 256 / 8));
+
+            return hashed;
         }
         public void SetPassword(string password)
         {

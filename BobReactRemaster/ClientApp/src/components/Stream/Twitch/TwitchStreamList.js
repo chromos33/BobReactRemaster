@@ -38,7 +38,6 @@ export function TwitchStreamSetup(){
             setStreams(json);
         }).catch((error) => {
         });
-        setInit(true);
     };
     const handleStreamDelete = (e) =>
     {
@@ -58,6 +57,7 @@ export function TwitchStreamSetup(){
     if(!init)
     {
         loadStreamsFromServer();
+        setInit(true);
     }
     if(Streams != null)
     {

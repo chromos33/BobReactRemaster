@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream;
-using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.JSONModels.Twitch;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
