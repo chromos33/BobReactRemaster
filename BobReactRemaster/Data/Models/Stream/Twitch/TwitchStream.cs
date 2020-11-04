@@ -11,23 +11,8 @@ using BobReactRemaster.JSONModels.Twitch;
 
 namespace BobReactRemaster.Data.Models.Stream
 {
-    public class TwitchStream : iLiveStream, IRelayableStream
+    public class TwitchStream : LiveStream, IRelayableStream
     {
-        public int Id { get; set; }
-
-        public List<StreamSubscription> Subscriptions { get; private set; }
-
-        public string URL { get; private set; }
-
-        public DateTime Started { get; private set; }
-
-        public DateTime Stopped { get; private set; }
-
-        public StreamState State { get; private set; }
-
-        public TextChannel RelayChannel { get; private set; }
-
-        public string StreamName { get; set; }
         public string StreamID { get; set; }
         public int? APICredentialId { get; set; }
         public TwitchCredential APICredential { get; private set; }
@@ -60,23 +45,23 @@ namespace BobReactRemaster.Data.Models.Stream
             return Subscriptions;
         }
 
-        public void SetURL(string URL)
+        public override void SetURL(string url)
         {
-            this.URL = URL;
+            URL = url;
         }
 
-        public void StartStream()
+        public override void StartStream()
         {
             State = StreamState.Running;
             SetStreamStarted(DateTime.Now);
         }
 
-        public void SetStreamStarted(DateTime date)
+        public override void SetStreamStarted(DateTime date)
         {
             Started = date;
         }
 
-        public void StopStream()
+        public override void StopStream()
         {
             Stopped = DateTime.Now;
             State = StreamState.Stopped;
@@ -85,31 +70,6 @@ namespace BobReactRemaster.Data.Models.Stream
         public void SetRelayChannel(TextChannel channel)
         {
             RelayChannel = channel;
-        }
-
-        List<StreamSubscription> iLiveStream.GetStreamSubscriptions()
-        {
-            throw new NotImplementedException();
-        }
-
-        void iLiveStream.SetURL(string URL)
-        {
-            throw new NotImplementedException();
-        }
-
-        void iLiveStream.StartStream()
-        {
-            throw new NotImplementedException();
-        }
-
-        void iLiveStream.SetStreamStarted(DateTime date)
-        {
-            throw new NotImplementedException();
-        }
-
-        void iLiveStream.StopStream()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace BobReactRemaster.Data.Models.Stream
     public class StreamSubscription
     {
         [Key] public int Id { get; set; }
-        public iLiveStream LiveStream { get; private set; }
+        public LiveStream LiveStream { get; private set; }
         public bool isSubscribed { get; private set; }
 
         public Member Member { get; set; }
@@ -19,7 +19,7 @@ namespace BobReactRemaster.Data.Models.Stream
         {
         }
 
-        public StreamSubscription(iLiveStream Stream, Member Member)
+        public StreamSubscription(LiveStream Stream, Member Member)
         {
             LiveStream = Stream;
             this.Member = Member;

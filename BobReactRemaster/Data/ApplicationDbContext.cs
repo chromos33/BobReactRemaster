@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.Data.Models.Stream;
+using BobReactRemaster.Data.Models.Stream.DLive;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.Data.Models.User;
 using IdentityServer4.EntityFramework.Options;

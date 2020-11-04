@@ -25,6 +25,13 @@ export function Navi(props)
             FirstLevel: true
         },
         {
+            ID:"Stream",
+            Title: "Stream",
+            Icon: ["fas","cogs"],
+            Link: "/Stream",
+            FirstLevel: true
+        },
+        {
             ID: "User",
             Title: "User",
             Icon: ["fas", "user"],

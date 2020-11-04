@@ -34,7 +34,6 @@ export function Login() {
             history.push("/Test");
         }
         else{
-            alert("error");
         }
     }
     return (

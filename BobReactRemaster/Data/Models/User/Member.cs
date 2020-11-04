@@ -82,7 +82,7 @@ namespace BobReactRemaster.Data.Models.User
         {
             return SubscriptionCount() > 0;
         }
-        public bool HasSubscription(iLiveStream stream)
+        public bool HasSubscription(LiveStream stream)
         {
             if(stream == null)
             {
@@ -93,7 +93,7 @@ namespace BobReactRemaster.Data.Models.User
 
 
 
-        public void AddStreamSubscription(iLiveStream stream)
+        public void AddStreamSubscription(LiveStream stream)
         {
             StreamSubscription newSub = new StreamSubscription(stream,this);
             StreamSubscriptions.Add(newSub);
@@ -104,7 +104,7 @@ namespace BobReactRemaster.Data.Models.User
             return StreamSubscriptions.Count();
         }
 
-        public bool? IsSubscribed(iLiveStream stream)
+        public bool? IsSubscribed(LiveStream stream)
         {
             if (stream == null)
             {
@@ -113,7 +113,7 @@ namespace BobReactRemaster.Data.Models.User
             return StreamSubscriptions.Where(x => x.LiveStream == stream && x.isSubscribed).Count() == 1;
         }
 
-        public void UnSubscribeStream(iLiveStream stream)
+        public void UnSubscribeStream(LiveStream stream)
         {
             if (stream == null)
             {
@@ -126,7 +126,7 @@ namespace BobReactRemaster.Data.Models.User
             StreamSubscriptions.Where(x => x.LiveStream == stream).FirstOrDefault().UnSubscribe();
 
         }
-        public void SubscribeStream(iLiveStream stream)
+        public void SubscribeStream(LiveStream stream)
         {
             if (stream == null)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.Services.Chat.GeneralClasses;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,9 +25,15 @@ namespace BobReactRemaster.Services
             {
                 Member newMember = new Member(nickname);
                 string Password = newMember.ResetPassword();
+                //cannot prevent OCP violation because other streams may be added that are in their own table
+                foreach (LiveStream substream in context.TwitchStreams)
+                {
+                    newMember.AddStreamSubscription(substream);
+                }
 
                 context.Members.Add(newMember);
                 context.SaveChanges();
+                //TODO: Add all streams as Subscriptions
                 return Password;
             }
             return null;
