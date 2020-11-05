@@ -87,14 +87,13 @@ namespace BobReactRemaster.Services.Stream.Twitch
                         stream.StartStream();
                         bus.Publish(new TwitchStreamStartMessageData() { Title = requestData.Title, Streamname = requestData.UserName });
                     }
-                    //TODO keep this split as we will need to handle Relays here for non Static relay Channels
                 }
                 else
                 {
                     if (stream.State == StreamState.Running)
                     {
                         stream.StopStream();
-                        bus.Publish(new TwitchStreamStopMessageData(){StreamName = requestData.UserName});
+                        bus.Publish(new TwitchStreamStopMessageData(){StreamName = stream.StreamName});
                     }
                 }
             }

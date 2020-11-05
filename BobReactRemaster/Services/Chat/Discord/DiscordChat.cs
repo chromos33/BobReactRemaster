@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Discord;
+using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using Discord.WebSocket;
@@ -18,9 +19,9 @@ namespace BobReactRemaster.Services.Chat.Discord
         private DiscordSocketClient _client;
         private IMessageBus MessageBus;
         private readonly IServiceScopeFactory _scopeFactory;
-        private RelayService _relayService;
+        private IRelayService _relayService;
         private readonly IConfiguration _configuration;
-        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayService relayService, IConfiguration configuration)
+        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, IRelayService relayService, IConfiguration configuration)
         {
             InitClient();
             InitEvents();
@@ -35,6 +36,18 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             MessageBus.RegisterToEvent<DiscordRelayMessageData>(RelayMessageReceived);
             MessageBus.RegisterToEvent<TwitchStreamStartMessageData>(StreamStarted);
+            MessageBus.RegisterToEvent<StreamCreatedMessageData>(StreamCreated);
+        }
+
+        private void StreamCreated(StreamCreatedMessageData obj)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            foreach (Member member in context.Members.AsEnumerable().Where(x => x.canBeFoundOnDiscord() ))
+            {
+                string message = obj.Stream.GetSubscriptionCreatedMessage();
+                _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+            }
         }
 
         private void StreamStarted(TwitchStreamStartMessageData obj)
@@ -66,44 +79,47 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private Task MessageReceived(SocketMessage arg)
         {
-            if (isMessage(arg))
+            if (!arg.Author.IsBot)
             {
-                try
+                if (isMessage(arg))
                 {
-                    var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
-                    string MessageWithUserName = $"{arg.Author.Username}:{arg.Content}";
-                    _relayService.RelayMessage(new RelayMessageFromDiscord(
-                    
-                        GuildName,
-                        arg.Channel.Name,
-                        MessageWithUserName
-                    ));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-            }
-            else
-            {
-                //Manual filter because other Commands will be handled by a Service
-                if (arg.Content.Equals("!wil", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    using var scope = _scopeFactory.CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    var user = context.Members.FirstOrDefault(x =>
-                        String.Equals(x.UserName, arg.Author.Username, StringComparison.CurrentCultureIgnoreCase));
-                    string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
-                    var Message = $"Adresse: {WebserverAddress}";
-
-                    if (user == null)
+                    try
                     {
-                        var userRegistrationService = scope.ServiceProvider.GetRequiredService<UserRegistrationService>();
-                        var Password = userRegistrationService.RegisterUser(arg.Author.Username);
-                        Message += $" Password: {Password}";
+                        var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
+                        string MessageWithUserName = $"{arg.Author.Username}:{arg.Content}";
+                        _relayService.RelayMessage(new RelayMessageFromDiscord(
+
+                            GuildName,
+                            arg.Channel.Name,
+                            MessageWithUserName
+                        ));
                     }
-                    arg.Author.SendMessageAsync(Message);
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
+                else
+                {
+                    //Manual filter because other Commands will be handled by a Service
+                    if (arg.Content.Equals("!wil", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        using var scope = _scopeFactory.CreateScope();
+                        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        var user = context.Members.FirstOrDefault(x =>
+                            String.Equals(x.UserName, arg.Author.Username, StringComparison.CurrentCultureIgnoreCase));
+                        string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
+                        var Message = $"Adresse: {WebserverAddress}";
+
+                        if (user == null)
+                        {
+                            var userRegistrationService = scope.ServiceProvider.GetRequiredService<IUserRegistrationService>();
+                            var Password = userRegistrationService.RegisterUser(arg.Author.Username, arg.Author.Discriminator);
+                            Message += $" Password: {Password}";
+                        }
+                        arg.Author.SendMessageAsync(Message);
+                    }
                 }
             }
             return Task.CompletedTask;

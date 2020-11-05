@@ -19,11 +19,11 @@ namespace BobReactRemaster.Data.Models.Stream
         {
         }
 
-        public StreamSubscription(LiveStream Stream, Member Member)
+        public StreamSubscription(LiveStream Stream, Member Member, bool subscribe = true)
         {
             LiveStream = Stream;
             this.Member = Member;
-            isSubscribed = true;
+            isSubscribed = subscribe;
         }
 
         public void Subscribe()

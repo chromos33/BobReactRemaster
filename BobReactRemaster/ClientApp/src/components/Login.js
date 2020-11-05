@@ -1,11 +1,20 @@
 ﻿import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
-import {setCookie} from "../helper/cookie";
+import {setCookie,getCookie} from "../helper/cookie";
 
 export function Login() {
     const history = useHistory();
     const [login, setLogin] = useState("");
     const [passwd,setPassword] = useState("");
+
+    fetch("/StreamSubscriptions/GetUserSubscriptions",{
+        method: "GET",
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie("Token"),
+        }
+    });
+
     const handleLogin = async (evt) => {
         var loginResult = await fetch("/User/Login",{
             method: 'POST',

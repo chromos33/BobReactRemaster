@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream;
+using BobReactRemaster.EventBus;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Twitch;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -21,10 +24,12 @@ namespace BobReactRemaster.Controllers
 
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        public TwitchStreamController(ApplicationDbContext context, IConfiguration configuration)
+        private readonly IMessageBus _MessageBus;
+        public TwitchStreamController(ApplicationDbContext context, IConfiguration configuration, IMessageBus messageBus)
         {
             _context = context;
             _configuration = configuration;
+            _MessageBus = messageBus;
         }
         [HttpPost]
         [Route("GetTwitchStreams")]
@@ -74,6 +79,8 @@ namespace BobReactRemaster.Controllers
                 stream.StreamID = await RequestTwitchClientID(stream.StreamName);
                 _context.TwitchStreams.Add(stream);
                 _context.SaveChanges();
+                _MessageBus.Publish(new StreamCreatedMessageData(stream));
+                
             }
             
             return Ok(new { StreamID = stream.Id});

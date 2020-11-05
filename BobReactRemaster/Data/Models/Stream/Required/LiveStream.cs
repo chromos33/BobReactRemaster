@@ -24,5 +24,9 @@ namespace BobReactRemaster.Data.Models.Stream
         public abstract void StopStream();
 
         //add Value Getter for default data for Streams
+        public string GetSubscriptionCreatedMessage()
+        {
+            return $"Der Stream {StreamName} wurde hinzugefügt. Du kannst ihn im Interface abonnieren";
+        }
     }
 }

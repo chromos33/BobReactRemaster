@@ -7,7 +7,7 @@ namespace BobReactRemaster.Data.Models.Stream
 {
     public enum StreamState
     {
-        Running,
-        Stopped
+        Running = 1,
+        Stopped = 0
     }
 }

@@ -20,12 +20,12 @@ namespace BobReactRemaster.Services.Chat.Twitch
         private IMessageBus MessageBus;
         private TwitchClient client;
         private readonly IServiceScopeFactory _scopeFactory;
-        private RelayService _relayService;
+        private IRelayService _relayService;
         public bool IsAuthed = false;
         private List<TwitchMessageQueue> Queues = new List<TwitchMessageQueue>();
         private const int BurstLimit = 4;
         #region Initialisation
-        public TwitchChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, RelayService relayService)
+        public TwitchChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, IRelayService relayService)
         {
             MessageBus = messageBus;
             _scopeFactory = scopeFactory;

@@ -13,7 +13,7 @@ using TwitchLib.Api.Core.Models.Undocumented.Comments;
 
 namespace BobReactRemaster.Services.Chat
 {
-    public class RelayService
+    public class RelayService: IRelayService
     {
         //TODO: Create Tests for this ... and figure out how to mock/something dbcontext
         private readonly IServiceScopeFactory _scopeFactory;

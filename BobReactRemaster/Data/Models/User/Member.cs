@@ -6,7 +6,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using TwitchLib.Client.Models;
 
 namespace BobReactRemaster.Data.Models.User
 {
@@ -16,12 +18,19 @@ namespace BobReactRemaster.Data.Models.User
 
         [Key]
         public string UserName { get; private set; }
+        public string DiscordUserName { get; set; }
+        public string DiscordDiscriminator { get; set; }
         public string PasswordHash { get; private set; }
         public string UserRole { get; set; }
 
         private Member()
         {
 
+        }
+
+        public bool canBeFoundOnDiscord()
+        {
+            return !DiscordDiscriminator.IsNullOrEmpty() && !DiscordUserName.IsNullOrEmpty();
         }
         public Member(string username,string password, UserRole userRole)
         {
@@ -31,10 +40,12 @@ namespace BobReactRemaster.Data.Models.User
             StreamSubscriptions = new List<StreamSubscription>();
         }
 
-        public Member(string username, UserRole userRole = User.UserRole.User)
+        public Member(string username,string discriminator)
         {
             UserName = username;
-            UserRole = userRole.ToString();
+            UserRole = User.UserRole.User.ToString();
+            DiscordDiscriminator = discriminator;
+            DiscordUserName = username;
             StreamSubscriptions = new List<StreamSubscription>();
         }
 
@@ -93,9 +104,9 @@ namespace BobReactRemaster.Data.Models.User
 
 
 
-        public void AddStreamSubscription(LiveStream stream)
+        public void AddStreamSubscription(LiveStream stream,bool subscribe = true)
         {
-            StreamSubscription newSub = new StreamSubscription(stream,this);
+            StreamSubscription newSub = new StreamSubscription(stream,this,subscribe);
             StreamSubscriptions.Add(newSub);
         }
 

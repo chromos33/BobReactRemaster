@@ -81,11 +81,12 @@ namespace BobReactRemaster
                 configuration.RootPath = "ClientApp/build";
             });
             services.AddSingleton<IMessageBus, MessageBus>();
-            services.AddSingleton<UserRegistrationService, UserRegistrationService>();
+            services.AddSingleton<IUserRegistrationService, UserRegistrationService>();
             services.AddSingleton<IHostedService, DiscordChat>();
             services.AddSingleton<IHostedService, TwitchChat>();
             services.AddSingleton<IHostedService, StreamCheckerService>();
-            services.AddSingleton<RelayService, RelayService>();
+            services.AddSingleton<IRelayService, RelayService>();
+            services.AddSingleton<SubscriptionService, SubscriptionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
