@@ -1,0 +1,27 @@
+.subscription{
+    color:#BAC6D1;
+    position:relative;
+    padding:5px;
+    border-bottom:1px solid#BAC6D1;
+}
+.subscription:last-child
+{
+    border-bottom:none;
+}
+.subscription svg{
+    position:absolute;
+    right:10px;
+    color:red;
+    cursor:pointer;
+    transition:0.25s linear all;
+}
+.subscription svg.active
+{
+    color:green;
+}
+.subscription svg:hover{
+    color:green;
+}
+.subscription svg.active:hover{
+    color:red;
+}

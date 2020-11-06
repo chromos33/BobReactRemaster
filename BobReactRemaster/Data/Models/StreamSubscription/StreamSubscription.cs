@@ -26,6 +26,10 @@ namespace BobReactRemaster.Data.Models.Stream
             isSubscribed = subscribe;
         }
 
+        public void Toggle()
+        {
+            isSubscribed = !isSubscribed;
+        }
         public void Subscribe()
         {
             isSubscribed = true;

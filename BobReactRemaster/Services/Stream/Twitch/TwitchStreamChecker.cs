@@ -65,7 +65,6 @@ namespace BobReactRemaster.Services.Stream.Twitch
                 catch (Exception e)
 #pragma warning restore 168
                 {
-                    Console.WriteLine("test2");
                 }
 
                 inProgress = false;

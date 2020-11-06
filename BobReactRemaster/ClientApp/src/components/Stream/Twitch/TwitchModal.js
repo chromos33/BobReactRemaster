@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
-import { getCookie } from "../../../helper/cookie";
 import '../../../css/Stream.css';
 import Twitch_General from "./Twitch_General";
 import Twitch_Relay from "./Twitch_Relay";
 import Twitch_Quotes from "./Twitch_Quotes";
 import Twitch_Auth from "./Twitch_Auth";
-import { Tab } from 'bootstrap';
 
 const Tabs = {
     GENERAL: "General",

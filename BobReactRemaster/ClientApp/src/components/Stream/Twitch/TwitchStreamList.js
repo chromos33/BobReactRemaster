@@ -3,7 +3,7 @@ import { getCookie } from "../../../helper/cookie";
 import '../../../css/Cards.css';
 import '../../../css/Stream.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusSquare, faChevronLeft  } from '@fortawesome/free-solid-svg-icons';
+import { faPlusSquare  } from '@fortawesome/free-solid-svg-icons';
 import TwitchStream from './TwitchStream';
 
 
@@ -78,13 +78,13 @@ export function TwitchStreamSetup(){
     else
     {
         return (<div className="tab_card">
-        <div className="card_top">
-            <span className="h1">Twitch Streams</span>
-            <span className="addStreamBtn" onClick={handleAddStream}><FontAwesomeIcon icon={faPlusSquare}/></span>
-        </div>
-        <div className="card_body">
-        </div>
-    </div>);
+            <div className="card_top">
+                <span className="h1">Twitch Streams</span>
+                <span className="addStreamBtn" onClick={handleAddStream}><FontAwesomeIcon icon={faPlusSquare}/></span>
+            </div>
+            <div className="card_body">
+            </div>
+        </div>);
     }
 
     

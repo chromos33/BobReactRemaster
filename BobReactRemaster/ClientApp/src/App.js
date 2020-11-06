@@ -6,6 +6,7 @@ const Login = lazy(() => import('./components/Login'));
 const Test = lazy(() => import('./components/Test'));
 const Setup = lazy(() => import('./components/Setup/Setup'));
 const Stream = lazy(() => import('./components/Stream/Setup'));
+const SubscriptionHolder = lazy(() => import('./components/Subscription/Holder'));
 
 export default function App()  {
 
@@ -19,6 +20,7 @@ export default function App()  {
                 <Route exact path='/Test' component={Test} />
                 <Route exact path='/SetupView' component={Setup} />
                 <Route exact path='/Streams' component={Stream} />
+                <Route exact path='/Subscriptions' component={SubscriptionHolder} />
               </Switch>
             </Suspense>
           </Router>
