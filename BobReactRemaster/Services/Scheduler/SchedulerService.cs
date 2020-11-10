@@ -18,14 +18,10 @@ namespace BobReactRemaster.Services.Scheduler
     {
         private List<IScheduledTask> Tasks = new List<IScheduledTask>();
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IMessageBus MessageBus;
 
-        public SchedulerService(IServiceScopeFactory scopeFactory, IMessageBus messageBus)
+        public SchedulerService(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
-            //TODO Think about rather than MessageBus adding available Events to DBContext
-            MessageBus = messageBus;
-            MessageBus.RegisterToEvent<TwitchOAuthedMessageData>(AddTwitchOAuthRefreshTask);
             Setup();
         }
 

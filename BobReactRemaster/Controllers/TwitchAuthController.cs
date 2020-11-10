@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
@@ -128,6 +129,7 @@ namespace BobReactRemaster.Controllers
                 await _context.SaveChangesAsync();
                 //Add Task to Scheduler for Refresh;
                 var bus = internalScope.ServiceProvider.GetRequiredService<IMessageBus>();
+                var Services = internalScope.ServiceProvider.GetServices<IHostedService>();
                 bus.Publish(new TwitchOAuthedMessageData()
                 {
                     ExpireTime = Credential.ExpireDate.Subtract(TimeSpan.FromMinutes(5)),
