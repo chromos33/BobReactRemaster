@@ -18,7 +18,10 @@ namespace BobReactRemaster.EventBus
         public void Publish(BaseMessageData message)
         {
             foreach (var Event in Events.Where(x =>
-                x.GetType().GenericTypeArguments.First().Name == message.GetType().Name)) Event.Publish(message);
+                x.GetType().GenericTypeArguments.First().Name == message.GetType().Name))
+            {
+                Event.Publish(message);
+            }
         }
 
         public void RegisterToEvent<TEventBase>(Action<TEventBase> action) where TEventBase : BaseMessageData

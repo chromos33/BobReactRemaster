@@ -7,12 +7,20 @@ using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.Data.Models.Stream.Twitch;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Twitch;
+using BobReactRemaster.Services.Chat.Twitch;
+using BobReactRemaster.Services.Scheduler;
+using BobReactRemaster.Services.Scheduler.Tasks;
+using BobReactRemaster.SettingsOptions;
 using Discord;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace BobReactRemaster.Controllers
@@ -22,11 +30,11 @@ namespace BobReactRemaster.Controllers
     public class TwitchAuthController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
-        public TwitchAuthController(ApplicationDbContext context, IConfiguration configuration)
+        private readonly IServiceScopeFactory _scopeFactory;
+        public TwitchAuthController(ApplicationDbContext context, IServiceScopeFactory scopeFactory)
         {
             _context = context;
-            _configuration = configuration;
+            _scopeFactory = scopeFactory;
         }
 
         [HttpGet]
@@ -57,7 +65,9 @@ namespace BobReactRemaster.Controllers
                 _context.TwitchCredentials.Add(Credential);
             }
             Credential.setFromTwitchOauthStoreData(Data);
-            string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
+            var scope = _scopeFactory.CreateScope();
+            var Option = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<WebServerSettingsOptions>>();
+            string WebserverAddress = Option.Value.Address;
             string link = Credential.getTwitchAuthLink(Data,WebserverAddress);
             _context.SaveChanges();
 
@@ -83,7 +93,9 @@ namespace BobReactRemaster.Controllers
                 }
                 if (Stream.APICredential != null)
                 {
-                    string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
+                    var scope = _scopeFactory.CreateScope();
+                    var Option = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<WebServerSettingsOptions>>();
+                    string WebserverAddress = Option.Value.Address;
                     string link = Stream.APICredential.getTwitchAuthLink(Data, WebserverAddress);
                     _context.SaveChanges();
                     return Ok(new {Link = link});
@@ -102,7 +114,9 @@ namespace BobReactRemaster.Controllers
             if (Credential != null && code != null)
             {
                 var client = new HttpClient();
-                string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
+                var internalScope = _scopeFactory.CreateScope();
+                var Option = internalScope.ServiceProvider.GetRequiredService<IOptionsSnapshot<WebServerSettingsOptions>>();
+                string WebserverAddress = Option.Value.Address;
                 string returnurl = Credential.getTwitchReturnURL(WebserverAddress);
                 string url = $"https://id.twitch.tv/oauth2/token?client_id={Credential.ClientID}&client_secret={Credential.Secret}&code={code}&grant_type=authorization_code&redirect_uri={returnurl}";
                 var response = await client.PostAsync(url, new StringContent("", System.Text.Encoding.UTF8, "text/plain"));
@@ -112,6 +126,14 @@ namespace BobReactRemaster.Controllers
                 Credential.ExpireDate = DateTime.Now.AddSeconds(authtoken.expires_in);
                 Credential.RefreshToken = authtoken.refresh_token;
                 await _context.SaveChangesAsync();
+                //Add Task to Scheduler for Refresh;
+                var bus = internalScope.ServiceProvider.GetRequiredService<IMessageBus>();
+                bus.Publish(new TwitchOAuthedMessageData()
+                {
+                    ExpireTime = Credential.ExpireDate.Subtract(TimeSpan.FromMinutes(5)),
+                    ID = Credential.id,
+                    ServiceScopeFactory = _scopeFactory
+                });
 
                 if (Credential.isMainAccount)
                 {

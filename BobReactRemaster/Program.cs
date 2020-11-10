@@ -22,7 +22,6 @@ namespace BobReactRemaster
         public async Task MainAsync(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;

@@ -1,24 +1,20 @@
 using System;
 using System.Text;
 using BobReactRemaster.Auth;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using BobReactRemaster.Data;
-using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.Services;
 using BobReactRemaster.Services.Chat;
 using BobReactRemaster.Services.Chat.Discord;
 using BobReactRemaster.Services.Chat.Twitch;
+using BobReactRemaster.Services.Scheduler;
 using BobReactRemaster.Services.Stream;
-using IdentityServer4.Stores.Default;
+using BobReactRemaster.SettingsOptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -73,6 +69,18 @@ namespace BobReactRemaster
                 config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
                 config.AddPolicy(Policies.User, Policies.UserPolicy());
             });
+            services.Configure<WebServerSettingsOptions>(Configuration.GetSection(WebServerSettingsOptions.Position));
+            
+            services.AddSingleton<IMessageBus, MessageBus>();
+            services.AddSingleton<IHostedService, SchedulerService>();
+            services.AddSingleton<IUserRegistrationService, UserRegistrationService>();
+            services.AddSingleton<IHostedService, DiscordChat>();
+            services.AddSingleton<IHostedService, TwitchChat>();
+            services.AddSingleton<IHostedService, StreamCheckerService>();
+            services.AddSingleton<IRelayService, RelayService>();
+            services.AddSingleton<SubscriptionService, SubscriptionService>();
+
+
             //services.AddControllersWithViews();
             services.AddRazorPages();
             // In production, the React files will be served from this directory
@@ -80,13 +88,9 @@ namespace BobReactRemaster
             {
                 configuration.RootPath = "ClientApp/build";
             });
-            services.AddSingleton<IMessageBus, MessageBus>();
-            services.AddSingleton<IUserRegistrationService, UserRegistrationService>();
-            services.AddSingleton<IHostedService, DiscordChat>();
-            services.AddSingleton<IHostedService, TwitchChat>();
-            services.AddSingleton<IHostedService, StreamCheckerService>();
-            services.AddSingleton<IRelayService, RelayService>();
-            services.AddSingleton<SubscriptionService, SubscriptionService>();
+
+            
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

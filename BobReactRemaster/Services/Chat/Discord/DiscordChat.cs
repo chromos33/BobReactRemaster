@@ -52,7 +52,17 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private void StreamStarted(TwitchStreamStartMessageData obj)
         {
-            _client.Guilds.FirstOrDefault()?.TextChannels.FirstOrDefault()?.SendMessageAsync(obj.Streamname);
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            string message = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == obj.Streamname.ToLower())
+                ?.GetStreamStartedMessage();
+            if (message != null)
+            {
+                foreach (Member member in context.Members.AsEnumerable().Where(x => x.canBeFoundOnDiscord()))
+                {
+                    _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                }
+            }
         }
 
         private void RelayMessageReceived(DiscordRelayMessageData obj)

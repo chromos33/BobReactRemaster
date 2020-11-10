@@ -75,8 +75,8 @@ namespace BobReactRemaster.Services.Stream.Twitch
         {
             var scope = scopefactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var Streams = context.TwitchStreams.AsQueryable().Where(x => x.StreamID != null && x.StreamID != "");
-            foreach (TwitchStream stream in Streams)
+            var TwitchStreams = context.TwitchStreams.AsQueryable().Where(x => x.StreamID != null);
+            foreach (TwitchStream stream in TwitchStreams)
             {
                 var requestData = requestDataStreams.FirstOrDefault(x => x.UserId == stream.StreamID);
                 if (requestData != null)
@@ -92,7 +92,7 @@ namespace BobReactRemaster.Services.Stream.Twitch
                     if (stream.State == StreamState.Running)
                     {
                         stream.StopStream();
-                        bus.Publish(new TwitchStreamStopMessageData(){StreamName = stream.StreamName});
+                        bus.Publish(new TwitchStreamStopMessageData() { StreamName = stream.StreamName });
                     }
                 }
             }
