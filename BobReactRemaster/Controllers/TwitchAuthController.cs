@@ -32,10 +32,12 @@ namespace BobReactRemaster.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IServiceScopeFactory _scopeFactory;
-        public TwitchAuthController(ApplicationDbContext context, IServiceScopeFactory scopeFactory)
+        private readonly SchedulerService scheduler;
+        public TwitchAuthController(ApplicationDbContext context, IServiceScopeFactory scopeFactory, SchedulerService scheduler)
         {
             _context = context;
             _scopeFactory = scopeFactory;
+            this.scheduler = scheduler;
         }
 
         [HttpGet]
@@ -128,15 +130,7 @@ namespace BobReactRemaster.Controllers
                 Credential.RefreshToken = authtoken.refresh_token;
                 await _context.SaveChangesAsync();
                 //Add Task to Scheduler for Refresh;
-                var bus = internalScope.ServiceProvider.GetRequiredService<IMessageBus>();
-                var Services = internalScope.ServiceProvider.GetServices<IHostedService>();
-                bus.Publish(new TwitchOAuthedMessageData()
-                {
-                    ExpireTime = Credential.ExpireDate.Subtract(TimeSpan.FromMinutes(5)),
-                    ID = Credential.id,
-                    ServiceScopeFactory = _scopeFactory
-                });
-
+                scheduler.AddTask(new TwitchOAuthRefreshTask(Credential.ExpireDate,Credential.id));
                 if (Credential.isMainAccount)
                 {
                     return Redirect("/SetupView");

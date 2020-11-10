@@ -65,6 +65,7 @@ namespace BobReactRemaster.Services.Scheduler
 
         public void AddTask(IScheduledTask Task)
         {
+            Task.setScopeFactory(_scopeFactory);
             Tasks.Add(Task);
         }
     }
