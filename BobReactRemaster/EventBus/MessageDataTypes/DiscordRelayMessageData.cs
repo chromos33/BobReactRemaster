@@ -10,7 +10,6 @@ namespace BobReactRemaster.EventBus.MessageDataTypes
     {
         //rethink how stupid you want the user to be i.e. Access database things from Sender or Receiver probably Sender
         public string Message;
-        public string DiscordChannel;
-        public string DiscordServer;
+        public ulong DiscordChannelID;
     }
 }

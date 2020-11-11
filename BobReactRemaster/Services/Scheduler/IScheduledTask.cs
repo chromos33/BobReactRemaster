@@ -11,6 +11,6 @@ namespace BobReactRemaster.Services.Scheduler
         public bool Executable();
         public void Execute();
         public bool Removeable();
-        public void setScopeFactory(IServiceScopeFactory factory)
+        public void setScopeFactory(IServiceScopeFactory factory);
     }
 }

@@ -67,12 +67,7 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private void RelayMessageReceived(DiscordRelayMessageData obj)
         {
-            _client
-                .Guilds.FirstOrDefault(x =>
-                    string.Equals(x.Name, obj.DiscordServer, StringComparison.CurrentCultureIgnoreCase))?
-                .TextChannels.FirstOrDefault(x =>
-                    string.Equals(x.Name, obj.DiscordChannel, StringComparison.CurrentCultureIgnoreCase))?
-                .SendMessageAsync(obj.Message);
+            ((SocketTextChannel)_client.GetChannel(obj.DiscordChannelID)).SendMessageAsync(obj.Message);
         }
 
         private void InitClient()
@@ -85,6 +80,90 @@ namespace BobReactRemaster.Services.Chat.Discord
         private void InitEvents()
         {
             _client.MessageReceived += MessageReceived;
+            _client.ChannelCreated += ChannelCreated;
+            _client.ChannelDestroyed += ChannelDestroyed;
+            _client.ChannelUpdated += ChannelUpdated;
+            _client.GuildAvailable += GuildJoined;
+        }
+
+        private Task GuildJoined(SocketGuild arg)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            bool write = false;
+            foreach (var CategoryChannel in arg.CategoryChannels.Where(x =>
+                    x.Name.ToLower() == "community streams"))
+            {
+                foreach (SocketGuildChannel TextChannel in CategoryChannel.Channels.Where(x => x.GetType() == typeof(SocketTextChannel)))
+                {
+                    if (!context.DiscordTextChannels.Any(x => x.ChannelID == TextChannel.Id))
+                    {
+                        var NewTextChannel = new TextChannel((SocketTextChannel) TextChannel);
+                        context.DiscordTextChannels.Add(NewTextChannel);
+                        write = true;
+                    }
+                }
+            }
+            if (write)
+            {
+                context.SaveChanges();
+            }
+            return Task.CompletedTask;
+        }
+
+        private Task ChannelUpdated(SocketChannel arg1, SocketChannel arg2)
+        {
+            if (arg2.GetType() == typeof(SocketTextChannel))
+            {
+                var textchannel = (SocketTextChannel) arg2;
+                if (textchannel.Category.Name.ToLower() == "community streams")
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    var channel = context.DiscordTextChannels.FirstOrDefault(x => x.ChannelID == arg2.Id);
+                    if (channel != null)
+                    {
+                        channel.Update((SocketTextChannel)arg2);
+                        context.SaveChanges();
+                    }
+                }
+            }
+            
+            return Task.CompletedTask;
+        }
+
+        private Task ChannelDestroyed(SocketChannel arg)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var channel = context.DiscordTextChannels.FirstOrDefault(x => x.ChannelID == arg.Id);
+            if (channel != null)
+            {
+                context.DiscordTextChannels.Remove(channel);
+                context.SaveChanges();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task ChannelCreated(SocketChannel arg)
+        {
+            if (arg.GetType() == typeof(SocketTextChannel))
+            {
+                var textchannel = (SocketTextChannel) arg;
+                if (textchannel.Category.Name.ToLower() == "community streams")
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    if (!context.DiscordTextChannels.Any(x => x.ChannelID == textchannel.Id))
+                    {
+                        var NewTextChannel = new TextChannel(textchannel);
+                        context.DiscordTextChannels.Add(NewTextChannel);
+                        context.SaveChanges();
+                    }
+                }
+            }
+            return Task.CompletedTask;
         }
 
         private Task MessageReceived(SocketMessage arg)

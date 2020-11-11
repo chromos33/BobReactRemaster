@@ -29,8 +29,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             {
                 DiscordRelayMessageData data = new DiscordRelayMessageData();
                 data.Message = Message;
-                data.DiscordServer = Stream.RelayChannel.Guild;
-                data.DiscordChannel = Stream.RelayChannel.Name;
+                data.DiscordChannelID = Stream.RelayChannel.ChannelID;
                 List.Add(data);
             }
 
