@@ -23,6 +23,7 @@ namespace BobReactRemaster.Data.Models.Discord
 
         public string Guild { get; set; }
 
+        public int? LiveStreamID {get; set; }
         private TextChannel()
         {
         }

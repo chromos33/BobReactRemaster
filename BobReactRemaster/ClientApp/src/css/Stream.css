@@ -154,7 +154,8 @@
     border-right:none;
 }
 .streamGeneral,
-.streamAuth
+.streamAuth,
+.streamRelay
 {
     padding:10px;
 }
@@ -163,7 +164,8 @@
 {
     display:block;    
 }
-.streamGeneral input[type="submit"]
+.streamGeneral input[type="submit"],
+span.savebtn
 {
     display:inline-block;
     padding:10px;
@@ -185,4 +187,22 @@
     border:none;
     border-radius:5px;
     color:#BAC6D1;
+}
+.streamRelay .status,
+.streamRelay .randomrelaystate
+{
+    position:relative;
+}
+.streamRelay svg{
+    position:absolute;
+    right:0;
+    top:0;
+    color:red;
+    transition:0.25s ease all;
+    cursor:pointer;
+}
+.streamRelay svg.active,
+.streamRelay svg:hover
+{
+    color:green;
 }

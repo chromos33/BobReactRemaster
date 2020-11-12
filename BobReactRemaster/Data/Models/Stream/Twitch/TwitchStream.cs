@@ -71,6 +71,11 @@ namespace BobReactRemaster.Data.Models.Stream
         {
             RelayChannel = channel;
         }
+
+        public void UnsetRelayChannel()
+        {
+            RelayChannel = null;
+        }
         public string GetStreamStartedMessage(string Title = "")
         {
             string message = $"{StreamName} hat angefangen {Title} zu streamen.";

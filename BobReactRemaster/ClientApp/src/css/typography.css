@@ -20,3 +20,29 @@ label{
     color:#BAC6D1;
     font-weight: bold;
 }
+
+select{
+    background:none;
+    color:#BAC6D1;
+    border:2px solid#272c2e;
+    border-radius:3px;
+    width:100%;
+    font-size:16px;
+    appearance: none;
+}
+select option{
+    background:black;
+}
+.customselect
+{
+    position:relative;
+}
+.customselect svg
+{
+    position:absolute;
+    right:10px !important;
+    top:50% !important;
+    transform:translateY(-50%);
+    color:#BAC6D1 !important;
+    pointer-events: none;
+}

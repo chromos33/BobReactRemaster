@@ -16,7 +16,12 @@ namespace BobReactRemaster.Data.Models.Stream
         public DateTime Stopped { get; protected set; }
         public StreamState State { get; protected set; }
         public TextChannel RelayChannel { get; protected set; }
+
+        public bool RelayEnabled { get; set; }
+
         public string StreamName { get; set; }
+        
+        public bool VariableRelayChannel { get; set; }
 
         public abstract void SetURL(string URL);
         public abstract void StartStream();
