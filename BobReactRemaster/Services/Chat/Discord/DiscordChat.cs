@@ -9,6 +9,7 @@ using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using Discord.WebSocket;
 using Discord;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -54,11 +55,11 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            string message = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == obj.Streamname.ToLower())
-                ?.GetStreamStartedMessage();
+            var stream = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == obj.Streamname.ToLower());
+            string message = stream?.GetStreamStartedMessage();
             if (message != null)
             {
-                foreach (Member member in context.Members.AsEnumerable().Where(x => x.canBeFoundOnDiscord()))
+                foreach (Member member in context.Members.Include(x => x.StreamSubscriptions).ThenInclude(x => x.LiveStream).AsEnumerable().Where(x => x.canBeFoundOnDiscord() && x.HasSubscription(stream)))
                 {
                     _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
                 }

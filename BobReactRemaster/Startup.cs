@@ -72,7 +72,7 @@ namespace BobReactRemaster
             services.Configure<WebServerSettingsOptions>(Configuration.GetSection(WebServerSettingsOptions.Position));
             
             services.AddSingleton<IMessageBus, MessageBus>();
-            services.AddSingleton<SchedulerService>();
+            services.AddSingleton<IHostedService,SchedulerService>();
             services.AddSingleton<IUserRegistrationService, UserRegistrationService>();
             services.AddSingleton<IHostedService,DiscordChat>();
             services.AddSingleton<IHostedService,TwitchChat>();

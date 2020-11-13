@@ -18,7 +18,6 @@ namespace BobReactRemaster.Services.Chat.Twitch
             StreamName = streamName;
             Message = message;
         }
-
         public override List<BaseMessageData> GetMessageBusMessages(ApplicationDbContext context)
         {
             List<BaseMessageData> List = new List<BaseMessageData>();

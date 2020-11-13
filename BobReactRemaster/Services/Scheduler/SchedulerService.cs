@@ -24,12 +24,12 @@ namespace BobReactRemaster.Services.Scheduler
             _scopeFactory = scopeFactory;
             Setup();
         }
-
+        /* redundant or some oversight remove later if really not used
         private void AddTwitchOAuthRefreshTask(TwitchOAuthedMessageData obj)
         {
             AddTask(new TwitchOAuthRefreshTask(obj.ExpireTime,obj.ID,obj.ServiceScopeFactory));
         }
-
+        */
         private void Setup()
         {
 
@@ -63,10 +63,13 @@ namespace BobReactRemaster.Services.Scheduler
             Tasks.RemoveAll(x => x.Removeable());
         }
 
-        public void AddTask(IScheduledTask Task)
+        public void AddTask(IScheduledTask Task,int CredID)
         {
-            Task.setScopeFactory(_scopeFactory);
-            Tasks.Add(Task);
+            if (Tasks.All(x => !x.isThisTask(CredID)))
+            {
+                Task.setScopeFactory(_scopeFactory);
+                Tasks.Add(Task);
+            }
         }
     }
 }

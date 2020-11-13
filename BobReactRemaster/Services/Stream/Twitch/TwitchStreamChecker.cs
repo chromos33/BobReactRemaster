@@ -7,6 +7,7 @@ using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using IdentityServer4.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Api;
 
@@ -75,7 +76,7 @@ namespace BobReactRemaster.Services.Stream.Twitch
         {
             var scope = scopefactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var TwitchStreams = context.TwitchStreams.AsQueryable().Where(x => x.StreamID != null);
+            var TwitchStreams = context.TwitchStreams.Include(x => x.RelayChannel).AsQueryable().Where(x => x.StreamID != null);
             foreach (TwitchStream stream in TwitchStreams)
             {
                 var requestData = requestDataStreams.FirstOrDefault(x => x.UserId == stream.StreamID);
@@ -84,20 +85,54 @@ namespace BobReactRemaster.Services.Stream.Twitch
                     if (stream.State == StreamState.Stopped)
                     {
                         stream.StartStream();
+                        if (stream.RelayEnabled && stream.VariableRelayChannel && stream.RelayChannel == null)
+                        {
+                            var scope2 = scopefactory.CreateScope();
+                            var context2 = scope2.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                            var freetextchannel = context2.DiscordTextChannels.AsQueryable().FirstOrDefault(x => x.IsPermanentRelayChannel == false && x.LiveStreamID == null);
+                            if (freetextchannel != null)
+                            {
+                                stream.SetRelayChannel(freetextchannel);
+                                context2.SaveChanges();
+                            }
+                        }
                         bus.Publish(new TwitchStreamStartMessageData() { Title = requestData.Title, Streamname = requestData.UserName });
+                        
+                        
                     }
+                    else
+                    {
+                        if (stream.RelayEnabled && stream.VariableRelayChannel && stream.RelayChannel == null)
+                        {
+                            var scope2 = scopefactory.CreateScope();
+                            var context2 = scope2.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                            var freetextchannel = context2.DiscordTextChannels.AsQueryable().FirstOrDefault(x => x.IsPermanentRelayChannel == false && x.LiveStreamID == null);
+                            if (freetextchannel != null)
+                            {
+                                stream.SetRelayChannel(freetextchannel);
+                                context2.SaveChanges();
+                            }
+                        }
+                        bus.Publish(new TwitchRelayPulseMessageData(){StreamName = requestData.UserName});
+                    }
+                    
                 }
                 else
                 {
                     if (stream.State == StreamState.Running)
                     {
                         stream.StopStream();
+                        if (stream.RelayEnabled && stream.VariableRelayChannel && stream.RelayChannel != null)
+                        {
+                            stream.UnsetRelayChannel();
+                        }
                         bus.Publish(new TwitchStreamStopMessageData() { StreamName = stream.StreamName });
                     }
                 }
             }
-
             context.SaveChanges();
+
+            
         }
     }
 }

@@ -73,6 +73,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
                 Queues.Add(new TwitchMessageQueue(e.Channel,false,TimeSpan.FromMilliseconds(200)));
             }
             client.SendMessage(e.Channel,"Relay enabled");
+            _relayService.RelayMessage(new RelayMessageFromTwitch(e.Channel,"Relay enabled"));
         }
         private void ChannelLeft(object sender, OnLeftChannelArgs e)
         {
@@ -178,15 +179,16 @@ namespace BobReactRemaster.Services.Chat.Twitch
         }
         private void HandleRelayStop(TwitchStreamStopMessageData obj)
         {
-            if (IsAuthed && client.IsConnected)
+            if (IsAuthed && client.IsConnected && client.JoinedChannels.Any(x => x.Channel.ToLower() == obj.StreamName.ToLower()))
             {
-                SendMessage(obj.StreamName, "Relay disabled");
+                client.SendMessage(obj.StreamName, "Relay disabled");
+                _relayService.RelayMessage(new RelayMessageFromTwitch(obj.StreamName, "Relay disabled"));
                 client.LeaveChannel(obj.StreamName);
             }
         }
         private void HandleRelayPulse(TwitchRelayPulseMessageData obj)
         {
-            if (IsAuthed && client.IsConnected)
+            if (IsAuthed && client.IsConnected && client.JoinedChannels.All(x => x.Channel.ToLower() != obj.StreamName.ToLower()))
             {
                 client.JoinChannel(obj.StreamName);
             }

@@ -32,6 +32,12 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         {
             this._scopeFactory = factory;
         }
+
+        public bool isThisTask(int ID)
+        {
+            return ID == CredentialID;
+        }
+
         public bool Executable()
         {
             return DateTime.Compare(NextExecutionDate, DateTime.Now) < 0;

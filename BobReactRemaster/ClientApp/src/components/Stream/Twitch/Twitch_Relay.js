@@ -68,6 +68,7 @@ export function Twitch_Relay(props){
                 RelayChannelID:tosavechannel
             })
         });
+        //TODO: Maybe add reload data on 404 aka if tried to add channel that has been taken since this loaded for the first time aka Feedback
     }
 
     var relaystatecssclass = "";
