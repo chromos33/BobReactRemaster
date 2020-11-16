@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.DLive;
@@ -24,6 +25,10 @@ namespace BobReactRemaster.Data
         public DbSet<DiscordCredentials> DiscordCredentials { get; set; }
 
         public DbSet<TwitchCredential> TwitchCredentials { get; set; }
+
+        public DbSet<ManualCommand> ManualCommands { get; set; }
+
+        public DbSet<IntervalCommand> IntervalCommands { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {

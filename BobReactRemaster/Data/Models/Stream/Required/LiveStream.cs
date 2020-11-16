@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.Data.Models.Commands;
 
 namespace BobReactRemaster.Data.Models.Stream
 {
@@ -22,6 +23,8 @@ namespace BobReactRemaster.Data.Models.Stream
         public string StreamName { get; set; }
         
         public bool VariableRelayChannel { get; set; }
+
+        public List<ChatCommand> RelayCommands { get; set; }
 
         public abstract void SetURL(string URL);
         public abstract void StartStream();
