@@ -4,12 +4,14 @@ import Twitch_General from "./Twitch_General";
 import Twitch_Relay from "./Twitch_Relay";
 import Twitch_Quotes from "./Twitch_Quotes";
 import Twitch_Auth from "./Twitch_Auth";
+import Twitch_Commands from "../Commands/Commands";
 
 const Tabs = {
     GENERAL: "General",
     RELAY: "Relay",
     QUOTES: "Quotes",
-    AUTH: "Auth"
+    AUTH: "Auth",
+    COMMANDS: "Commands"
 }
 
 export function TwitchModal(props){
@@ -30,6 +32,9 @@ export function TwitchModal(props){
         case Tabs.AUTH:
             Body = <Twitch_Auth StreamID={props.StreamID} StreamName={props.StreamName} />
             break;
+        case Tabs.COMMANDS:
+            Body = <Twitch_Commands StreamID={props.StreamID} StreamName={props.StreamName} />
+            break;
         default:
             Body = null;
             break;
@@ -47,6 +52,9 @@ export function TwitchModal(props){
                     }
                     {props.StreamID > 0 && 
                         <span onClick={() => setTab(Tabs.QUOTES)}>Quotes</span>
+                    }
+                    {props.StreamID > 0 && 
+                        <span onClick={() => setTab(Tabs.COMMANDS)}>Commands</span>
                     }
                 </div>
                 <div className="ModalBody">

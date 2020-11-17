@@ -24,7 +24,8 @@ namespace BobReactRemaster.Data.Models.Stream
         
         public bool VariableRelayChannel { get; set; }
 
-        public List<ChatCommand> RelayCommands { get; set; }
+        public List<IntervalCommand> RelayIntervalCommands { get; set; }
+        public List<ManualCommand> RelayManualCommands { get; set; }
 
         public abstract void SetURL(string URL);
         public abstract void StartStream();

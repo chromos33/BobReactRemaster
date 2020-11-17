@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function SubscriptionHolder(props)
 {
-    console.log(props.data);
     const [substate,setsubstate] = useState(props.data.subState);
     const toggleSubState = () => {
         fetch("/StreamSubscriptions/ToggleSubscription",{

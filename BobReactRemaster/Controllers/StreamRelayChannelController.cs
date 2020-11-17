@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BobReactRemaster.Auth;
-using Microsoft.AspNetCore.Mvc;
+﻿using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.JSONModels.Stream;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BobReactRemaster.Controllers
 {
