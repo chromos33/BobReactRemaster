@@ -28,6 +28,7 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
         {
             ClientID = data.ClientID;
             Secret = data.Secret;
+            ChatUserName = data.ChatUserName;
         }
 
         public string getTwitchReturnURL(string webserverAddress)

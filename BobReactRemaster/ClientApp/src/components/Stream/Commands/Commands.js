@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { getCookie } from "../../../helper/cookie";
 import ManualCommand from "./ManualCommand";
 import IntervalCommand from "./IntervalCommand";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlusSquare  } from '@fortawesome/free-solid-svg-icons';
 
 export function Twitch_Commands(props){
     const [StreamName,setStreamName] = useState(props.StreamName)
@@ -45,8 +47,8 @@ export function Twitch_Commands(props){
         }
         else
         {
-            return IntervalCommands.map((e) => {
-                return <IntervalCommand data={e} />
+            return IntervalCommands.map((e,index) => {
+                return <IntervalCommand key={index} data={e} />
             });
         }
     }
@@ -57,15 +59,24 @@ export function Twitch_Commands(props){
         }
         else
         {
-            return ManualCommands.map((e) => {
-                return <ManualCommand data={e} />
+            return ManualCommands.map((e,index) => {
+                return <ManualCommand key={index} data={e} />
             });
         }
     } 
 
     return (<div className="streamCommands">
+        <div className="inner_card">
+            <div className="card_top">
+                <span className="h1">Trigger Commands</span>
+                <span className="addStreamBtn"><FontAwesomeIcon icon={faPlusSquare}/></span>
+            </div>
+            <div class="card_body">
+                {renderManualCommands()}
+            </div>
+        </div>
         {renderIntervalCommands()}
-        {renderManualCommands()}
+        
     </div>);
 }
 export default Twitch_Commands;

@@ -6,6 +6,7 @@ namespace BobReactRemaster.Controllers
     {
         [Required] public string ClientID { get; set; }
         [Required] public string Secret { get; set; }
+        [Required] public string ChatUserName { get; set; }
 
         public string Scopes { get; set; }
     }

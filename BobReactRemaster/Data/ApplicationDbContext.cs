@@ -50,12 +50,6 @@ namespace BobReactRemaster.Data
                 .HasOne(s => s.APICredential)
                 .WithOne(c => c.Stream)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<ManualCommand>()
-                .HasOne(x => x.LiveStream)
-                .WithMany(x => x.RelayManualCommands)
-                .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

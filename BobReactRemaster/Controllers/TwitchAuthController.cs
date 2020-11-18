@@ -46,7 +46,7 @@ namespace BobReactRemaster.Controllers
             var Credential = _context.TwitchCredentials.FirstOrDefault(x => x.isMainAccount);
             if (Credential != null)
             {
-                return Ok(new { ClientID = Credential.ClientID, Secret = Credential.Secret });
+                return Ok(new { ClientID = Credential.ClientID, Secret = Credential.Secret, ChatUserName= Credential.ChatUserName });
             }
             return NotFound();
         }

@@ -28,31 +28,44 @@
 {
     background-color: red;
 }
-.stream{
+.stream,
+.command{
     color:#BAC6D1;
     position:relative;
 }
-.stream svg:nth-child(3){
+.stream svg:nth-child(3),
+.command svg:nth-child(2)
+{
     position:absolute;
     right:10px;
     top:50%;
     transform:translateY(-50%);
 }
-.stream svg:nth-child(4){
+.stream svg:nth-child(4),
+.command svg:nth-child(3)
+{
     position:absolute;
     right:40px;
     top:50%;
     transform:translateY(-50%);
 }
-.stream svg:nth-child(4).active
+.stream svg:nth-child(4).active,
+.command svg:nth-child(3).active
 {
     color:red;
 }
-.stream_header
+.stream_header,
+.command_header
 {
     padding:5px;
 }
-.stream_header svg
+.command_header,
+.command_body
+{
+    border-bottom: 1px solid #BAC6D1;
+}
+.stream_header svg,
+.command_header svg
 {
     cursor:pointer;
 }
@@ -155,7 +168,8 @@
 }
 .streamGeneral,
 .streamAuth,
-.streamRelay
+.streamRelay,
+.streamCommands
 {
     padding:10px;
 }
@@ -205,4 +219,39 @@ span.savebtn
 .streamRelay svg:hover
 {
     color:green;
+}
+.form{
+    padding:5px;
+}
+
+.form label,
+.form input,
+.form textarea
+{
+    display:block;
+}
+.form textarea
+{
+    width: calc(100% - 5px);
+}
+.form .checkbox label,
+.form .checkbox input
+{
+    display:inline-block;
+}
+.form input[type="text"]
+{
+    width: calc(100% - 5px);
+    font-size:14px;
+}
+.form input[type="submit"]
+{
+    background: #BAC6D1 !important;
+    font-size: 16px !important;
+    line-height: 16px !important;
+    padding: 10px 20px !important;
+    cursor: pointer;
+    display: inline-block;
+    border:none;
+    border-radius:5px;
 }

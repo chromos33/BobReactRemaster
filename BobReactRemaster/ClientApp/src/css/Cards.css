@@ -18,3 +18,8 @@
     position: relative;
     border-bottom: 1px solid #BAC6D1;
 }
+.inner_card
+{
+    background: #272c2e;
+    display: block;
+}

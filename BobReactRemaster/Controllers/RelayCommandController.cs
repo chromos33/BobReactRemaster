@@ -45,6 +45,33 @@ namespace BobReactRemaster.Controllers
 
             return NotFound();
         }
+        [HttpPost]
+        [Route("SaveManualCommand")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult SaveManualCommand([FromBody] ManualCommandSaveData data)
+        {
+            return NotFound();
+        }
+        [HttpPost]
+        [Route("CreateManualCommand")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult CreateManualCommand([FromBody] ManualCommandSaveData data)
+        {
+            return NotFound();
+        }
+
+        private int TryPersistManualCommand(ManualCommandSaveData data)
+        {
+
+            return 0;
+        }
+        [HttpPost]
+        [Route("DeleteManualCommand")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult DeleteManualCommand([FromBody] CommandDeleteData data)
+        {
+            return NotFound();
+        }
 
     }
 }

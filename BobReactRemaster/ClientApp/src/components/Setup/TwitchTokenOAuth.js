@@ -4,6 +4,7 @@ export function TwitchTokenOAuth(props)
 {
     const [clientID,setClientID] = useState("");
     const [Secret,setSecret] = useState("");
+    const [ChatUserName,setChatUserName] = useState("");
     const [init,setInit] = useState(false);
     var Scopes = "";
     const toggleScope = (e) => {
@@ -38,7 +39,8 @@ export function TwitchTokenOAuth(props)
             body: JSON.stringify({
                     ClientID: clientID,
                     Secret: Secret,
-                    Scopes: Scopes
+                    Scopes: Scopes,
+                    ChatUserName: ChatUserName
                 })
             
         }).then(response => {
@@ -60,6 +62,7 @@ export function TwitchTokenOAuth(props)
         }).then(json => {
             setClientID(json.clientID);
             setSecret(json.secret);
+            setChatUserName(json.chatUserName);
         }).catch((error) => {
         });
         setInit(true);
@@ -74,6 +77,8 @@ export function TwitchTokenOAuth(props)
             <input type="text" name="ClientID" value={clientID} onChange={e => setClientID(e.target.value)}/>
             <label>Secret</label>
             <input type="text" name="Secret" value={Secret} onChange={e => setSecret(e.target.value)}/>
+            <label>ChatUserName</label>
+            <input type="text" name="ChatUserName" value={ChatUserName} onChange={e => setChatUserName(e.target.value)}/>
             {props.TwitchScopes.length > 0 && (<div>
                 <label>Scopes</label>
                 {ScopeOptions}
