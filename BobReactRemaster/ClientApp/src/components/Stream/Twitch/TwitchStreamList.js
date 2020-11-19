@@ -11,15 +11,14 @@ export function TwitchStreamSetup(){
     /* States */
     const [init,setInit] = useState(false);
     const [Streams,setStreams] = useState(null);
-    const [renderhack,setrenderhack] = useState(true);
 
 
     /* Event Handler */
     const handleAddStream = () => {
         var tmp = Streams;
         tmp.push({id:0,name:"Name",streamState: 0});
-        setStreams(tmp)
-        setrenderhack(!renderhack);
+        var savearray = tmp.map(x => x);
+        setStreams(savearray)
     }
     const switchSetupView = (e) => {
     }
@@ -50,8 +49,8 @@ export function TwitchStreamSetup(){
             }
         });
         tmpArray.splice(tmpIndex,1);
-        setStreams(tmpArray);
-        setrenderhack(!renderhack);
+        var savearray = tmpArray.map(x => x);
+        setStreams(savearray);
     }
     
     if(!init)

@@ -12,5 +12,7 @@ namespace BobReactRemaster.JSONModels.Stream
         public string Response { get; set; }
         public string Trigger { get; set; }
 
+        public int StreamID { get; set; }
+
     }
 }

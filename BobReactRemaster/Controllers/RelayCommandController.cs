@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.JSONModels.Stream;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -34,11 +35,11 @@ namespace BobReactRemaster.Controllers
                 List<dynamic> ManualCommands = new List<dynamic>();
                 foreach (var command in stream.RelayIntervalCommands)
                 {
-                    IntervalCommands.Add(new  {ID= command.ID, Name= command.Name, Response= command.Response, Interval= command.AutoInverval});
+                    IntervalCommands.Add(new  {ID= command.ID, Name= command.Name, Response= command.Response, Interval= command.AutoInverval, Open = false});
                 }
                 foreach (var command in stream.RelayManualCommands)
                 {
-                    ManualCommands.Add(new { ID = command.ID, Name = command.Name, Response = command.Response, Trigger= command.Trigger });
+                    ManualCommands.Add(new { ID = command.ID, Name = command.Name, Response = command.Response, Trigger= command.Trigger, Open = false });
                 }
                 return Ok(new {IntervalCommands = IntervalCommands, ManualCommands = ManualCommands});
             }
@@ -50,6 +51,13 @@ namespace BobReactRemaster.Controllers
         [Authorize(Policy = Policies.User)]
         public IActionResult SaveManualCommand([FromBody] ManualCommandSaveData data)
         {
+            var command = _context.ManualCommands.FirstOrDefault(x => x.ID == data.CommandID);
+            if (command != null)
+            {
+                command.UpdateData(data);
+                _context.SaveChanges();
+                return Ok();
+            }
             return NotFound();
         }
         [HttpPost]
@@ -57,21 +65,74 @@ namespace BobReactRemaster.Controllers
         [Authorize(Policy = Policies.User)]
         public IActionResult CreateManualCommand([FromBody] ManualCommandSaveData data)
         {
+            var command = _context.ManualCommands.FirstOrDefault(x => x.Trigger == data.Trigger);
+            if (command == null)
+            {
+                command = new ManualCommand();
+                command.InitData(data);
+                _context.ManualCommands.Add(command);
+                _context.SaveChanges();
+                return Ok(new {ID= command.ID});
+            }
             return NotFound();
-        }
-
-        private int TryPersistManualCommand(ManualCommandSaveData data)
-        {
-
-            return 0;
         }
         [HttpPost]
         [Route("DeleteManualCommand")]
         [Authorize(Policy = Policies.User)]
         public IActionResult DeleteManualCommand([FromBody] CommandDeleteData data)
         {
+            var command = _context.ManualCommands.FirstOrDefault(x => x.ID == data.CommandId);
+            if (command != null)
+            {
+                _context.ManualCommands.Remove(command);
+                _context.SaveChanges();
+                return Ok();
+            }
             return NotFound();
         }
-
+        [HttpPost]
+        [Route("SaveIntervalCommand")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult SaveIntervalCommand([FromBody] IntervalCommandSaveData data)
+        {
+            var command = _context.IntervalCommands.FirstOrDefault(x => x.ID == data.CommandID);
+            if (command != null)
+            {
+                command.UpdateData(data);
+                _context.SaveChanges();
+                return Ok();
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        [Route("CreateIntervalCommand")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult CreateIntervalCommand([FromBody] IntervalCommandSaveData data)
+        {
+            var command = _context.IntervalCommands.FirstOrDefault(x => x.Name == data.Name);
+            if (command == null)
+            {
+                command = new IntervalCommand();
+                command.InitData(data);
+                _context.IntervalCommands.Add(command);
+                _context.SaveChanges();
+                return Ok(new { ID = command.ID });
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        [Route("DeleteIntervalCommand")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult DeleteIntervalCommand([FromBody] CommandDeleteData data)
+        {
+            var command = _context.IntervalCommands.FirstOrDefault(x => x.ID == data.CommandId);
+            if (command != null)
+            {
+                _context.IntervalCommands.Remove(command);
+                _context.SaveChanges();
+                return Ok();
+            }
+            return NotFound();
+        }
     }
 }

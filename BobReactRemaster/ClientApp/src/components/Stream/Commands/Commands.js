@@ -6,10 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusSquare  } from '@fortawesome/free-solid-svg-icons';
 
 export function Twitch_Commands(props){
-    const [StreamName,setStreamName] = useState(props.StreamName)
+    const [StreamName,setStreamName] = useState(props.StreamName);
+    const [StreamID,setStreamID] = useState(props.StreamID);
     const [init,setinit] = useState(false);
     const [IntervalCommands, setIntervalCommands] = useState(null);
-    const [ManualCommands, setManualCommands] = useState(null);
+    const [ManualCommands, setManualCommands] = useState([]);
+    const [rerender, setrerender] = useState(false);
 
     //add ServerQuery for Data before rendering
     //+ Sync "Query"
@@ -40,6 +42,48 @@ export function Twitch_Commands(props){
         loadDataFromServer();
         setinit(true);
     }
+    
+    const renderManualCommands = () => {
+        if(ManualCommands == null)
+        {
+            return null;
+        }
+        else
+        {
+            var Rendered = ManualCommands.map((e,index) => {
+                return <ManualCommand key={index} ManualCommandDelete={ManualCommandDelete} StreamID={StreamID} data={e} />
+            });
+            return Rendered;
+        }
+    } 
+    const addManualCommand = () =>
+    {
+        var tmp = ManualCommands;
+        var tmpnew = [{
+            id:0,
+            name:"name",
+            response:"antwort",
+            trigger:"auslöser",
+            open: true
+        }];
+        var mergedarray = tmp.concat(tmpnew);
+        setManualCommands(mergedarray);
+    }
+    const ManualCommandDelete = (id) => {
+
+        var tmpArray = ManualCommands;
+        var tmpIndex = null;
+        tmpArray.forEach((command,index) => 
+        {
+            if(command.id === id)
+            {
+                tmpIndex = index
+            }
+        });
+        tmpArray.splice(tmpIndex,1);
+        var savearray = tmpArray.map(x => x);
+        setManualCommands(savearray);
+    }
     const renderIntervalCommands = () => {
         if(IntervalCommands == null)
         {
@@ -48,34 +92,57 @@ export function Twitch_Commands(props){
         else
         {
             return IntervalCommands.map((e,index) => {
-                return <IntervalCommand key={index} data={e} />
+                return <IntervalCommand  IntervalCommandDelete={IntervalCommandDelete} StreamID={StreamID}  key={index} data={e} />
             });
         }
     }
-    const renderManualCommands = () => {
-        if(ManualCommands == null)
-        {
-            return null;
-        }
-        else
-        {
-            return ManualCommands.map((e,index) => {
-                return <ManualCommand key={index} data={e} />
-            });
-        }
-    } 
+    const addIntervalCommand = () =>
+    {
+        var tmp = IntervalCommands;
+        var tmpnew = [{
+            id:0,
+            name:"name",
+            response:"antwort",
+            interval:0,
+            open: true
+        }];
+        var mergedarray = tmp.concat(tmpnew);
+        setIntervalCommands(mergedarray);
+    }
+    const IntervalCommandDelete = (id) => {
 
+        var tmpArray = IntervalCommands;
+        var tmpIndex = null;
+        tmpArray.forEach((command,index) => 
+        {
+            if(command.id === id)
+            {
+                tmpIndex = index
+            }
+        });
+        tmpArray.splice(tmpIndex,1);
+        var savearray = tmpArray.map(x => x);
+        setIntervalCommands(savearray);
+    }
     return (<div className="streamCommands">
         <div className="inner_card">
             <div className="card_top">
                 <span className="h1">Trigger Commands</span>
-                <span className="addStreamBtn"><FontAwesomeIcon icon={faPlusSquare}/></span>
+                <span className="addStreamBtn" onClick={addManualCommand}><FontAwesomeIcon icon={faPlusSquare}/></span>
             </div>
-            <div class="card_body">
+            <div className="card_body">
                 {renderManualCommands()}
             </div>
         </div>
-        {renderIntervalCommands()}
+        <div className="inner_card">
+            <div className="card_top">
+                <span className="h1">Auto Commands</span>
+                <span className="addStreamBtn" onClick={addIntervalCommand}><FontAwesomeIcon icon={faPlusSquare}/></span>
+            </div>
+            <div className="card_body">
+                {renderIntervalCommands()}
+            </div>
+        </div>
         
     </div>);
 }

@@ -9,7 +9,7 @@ export function ManualCommand(props){
     const [CommandTrigger,setCommandTrigger] = useState(props.data.trigger);
     const [CommandID,setCommandID] = useState(props.data.id);
     const [DeleteState,setDeleteState] = useState(false);
-    const [modalOpen,setmodalOpen] = useState(false);
+    const [modalOpen,setmodalOpen] = useState(props.data.open);
     const ToggleEdit = () => {
         setmodalOpen(!modalOpen);
     }
@@ -27,7 +27,7 @@ export function ManualCommand(props){
             }).then(response => {
                 if(response.ok)
                 {
-                    props.StreamDelete(CommandID);
+                    props.ManualCommandDelete(CommandID);
                 }
             });
         }
@@ -46,6 +46,7 @@ export function ManualCommand(props){
             data[key] = value;
         });
         data["CommandID"] = parseInt(CommandID);
+        console.log(CommandID);
         if(CommandID > 0)
         {
             fetch("/RelayCommands/SaveManualCommand",{
@@ -58,6 +59,8 @@ export function ManualCommand(props){
             });
         }
         else{
+            data["StreamID"] = props.StreamID;
+            data["CommandID"] = 0;
             fetch("/RelayCommands/CreateManualCommand",{
                 method: "POST",
                 headers:{
@@ -68,7 +71,7 @@ export function ManualCommand(props){
             }).then(response => {
                 return response.json();
             }).then(json => {
-                setCommandID(json.CommandID);
+                setCommandID(json.id);
             });
         }    
     };

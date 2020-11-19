@@ -239,7 +239,8 @@ span.savebtn
 {
     display:inline-block;
 }
-.form input[type="text"]
+.form input[type="text"],
+.form input[type="number"]
 {
     width: calc(100% - 5px);
     font-size:14px;
