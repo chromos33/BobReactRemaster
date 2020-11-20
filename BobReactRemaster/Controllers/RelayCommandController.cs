@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Commands;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Stream;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +19,12 @@ namespace BobReactRemaster.Controllers
     public class RelayCommandController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMessageBus bus;
 
-        public RelayCommandController(ApplicationDbContext context)
+        public RelayCommandController(ApplicationDbContext context, IMessageBus bus)
         {
             _context = context;
+            this.bus = bus;
         }
 
         [HttpPost]
@@ -56,6 +60,7 @@ namespace BobReactRemaster.Controllers
             {
                 command.UpdateData(data);
                 _context.SaveChanges();
+                bus.Publish(new RefreshManualRelayCommands());
                 return Ok();
             }
             return NotFound();
@@ -72,6 +77,7 @@ namespace BobReactRemaster.Controllers
                 command.InitData(data);
                 _context.ManualCommands.Add(command);
                 _context.SaveChanges();
+                bus.Publish(new RefreshManualRelayCommands());
                 return Ok(new {ID= command.ID});
             }
             return NotFound();
@@ -86,6 +92,7 @@ namespace BobReactRemaster.Controllers
             {
                 _context.ManualCommands.Remove(command);
                 _context.SaveChanges();
+                bus.Publish(new RefreshManualRelayCommands());
                 return Ok();
             }
             return NotFound();
@@ -100,6 +107,7 @@ namespace BobReactRemaster.Controllers
             {
                 command.UpdateData(data);
                 _context.SaveChanges();
+                bus.Publish(new RefreshIntervalRelayCommands());
                 return Ok();
             }
             return NotFound();
@@ -116,6 +124,7 @@ namespace BobReactRemaster.Controllers
                 command.InitData(data);
                 _context.IntervalCommands.Add(command);
                 _context.SaveChanges();
+                bus.Publish(new RefreshIntervalRelayCommands());
                 return Ok(new { ID = command.ID });
             }
             return NotFound();
@@ -130,6 +139,7 @@ namespace BobReactRemaster.Controllers
             {
                 _context.IntervalCommands.Remove(command);
                 _context.SaveChanges();
+                bus.Publish(new RefreshIntervalRelayCommands());
                 return Ok();
             }
             return NotFound();

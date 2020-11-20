@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.EventBus.MessageDataTypes;
+using BobReactRemaster.Services.Chat.Command.Messages;
+using BobReactRemaster.Services.Chat.Commands;
+using BobReactRemaster.Services.Scheduler;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
@@ -24,6 +28,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
         public bool IsAuthed = false;
         private List<TwitchMessageQueue> Queues = new List<TwitchMessageQueue>();
         private const int BurstLimit = 4;
+        private CommandCenter commandCenter;
         #region Initialisation
         public TwitchChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, IRelayService relayService)
         {
@@ -135,6 +140,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             HandleQueueModeratorStatus(e);
             string MessageWithUserName = $"{e.ChatMessage.Username}: {e.ChatMessage.Message}";
             _relayService.RelayMessage(new RelayMessageFromTwitch(e.ChatMessage.Channel,MessageWithUserName));
+            commandCenter?.HandleCommandMessage(new TwitchCommandMessage(e.ChatMessage.Message,e.ChatMessage.Channel,e.ChatMessage.Username));
         }
 
         private void HandleQueueModeratorStatus(OnMessageReceivedArgs e)
@@ -173,6 +179,14 @@ namespace BobReactRemaster.Services.Chat.Twitch
                 {
                     InitTwitchClient();
                     Connect();
+                }
+
+                if (commandCenter == null)
+                {
+                    var internalScope = _scopeFactory.CreateScope();
+                    //TODO: Might Error because casting null is possible
+                    commandCenter = (CommandCenter)internalScope.ServiceProvider.GetServices<IHostedService>()
+                            .FirstOrDefault(x => x.GetType() == typeof(CommandCenter));
                 }
                 await Task.Delay(5000, stoppingToken);
             }

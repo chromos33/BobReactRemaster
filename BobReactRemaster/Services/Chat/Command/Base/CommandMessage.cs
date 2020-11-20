@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.EventBus.BaseClasses;
 
 namespace BobReactRemaster.Services.Chat.Commands.Base
 {
-    public class CommandMessage
+    public abstract class CommandMessage : BaseMessageData
     {
-        public string Message { get; }
+        public string Message { get; protected set; }
     }
 }

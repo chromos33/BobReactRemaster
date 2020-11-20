@@ -10,6 +10,7 @@ using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.Services;
 using BobReactRemaster.Services.Chat;
+using BobReactRemaster.Services.Chat.Commands;
 using BobReactRemaster.Services.Chat.Discord;
 using BobReactRemaster.Services.Chat.Twitch;
 using BobReactRemaster.Services.Scheduler;
@@ -78,6 +79,7 @@ namespace BobReactRemaster
             services.AddSingleton<IHostedService,TwitchChat>();
             services.AddSingleton<IHostedService,StreamCheckerService>();
             services.AddSingleton<IRelayService, RelayService>();
+            services.AddSingleton<IHostedService, CommandCenter>();
             services.AddSingleton<SubscriptionService, SubscriptionService>();
 
 
