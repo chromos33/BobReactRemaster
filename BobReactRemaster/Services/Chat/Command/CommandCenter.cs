@@ -9,6 +9,7 @@ using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.Services.Chat.Command.Commands;
 using BobReactRemaster.Services.Chat.Commands.Base;
 using BobReactRemaster.Services.Chat.Commands.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BobReactRemaster.Services.Chat.Commands
@@ -31,11 +32,13 @@ namespace BobReactRemaster.Services.Chat.Commands
             bus.RegisterToEvent<RefreshManualRelayCommands>(RefreshManualCommands);
             bus.RegisterToEvent<RefreshIntervalRelayCommands>(RefreshIntervalCommands);
             RefreshManualCommands();
+            RefreshIntervalCommands();
         }
 
         private void RefreshIntervalCommands(RefreshIntervalRelayCommands obj = null)
         {
-            throw new NotImplementedException();
+            IntervalCommands = new List<ICommand>();
+            //TODO add IntervalCommand (rename to prevent confuction with Data.Models.Commands.IntervalCommand) implementing ICommand
         }
 
         private void RefreshManualCommands(RefreshManualRelayCommands obj = null)
@@ -43,9 +46,9 @@ namespace BobReactRemaster.Services.Chat.Commands
             ManualCommands = new List<ICommand>();
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            foreach (var ManualCommand in context.ManualCommands)
+            foreach (var ManualCommand in context.ManualCommands.Include(x => x.LiveStream))
             {
-                ManualCommands.Add(new ManualCommand(ManualCommand.Trigger,ManualCommand.Response,bus));
+                ManualCommands.Add(new ManualCommand(ManualCommand.Trigger,ManualCommand.Response,bus,ManualCommand.LiveStream));
             }
         }
 

@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Stream.Twitch;
+using BobReactRemaster.EventBus.BaseClasses;
+using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Twitch;
 
 namespace BobReactRemaster.Data.Models.Stream
@@ -65,6 +67,14 @@ namespace BobReactRemaster.Data.Models.Stream
         {
             Stopped = DateTime.Now;
             State = StreamState.Stopped;
+        }
+
+        public override BaseMessageData getRelayMessageData(string message)
+        {
+            TwitchRelayMessageData TwitchMessageData = new TwitchRelayMessageData();
+            TwitchMessageData.Message = message;
+            TwitchMessageData.StreamName = StreamName;
+            return TwitchMessageData;
         }
 
         public void SetRelayChannel(TextChannel channel)

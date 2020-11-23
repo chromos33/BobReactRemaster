@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.Services.Chat.Command.Messages;
 using BobReactRemaster.Services.Chat.Commands.Base;
@@ -15,12 +16,14 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
         private string Trigger;
         private string Response;
         private readonly IMessageBus Bus;
+        private readonly LiveStream _livestream;
 
-        public ManualCommand(string trigger, string response,IMessageBus bus)
+        public ManualCommand(string trigger, string response,IMessageBus bus,LiveStream livestream)
         {
             Trigger = trigger;
             Response = response;
             Bus = bus;
+            _livestream = livestream;
         }
         public bool IsTriggerable(CommandMessage msg)
         {
@@ -29,7 +32,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
 
         public void TriggerCommand()
         {
-            throw new NotImplementedException();
+            Bus.Publish(_livestream.getRelayMessageData(Response));
         }
     }
 }

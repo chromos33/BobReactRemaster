@@ -19,13 +19,14 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private DateTime NextExecutionDate;
         private IServiceScopeFactory _scopeFactory;
         private int CredentialID;
+        private int? ID;
         private readonly WebServerSettingsOptions _options;
         private bool isRemoveable = false;
-        public TwitchOAuthRefreshTask(DateTime nextExecutionDate, int CredentialID, IServiceScopeFactory scopeFactory = null)
+        public TwitchOAuthRefreshTask(DateTime nextExecutionDate,int credentialID, IServiceScopeFactory scopeFactory = null)
         {
             NextExecutionDate = nextExecutionDate;
             _scopeFactory = scopeFactory;
-            this.CredentialID = CredentialID;
+            CredentialID = credentialID;
         }
 
         public void setScopeFactory(IServiceScopeFactory factory)
@@ -35,7 +36,28 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
 
         public bool isThisTask(int ID)
         {
-            return ID == CredentialID;
+            return ID == this.ID;
+        }
+
+        public bool InitializeID(int ID)
+        {
+            if (this.ID == null)
+            {
+                this.ID = ID;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool isThisTask(IScheduledTask Task)
+        {
+            return Task.GetID() == CredentialID;
+        }
+
+        public int? GetID()
+        {
+            return CredentialID;
         }
 
         public bool Executable()

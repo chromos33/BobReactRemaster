@@ -32,10 +32,7 @@ namespace BobReactRemaster.Services.Chat.Discord
             );
             if (TwitchStream != null)
             {
-                TwitchRelayMessageData TwitchMessageData = new TwitchRelayMessageData();
-                TwitchMessageData.Message = Message;
-                TwitchMessageData.StreamName = TwitchStream.StreamName;
-                List.Add(TwitchMessageData);
+                List.Add(TwitchStream.getRelayMessageData(Message));
             }
 
 

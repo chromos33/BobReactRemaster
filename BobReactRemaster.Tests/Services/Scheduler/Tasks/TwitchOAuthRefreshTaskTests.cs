@@ -16,13 +16,13 @@ namespace BobReactRemaster.Tests.Services.Scheduler.Tasks
         [Test]
         public void Executable_ValidTaskWithDateInPast_TaskIsExecutable()
         {
-            TwitchOAuthRefreshTask task = new TwitchOAuthRefreshTask(DateTime.Now.Subtract(TimeSpan.FromSeconds(1)),5,null);
+            TwitchOAuthRefreshTask task = new TwitchOAuthRefreshTask(DateTime.Now.Subtract(TimeSpan.FromSeconds(1)),5);
             Assert.IsTrue(task.Executable());
         }
         [Test]
         public void Executable_ValidTaskWithDateInFuture_TaskIsNotExecutable()
         {
-            TwitchOAuthRefreshTask task = new TwitchOAuthRefreshTask(DateTime.Now.Add(TimeSpan.FromMinutes(5)),5,null);
+            TwitchOAuthRefreshTask task = new TwitchOAuthRefreshTask(DateTime.Now.Add(TimeSpan.FromMinutes(5)),5);
             Assert.IsFalse(task.Executable());
         }
     }

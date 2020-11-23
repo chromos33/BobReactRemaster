@@ -13,5 +13,8 @@ namespace BobReactRemaster.Services.Scheduler
         public bool Removeable();
         public void setScopeFactory(IServiceScopeFactory factory);
         public bool isThisTask(int ID);
+        public bool isThisTask(IScheduledTask Task);
+        public int? GetID();
+        public bool InitializeID(int ID);
     }
 }

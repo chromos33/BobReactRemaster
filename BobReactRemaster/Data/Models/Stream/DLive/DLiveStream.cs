@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Discord;
+using BobReactRemaster.EventBus.BaseClasses;
 
 namespace BobReactRemaster.Data.Models.Stream.DLive
 {
@@ -25,6 +26,11 @@ namespace BobReactRemaster.Data.Models.Stream.DLive
         }
 
         public override void StopStream()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override BaseMessageData getRelayMessageData(string message)
         {
             throw new NotImplementedException();
         }

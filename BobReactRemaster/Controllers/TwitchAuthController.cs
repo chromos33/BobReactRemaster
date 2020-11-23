@@ -135,7 +135,7 @@ namespace BobReactRemaster.Controllers
                     try
                     {
                         var scheduler = (SchedulerService)schedulerservice;
-                        scheduler.AddTask(new TwitchOAuthRefreshTask(Credential.ExpireDate, Credential.id),Credential.id);
+                        scheduler.AddTask(new TwitchOAuthRefreshTask(Credential.ExpireDate,Credential.id));
                     }
                     catch (InvalidCastException e)
                     {

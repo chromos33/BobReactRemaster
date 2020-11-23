@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Commands;
+using BobReactRemaster.EventBus.BaseClasses;
 
 namespace BobReactRemaster.Data.Models.Stream
 {
@@ -31,6 +32,9 @@ namespace BobReactRemaster.Data.Models.Stream
         public abstract void StartStream();
         public abstract void SetStreamStarted(DateTime date);
         public abstract void StopStream();
+
+        public abstract BaseMessageData getRelayMessageData(string message);
+        
 
         //add Value Getter for default data for Streams
         public string GetSubscriptionCreatedMessage()

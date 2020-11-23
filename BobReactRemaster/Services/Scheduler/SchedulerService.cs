@@ -63,9 +63,9 @@ namespace BobReactRemaster.Services.Scheduler
             Tasks.RemoveAll(x => x.Removeable());
         }
 
-        public void AddTask(IScheduledTask Task,int CredID)
+        public void AddTask(IScheduledTask Task)
         {
-            if (Tasks.All(x => !x.isThisTask(CredID)))
+            if (Tasks.All(x => !x.isThisTask(Task)))
             {
                 Task.setScopeFactory(_scopeFactory);
                 Tasks.Add(Task);
