@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.Data.Models.Stream;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BobReactRemaster.Services.Scheduler.Tasks
@@ -11,9 +12,15 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private IServiceScopeFactory factory;
         private int? IntervalID;
         private DateTime NextExecutionDate;
-        public IntervalCommandTask()
+        private bool removalQueued;
+        private int interval;
+        private LiveStream stream;
+        public IntervalCommandTask(int ID,int Interval, LiveStream stream)
         {
-
+            IntervalID = ID;
+            interval = Interval;
+            this.stream = stream;
+            NextExecutionDate = DateTime.Now.Add(TimeSpan.FromMinutes(interval));
         }
         public bool Executable()
         {
@@ -22,12 +29,17 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
 
         public void Execute()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("IntervalCommandExecuted");
         }
 
         public bool Removeable()
         {
-            return true;
+            return removalQueued;
+        }
+
+        public void QueueRemoval()
+        {
+            removalQueued = true;
         }
 
         public void setScopeFactory(IServiceScopeFactory Factory)

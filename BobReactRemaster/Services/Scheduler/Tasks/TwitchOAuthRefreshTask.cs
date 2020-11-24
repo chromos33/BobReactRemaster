@@ -52,7 +52,7 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
 
         public bool isThisTask(IScheduledTask Task)
         {
-            return Task.GetID() == CredentialID;
+            return Task == this;
         }
 
         public int? GetID()

@@ -11,14 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BobReactRemaster.Services.Chat.Command.Commands
 {
-    public class ManualCommand: ICommand
+    public class ManualRelayCommand: ICommand
     {
         private string Trigger;
         private string Response;
         private readonly IMessageBus Bus;
         private readonly LiveStream _livestream;
 
-        public ManualCommand(string trigger, string response,IMessageBus bus,LiveStream livestream)
+        public ManualRelayCommand(string trigger, string response,IMessageBus bus,LiveStream livestream)
         {
             Trigger = trigger;
             Response = response;
