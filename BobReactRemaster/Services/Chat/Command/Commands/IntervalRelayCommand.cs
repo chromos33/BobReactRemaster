@@ -12,15 +12,15 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
 {
     public class IntervalRelayCommand: IIntervalCommand,IDisposable
     {
-        public IntervalCommandTask Task { get; }
+        public IntervalCommandRelayTask RelayTask { get; }
         public IntervalRelayCommand(IntervalCommand command,int id)
         {
-            Task = new IntervalCommandTask(id,command.AutoInverval,command.LiveStream);
+            RelayTask = new IntervalCommandRelayTask(id,command.AutoInverval,command.LiveStream,command.Response);
         }
 
         public void Dispose()
         {
-            Task?.QueueRemoval();
+            RelayTask?.QueueRemoval();
         }
     }
 }

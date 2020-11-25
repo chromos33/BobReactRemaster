@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Stream;
+using BobReactRemaster.EventBus.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BobReactRemaster.Services.Scheduler.Tasks
 {
-    public class IntervalCommandTask: IScheduledTask
+    public class IntervalCommandRelayTask: IScheduledTask
     {
         private IServiceScopeFactory factory;
         private int? IntervalID;
@@ -15,11 +16,13 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private bool removalQueued;
         private int interval;
         private LiveStream stream;
-        public IntervalCommandTask(int ID,int Interval, LiveStream stream)
+        private string Message;
+        public IntervalCommandRelayTask(int ID,int Interval, LiveStream stream, string message)
         {
             IntervalID = ID;
             interval = Interval;
             this.stream = stream;
+            Message = message;
             NextExecutionDate = DateTime.Now.Add(TimeSpan.FromMinutes(interval));
         }
         public bool Executable()
@@ -29,7 +32,13 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
 
         public void Execute()
         {
-            Console.WriteLine("IntervalCommandExecuted");
+            var scope = factory.CreateScope();
+            IMessageBus bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
+            if (bus != null)
+            {
+                bus.Publish(stream.getRelayMessageData(Message));
+            }
+
         }
 
         public bool Removeable()

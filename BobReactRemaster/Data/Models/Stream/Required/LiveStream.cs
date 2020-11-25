@@ -34,6 +34,34 @@ namespace BobReactRemaster.Data.Models.Stream
         public abstract void StopStream();
 
         public abstract BaseMessageData getRelayMessageData(string message);
+
+        public string GetUptimeMessage(DateTime StartTime)
+        {
+            TimeSpan duration = DateTime.Now.Subtract(StartTime);
+            string DurationText = "";
+            if (duration.Days > 0)
+            {
+                DurationText += $"{duration.Days} ";
+                if (duration.Days == 1)
+                {
+                    DurationText += "Tag";
+                }
+                else
+                {
+                    DurationText += "Tagen";
+                }
+            }
+
+            if (duration.Hours > 0)
+            {
+                DurationText += $"{duration.Hours} Stunden";
+            }
+            if (duration.Minutes > 0)
+            {
+                DurationText += $"{duration.Minutes} Minuten";
+            }
+            return $"Stream läuft seit {DurationText}";
+        }
         
 
         //add Value Getter for default data for Streams

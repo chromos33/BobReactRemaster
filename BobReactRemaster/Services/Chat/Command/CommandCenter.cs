@@ -60,7 +60,7 @@ namespace BobReactRemaster.Services.Chat.Commands
             {
                 index++;
                 var command = new IntervalRelayCommand(IntervalCommand, index);
-                scheduler.AddTask(command.Task);
+                scheduler.AddTask(command.RelayTask);
                 IntervalCommands.Add(command);
             }
             //TODO add IntervalCommand (rename to prevent confusion with Data.Models.Commands.IntervalCommand) implementing ICommand
