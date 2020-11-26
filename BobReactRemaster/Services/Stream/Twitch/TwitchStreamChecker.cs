@@ -82,6 +82,7 @@ namespace BobReactRemaster.Services.Stream.Twitch
                 var requestData = requestDataStreams.FirstOrDefault(x => x.UserId == stream.StreamID);
                 if (requestData != null)
                 {
+                    stream.SetStreamStarted(requestData.StartedAt);
                     if (stream.State == StreamState.Stopped)
                     {
                         stream.StartStream();

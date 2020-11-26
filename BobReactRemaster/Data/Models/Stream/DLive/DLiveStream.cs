@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.EventBus.BaseClasses;
+using BobReactRemaster.Services.Scheduler;
 
 namespace BobReactRemaster.Data.Models.Stream.DLive
 {
@@ -31,6 +32,11 @@ namespace BobReactRemaster.Data.Models.Stream.DLive
         }
 
         public override BaseMessageData getRelayMessageData(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IScheduledTask GetUpTimeTask()
         {
             throw new NotImplementedException();
         }

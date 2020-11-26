@@ -16,5 +16,8 @@ namespace BobReactRemaster.Services.Scheduler
         public bool isThisTask(IScheduledTask Task);
         public int? GetID();
         public bool InitializeID(int ID);
+        public void QueueRemoval();
+        public bool isRefreshableTask();
+
     }
 }

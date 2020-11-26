@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.EventBus.BaseClasses;
+using BobReactRemaster.Services.Scheduler;
 
 namespace BobReactRemaster.Data.Models.Stream
 {
@@ -20,6 +21,7 @@ namespace BobReactRemaster.Data.Models.Stream
         public TextChannel RelayChannel { get; protected set; }
 
         public bool RelayEnabled { get; set; }
+        public int UpTimeInterval { get; set; }
 
         public string StreamName { get; set; }
         
@@ -69,5 +71,7 @@ namespace BobReactRemaster.Data.Models.Stream
         {
             return $"Der Stream {StreamName} wurde hinzugefügt. Du kannst ihn im Interface abonnieren";
         }
+
+        public abstract IScheduledTask GetUpTimeTask();
     }
 }

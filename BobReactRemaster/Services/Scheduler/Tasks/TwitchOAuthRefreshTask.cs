@@ -50,6 +50,16 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             return false;
         }
 
+        public void QueueRemoval()
+        {
+            //Can never be Queued
+        }
+
+        public bool isRefreshableTask()
+        {
+            return false;
+        }
+
         public bool isThisTask(IScheduledTask Task)
         {
             return Task == this;

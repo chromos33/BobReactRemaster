@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.EventBus.MessageDataTypes;
+using BobReactRemaster.EventBus.MessageDataTypes.Relay.Twitch;
 using BobReactRemaster.Services.Chat.Command.Messages;
 using BobReactRemaster.Services.Chat.Commands;
 using BobReactRemaster.Services.Scheduler;
@@ -79,6 +81,15 @@ namespace BobReactRemaster.Services.Chat.Twitch
             }
             client.SendMessage(e.Channel,"Relay enabled");
             _relayService.RelayMessage(new RelayMessageFromTwitch(e.Channel,"Relay enabled"));
+            //Add Uptime Task
+            var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            TwitchStream stream = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
+            if (stream != null)
+            {
+                MessageBus.Publish(new RelayStartedMessageData(stream));
+            }
+            
         }
         private void ChannelLeft(object sender, OnLeftChannelArgs e)
         {
@@ -89,6 +100,14 @@ namespace BobReactRemaster.Services.Chat.Twitch
                 {
                     Queues.Remove(tmp);
                 }
+                //Remove UptimeTask for Stream
+            }
+            var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            TwitchStream stream = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
+            if (stream != null)
+            {
+                MessageBus.Publish(new RelayStoppedMessageData(stream));
             }
         }
 

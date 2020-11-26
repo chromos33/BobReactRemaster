@@ -51,6 +51,11 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             removalQueued = true;
         }
 
+        public bool isRefreshableTask()
+        {
+            return true;
+        }
+
         public void setScopeFactory(IServiceScopeFactory Factory)
         {
             factory = Factory;

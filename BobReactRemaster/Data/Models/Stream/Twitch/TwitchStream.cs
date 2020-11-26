@@ -10,6 +10,8 @@ using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Twitch;
+using BobReactRemaster.Services.Scheduler;
+using BobReactRemaster.Services.Scheduler.Tasks;
 
 namespace BobReactRemaster.Data.Models.Stream
 {
@@ -55,7 +57,6 @@ namespace BobReactRemaster.Data.Models.Stream
         public override void StartStream()
         {
             State = StreamState.Running;
-            SetStreamStarted(DateTime.Now);
         }
 
         public override void SetStreamStarted(DateTime date)
@@ -75,6 +76,11 @@ namespace BobReactRemaster.Data.Models.Stream
             TwitchMessageData.Message = message;
             TwitchMessageData.StreamName = StreamName;
             return TwitchMessageData;
+        }
+
+        public override IScheduledTask GetUpTimeTask()
+        {
+            return new StreamUptimeRelayTask(this,Started,UpTimeInterval);
         }
 
         public void SetRelayChannel(TextChannel channel)
