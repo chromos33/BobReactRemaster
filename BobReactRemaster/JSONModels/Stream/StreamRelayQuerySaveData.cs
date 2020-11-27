@@ -6,5 +6,7 @@
         public bool RelayEnabled { get; set; }
         public bool RandomRelayEnabled { get; set; }
         public int RelayChannelID { get; set; }
+        
+        public int AutoInterval { get; set; }
     }
 }

@@ -33,10 +33,14 @@ namespace BobReactRemaster.Controllers
                     x.LiveStreamID == null
                 );
                 List<dynamic> returnChannels = new List<dynamic>();
+                int index = 0;
+                int selectedChannelIndex = 0;
                 foreach (var channel in permanentchannels)
                 {
+                    index++;
                     if (channel.LiveStreamID != null && channel.LiveStreamID == data.StreamID)
                     {
+                        selectedChannelIndex = index;
                         returnChannels.Add(new {ChannelName= channel.Name, ChannelID=channel.id,Active=true});
                     }
                     else
@@ -45,7 +49,7 @@ namespace BobReactRemaster.Controllers
                     }
                     
                 }
-                return Ok(new { Channels = returnChannels, RelayEnabled = stream.RelayEnabled, RandomRelayEnabled = stream.VariableRelayChannel });
+                return Ok(new {selectedChannelIndex = selectedChannelIndex, Channels = returnChannels, RelayEnabled = stream.RelayEnabled, RandomRelayEnabled = stream.VariableRelayChannel, UpTimeInterval = stream.UpTimeInterval });
             }
 
             return NotFound();
@@ -60,6 +64,7 @@ namespace BobReactRemaster.Controllers
             {
                 stream.RelayEnabled = data.RelayEnabled;
                 stream.VariableRelayChannel = data.RandomRelayEnabled;
+                stream.UpTimeInterval = data.AutoInterval;
                 var channel = _context.DiscordTextChannels.AsQueryable().FirstOrDefault(x =>
                    x.IsPermanentRelayChannel &&
                    (x.LiveStreamID == data.StreamID ||
@@ -72,7 +77,7 @@ namespace BobReactRemaster.Controllers
                     stream.SetRelayChannel(channel);
                 }
 
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return Ok();
             }
             return NotFound();

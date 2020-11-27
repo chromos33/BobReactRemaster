@@ -39,28 +39,29 @@ namespace BobReactRemaster.Data.Models.Stream
 
         public string GetUptimeMessage(DateTime StartTime)
         {
-            TimeSpan duration = DateTime.Now.Subtract(StartTime);
+            //Timezone Difference remove 1 hour
+            TimeSpan duration = DateTime.Now.Subtract(StartTime).Subtract(TimeSpan.FromHours(1));
             string DurationText = "";
             if (duration.Days > 0)
             {
                 DurationText += $"{duration.Days} ";
                 if (duration.Days == 1)
                 {
-                    DurationText += "Tag";
+                    DurationText += "Tag ";
                 }
                 else
                 {
-                    DurationText += "Tagen";
+                    DurationText += "Tagen ";
                 }
             }
 
             if (duration.Hours > 0)
             {
-                DurationText += $"{duration.Hours} Stunden";
+                DurationText += $"{duration.Hours} Stunden ";
             }
             if (duration.Minutes > 0)
             {
-                DurationText += $"{duration.Minutes} Minuten";
+                DurationText += $"{duration.Minutes} Minuten ";
             }
             return $"Stream läuft seit {DurationText}";
         }

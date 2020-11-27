@@ -10,7 +10,14 @@ export function Twitch_Relay(props){
     const [dataLoaded,setdataLoaded] = useState(false);
     const [channels,setchannels] = useState(null);
     const [currentchannel,setcurrentchannelID] = useState(0);
+    const [UpTimeInterval,setUpTimeInterval] = useState(0);
 
+    const handleUptimeIntervalChange = (e) => {
+        if(e.target.value !== "")
+        {
+            setUpTimeInterval(e.target.value);
+        }
+    }
     //add ServerQuery for Data before rendering
     //+ Sync "Query"
     const loadDataFromServer = async () => {
@@ -32,6 +39,8 @@ export function Twitch_Relay(props){
             setrandomrelaychannelstate(json.randomRelayEnabled);
             setrelaystate(json.relayEnabled);
             setdataLoaded(true);
+            setUpTimeInterval(json.upTimeInterval);
+            setcurrentchannelID(json.selectedChannelIndex);
         }).catch((error) => {
             setinit(false);
         });
@@ -65,7 +74,8 @@ export function Twitch_Relay(props){
                 StreamID:props.StreamID,
                 RelayEnabled:tmpRelayEnabled,
                 RandomRelayEnabled:tmprandomrelaychannelstate,
-                RelayChannelID:tosavechannel
+                RelayChannelID:tosavechannel,
+                AutoInterval: parseInt(UpTimeInterval)
             })
         });
         //TODO: Maybe add reload data on 404 aka if tried to add channel that has been taken since this loaded for the first time aka Feedback
@@ -116,6 +126,10 @@ export function Twitch_Relay(props){
                 <div className="status" style={{marginBottom:"15px"}}>
                     <span>Aktiv</span>
                     <FontAwesomeIcon className={relaystatecssclass} icon={faPowerOff} onClick={() => {setrelaystate(!relaystate)}}/>
+                </div>
+                <div className="UpTimeInterval" style={{marginBottom:"15px"}}>
+                    <span>Uptime Ansagen Intervall (in Minuten, bei 0 aus)</span><br/>
+                    <input type="number" value={UpTimeInterval} onChange={e => handleUptimeIntervalChange(e)}/>
                 </div>
                 <div className="randomrelaystate" style={{marginBottom:"15px"}}>
                     <span>Random Relay Channel</span>

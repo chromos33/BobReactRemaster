@@ -61,11 +61,13 @@ namespace BobReactRemaster.Services.Chat.Commands
             {
                 RefreshIntervalCommands();
                 var Storage = StreamTasksStorage.FirstOrDefault(x => x.StreamName.ToLower() == obj.Stream.StreamName.ToLower());
-                if (Storage != null)
+                if (Storage == null)
                 {
-                    var UpTimeTask = obj.Stream.GetUpTimeTask();
-                    Storage.AddTask(UpTimeTask);
+                    Storage = new StreamTasksStorage(obj.Stream.StreamName);
                 }
+                var UpTimeTask = obj.Stream.GetUpTimeTask();
+                Storage.AddTask(UpTimeTask);
+                scheduler.AddTask(UpTimeTask);
             }
             
         }
