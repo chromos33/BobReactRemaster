@@ -30,7 +30,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
             return msg.Message.StartsWith(Trigger);
         }
 
-        public void TriggerCommand()
+        public void TriggerCommand(CommandMessage msg)
         {
             Bus.Publish(_livestream.getRelayMessageData(Response));
         }

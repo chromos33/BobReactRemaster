@@ -118,7 +118,7 @@ namespace BobReactRemaster.Services.Chat.Commands
             {
                 if (command.IsTriggerable(msg))
                 {
-                    command.TriggerCommand();
+                    command.TriggerCommand(msg);
                 }
             }
         }

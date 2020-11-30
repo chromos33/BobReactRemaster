@@ -10,7 +10,7 @@ namespace BobReactRemaster.Services.Chat.Commands.Interfaces
     {
         bool IsTriggerable(CommandMessage msg);
 
-        public void TriggerCommand();
+        public void TriggerCommand(CommandMessage msg);
     }
 
 
