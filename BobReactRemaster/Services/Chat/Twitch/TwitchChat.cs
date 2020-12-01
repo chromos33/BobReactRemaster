@@ -12,6 +12,7 @@ using BobReactRemaster.EventBus.MessageDataTypes.Relay.Twitch;
 using BobReactRemaster.Services.Chat.Command.Messages;
 using BobReactRemaster.Services.Chat.Commands;
 using BobReactRemaster.Services.Scheduler;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TwitchLib.Client;
@@ -84,7 +85,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             //Add Uptime Task
             var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            TwitchStream stream = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
+            TwitchStream stream = context.TwitchStreams.Include(x => x.APICredential).FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
             if (stream != null)
             {
                 MessageBus.Publish(new RelayStartedMessageData(stream));
@@ -104,7 +105,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             }
             var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            TwitchStream stream = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
+            TwitchStream stream = context.TwitchStreams.Include(x => x.APICredential).FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
             if (stream != null)
             {
                 MessageBus.Publish(new RelayStoppedMessageData(stream));

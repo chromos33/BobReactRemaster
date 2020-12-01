@@ -48,7 +48,7 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
             string state = Guid.NewGuid().ToString();
             validationKey = state;
             string returnurl = getTwitchReturnURL(webserverAddress);
-            string link = $"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id={ClientID}&redirect_uri={returnurl}";
+            string link = $"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id={ClientID}&redirect_uri={returnurl}&force_verify=true";
             if (!string.IsNullOrEmpty(data.Scopes))
             {
                 link += "&scope=";

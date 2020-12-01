@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.EventBus.BaseClasses;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services.Chat.Commands.Interfaces;
 using BobReactRemaster.Services.Scheduler;
 
 namespace BobReactRemaster.Data.Models.Stream.DLive
@@ -37,6 +39,16 @@ namespace BobReactRemaster.Data.Models.Stream.DLive
         }
 
         public override IScheduledTask GetUpTimeTask()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool HasStaticCommands()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<ICommand> GetStaticCommands(IMessageBus bus)
         {
             throw new NotImplementedException();
         }

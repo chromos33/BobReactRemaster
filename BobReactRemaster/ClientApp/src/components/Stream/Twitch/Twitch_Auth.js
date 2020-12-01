@@ -5,9 +5,8 @@ export function Twitch_Auth(props){
     const [StreamName,setStreamName] = useState(props.StreamName)
 
     const TwitchScopes = [
-        "bits:read",
-        "channel:manage:broadcast",
-        "clips:edit"
+        "user:edit",
+        "channel:manage:broadcast"
     ];
     var Scopes = "";
     const toggleScope = (e) => {
@@ -34,7 +33,8 @@ export function Twitch_Auth(props){
                     StreamName: StreamName,
                     ClientID: "null",
                     Secret: "null",
-                    Scopes: Scopes
+                    Scopes: Scopes,
+                    ChatUserName: StreamName
                 })
             
         }).then(response => {

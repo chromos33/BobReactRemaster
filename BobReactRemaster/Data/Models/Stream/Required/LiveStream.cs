@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.EventBus.BaseClasses;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services.Chat.Commands.Interfaces;
 using BobReactRemaster.Services.Scheduler;
 
 namespace BobReactRemaster.Data.Models.Stream
@@ -74,5 +76,7 @@ namespace BobReactRemaster.Data.Models.Stream
         }
 
         public abstract IScheduledTask GetUpTimeTask();
+        public abstract bool HasStaticCommands();
+        public abstract IEnumerable<ICommand> GetStaticCommands(IMessageBus bus);
     }
 }

@@ -33,6 +33,8 @@ namespace BobReactRemaster.Services.Chat.Commands
         private readonly IMessageBus bus;
         private SchedulerService scheduler;
         private List<StreamTasksStorage> StreamTasksStorage = new List<StreamTasksStorage>();
+        private List<ICommand> ManualCommands = new List<ICommand>();
+        private List<ICommand> StaticStreamCommands = new List<ICommand>();
         public CommandCenter(IServiceScopeFactory scopeFactory, IMessageBus bus)
         {
             _scopeFactory = scopeFactory;
@@ -69,6 +71,12 @@ namespace BobReactRemaster.Services.Chat.Commands
                 Storage.AddTask(UpTimeTask);
                 scheduler.AddTask(UpTimeTask);
             }
+
+            if (obj.Stream.HasStaticCommands())
+            {
+                var Commands = obj.Stream.GetStaticCommands(bus);
+                StaticStreamCommands.AddRange(Commands);
+            }
             
         }
 
@@ -95,7 +103,6 @@ namespace BobReactRemaster.Services.Chat.Commands
                 }
                 
             }
-            //TODO add IntervalCommand (rename to prevent confusion with Data.Models.Commands.IntervalCommand) implementing ICommand
         }
 
         private void RefreshManualCommands(RefreshManualRelayCommands obj = null)
@@ -109,12 +116,17 @@ namespace BobReactRemaster.Services.Chat.Commands
             }
         }
 
-        private List<ICommand> ManualCommands = new List<ICommand>();
-        private List<ICommand> StaticCommands = new List<ICommand>();
+        
 
         public void HandleCommandMessage(CommandMessage msg)
         {
-            foreach (var command in ManualCommands)
+            HandleCommandList(ManualCommands,msg);
+            HandleCommandList(StaticStreamCommands,msg);
+        }
+
+        private void HandleCommandList(IEnumerable<ICommand> List,CommandMessage msg)
+        {
+            foreach (var command in List)
             {
                 if (command.IsTriggerable(msg))
                 {

@@ -8,8 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.EventBus.BaseClasses;
+using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Twitch;
+using BobReactRemaster.Services.Chat.Command.Commands.Twitch;
+using BobReactRemaster.Services.Chat.Commands.Interfaces;
 using BobReactRemaster.Services.Scheduler;
 using BobReactRemaster.Services.Scheduler.Tasks;
 
@@ -81,6 +84,20 @@ namespace BobReactRemaster.Data.Models.Stream
         public override IScheduledTask GetUpTimeTask()
         {
             return new StreamUptimeRelayTask(this,Started,UpTimeInterval);
+        }
+
+        public override bool HasStaticCommands()
+        {
+            return APICredential != null;
+        }
+
+        public override IEnumerable<ICommand> GetStaticCommands(IMessageBus bus)
+        {
+            List<ICommand> Commands = new List<ICommand>();
+
+            Commands.Add(new TwitchStreamTitleChangeCommand(bus,this));
+            Commands.Add(new TwitchGameChangeCommand(bus,this));
+            return Commands;
         }
 
         public void SetRelayChannel(TextChannel channel)
