@@ -20,16 +20,40 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
         private readonly string Trigger = "!title";
         private readonly IMessageBus Bus;
         private readonly TwitchStream _livestream;
-        private HttpClient Client = new HttpClient();
+        private HttpClient Client;
 
-        public TwitchStreamTitleChangeCommand(IMessageBus bus, TwitchStream livestream)
+        public string UpdatedMessage
+        {
+            get { return "Title updated"; }
+        }
+
+        public string ErrorMessage
+        {
+            get { return "Something went wrong"; }
+        }
+
+        public string HelpMessage
+        {
+            get { return "Kein Titel gefunden. Command: '!title [Titel]"; }
+        }
+
+        public TwitchStreamTitleChangeCommand(IMessageBus bus, TwitchStream livestream, HttpClient client = null)
         {
             Bus = bus;
             _livestream = livestream;
+            if (client == null)
+            {
+                Client = new HttpClient();
+            }
+            else
+            {
+                Client = client;
+            }
             Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {livestream.APICredential.Token}");
             Client.DefaultRequestHeaders.Add("Client-Id", $"{livestream.APICredential.ClientID}");
             
         }
+
 
         public bool IsTriggerable(CommandMessage msg)
         {
@@ -46,7 +70,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
             else
             {
 
-                var busMessage =_livestream.getRelayMessageData("Kein Titel gefunden. Command: '!title [Titel]");
+                var busMessage =_livestream.getRelayMessageData(HelpMessage);
                 Bus.Publish(busMessage);
             }
         }
@@ -59,14 +83,15 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
             BaseMessageData busMessage = null;
             if (result.IsSuccessStatusCode)
             {
-                busMessage = _livestream.getRelayMessageData("Title updated");
+                busMessage = _livestream.getRelayMessageData(UpdatedMessage);
             }
             else
             {
-                busMessage = _livestream.getRelayMessageData("Something went wrong");
+                busMessage = _livestream.getRelayMessageData(ErrorMessage);
             }
             Bus.Publish(busMessage);
             return;
         }
+
     }
 }
