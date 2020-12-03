@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using BobReactRemaster.APIs;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.Interfaces;
@@ -21,11 +22,37 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
         private readonly string Trigger = "!game";
         private readonly IMessageBus Bus;
         private readonly TwitchStream _livestream;
-        private HttpClient Client = new HttpClient();
-        public TwitchGameChangeCommand(IMessageBus bus, TwitchStream livestream)
+        private HttpClient Client;
+        public string UpdatedMessage
+        {
+            get { return "Game updated"; }
+        }
+
+        public string ErrorMessage
+        {
+            get { return "Something went wrong"; }
+        }
+
+        public string HelpMessage
+        {
+            get { return "Kein Titel gefunden. Command: '!title [Titel]"; }
+        }
+        public string NotFoundMessage
+        {
+            get { return "Game updated"; }
+        }
+        public TwitchGameChangeCommand(IMessageBus bus, TwitchStream livestream, HttpClient client = null)
         {
             Bus = bus;
             _livestream = livestream;
+            if (client == null)
+            {
+                Client = new HttpClient();
+            }
+            else
+            {
+                Client = client;
+            }
             Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {livestream.APICredential.Token}");
             Client.DefaultRequestHeaders.Add("Client-Id", $"{livestream.APICredential.ClientID}");
         }
@@ -45,30 +72,21 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
             else
             {
 
-                var busMessage = _livestream.getRelayMessageData("Kein Game gefunden. Command: '!game [Game Name]");
+                var busMessage = _livestream.getRelayMessageData("Command: '!game [Game Name]");
                 Bus.Publish(busMessage);
             }
         }
 
         private async Task ChangeStreamTitle(string newGame)
         {
-            string uri = $"https://api.twitch.tv/helix/games?name={HttpUtility.UrlEncode(newGame.Trim())}";
-            var response = await Client.GetAsync(uri);
+            string GameID = await TwitchCustomAPI.GetTwitchGameIDFromName(newGame, Client);
+            
             BaseMessageData BusMessage = _livestream.getRelayMessageData("Error");
-            if (response.IsSuccessStatusCode)
+            if (GameID != null)
             {
-                string result = await response.Content.ReadAsStringAsync();
-                var resultdata = JsonConvert.DeserializeObject<TwitchGameResponse>(result);
-                if (resultdata.data.Count() > 0)
+                if (await TwitchCustomAPI.TryToSetTwitchGame(_livestream.StreamID,GameID,Client))
                 {
-                    string GameID = resultdata.data.First().id;
-                    string changeUri = $"https://api.twitch.tv/helix/channels?broadcaster_id={_livestream.StreamID}";
-                    var data = JsonConvert.SerializeObject(new { game_id = GameID });
-                    var changeResponse = await Client.PatchAsync(changeUri, new StringContent(data, System.Text.Encoding.UTF8, "application/json"));
-                    if (changeResponse.IsSuccessStatusCode)
-                    {
-                        BusMessage = _livestream.getRelayMessageData("Game updated");
-                    }
+                    BusMessage = _livestream.getRelayMessageData("Game updated");
                 }
                 else
                 {

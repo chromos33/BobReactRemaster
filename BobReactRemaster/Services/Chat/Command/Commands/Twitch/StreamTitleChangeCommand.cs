@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BobReactRemaster.APIs;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.Interfaces;
@@ -77,11 +78,8 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
 
         private async Task ChangeStreamTitle(string newTitle)
         {
-            string uri = $"https://api.twitch.tv/helix/channels?broadcaster_id={_livestream.StreamID}";
-            var data = JsonConvert.SerializeObject(new {title = newTitle});
-            var result = await Client.PatchAsync(uri, new StringContent(data,System.Text.Encoding.UTF8,"application/json"));
             BaseMessageData busMessage = null;
-            if (result.IsSuccessStatusCode)
+            if (await TwitchCustomAPI.TryToSetTwitchTitle(_livestream.StreamID,newTitle,Client))
             {
                 busMessage = _livestream.getRelayMessageData(UpdatedMessage);
             }
