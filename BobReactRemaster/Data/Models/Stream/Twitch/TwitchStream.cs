@@ -47,11 +47,6 @@ namespace BobReactRemaster.Data.Models.Stream
             return new TwitchStreamListData(){ID = Id,Name = StreamName,StreamState = State};
         }
 
-        public List<StreamSubscription> GetStreamSubscriptions()
-        {
-            return Subscriptions;
-        }
-
         public override void SetURL(string url)
         {
             URL = url;
