@@ -74,6 +74,13 @@ namespace BobReactRemaster.Services.Chat.Twitch
             return Credential?.GetRelayConnectionCredentials();
         }
 
+        private List<LiveStream> GetRelayLiveStreams()
+        {
+            var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            return context.TwitchStreams.Include(x => x.RelayChannel).Cast<LiveStream>().ToList();
+        }
+
         private void ChannelJoined(object sender, OnJoinedChannelArgs e)
         {
             if (!MessageQueueExists(e.Channel))
@@ -81,7 +88,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
                 Queues.Add(new TwitchMessageQueue(e.Channel,false,TimeSpan.FromMilliseconds(200)));
             }
             client.SendMessage(e.Channel,"Relay enabled");
-            _relayService.RelayMessage(new RelayMessageFromTwitch(e.Channel,"Relay enabled"));
+            _relayService.RelayMessage(new RelayMessageFromTwitch(e.Channel,"Relay enabled"),GetRelayLiveStreams());
             //Add Uptime Task
             var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -159,7 +166,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
         {
             HandleQueueModeratorStatus(e);
             string MessageWithUserName = $"{e.ChatMessage.Username}: {e.ChatMessage.Message}";
-            _relayService.RelayMessage(new RelayMessageFromTwitch(e.ChatMessage.Channel,MessageWithUserName));
+            _relayService.RelayMessage(new RelayMessageFromTwitch(e.ChatMessage.Channel,MessageWithUserName),GetRelayLiveStreams());
             commandCenter?.HandleCommandMessage(new TwitchCommandMessage(e.ChatMessage.Message,e.ChatMessage.Channel,e.ChatMessage.Username));
         }
 
@@ -216,7 +223,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             if (IsAuthed && client.IsConnected && client.JoinedChannels.Any(x => x.Channel.ToLower() == obj.StreamName.ToLower()))
             {
                 client.SendMessage(obj.StreamName, "Relay disabled");
-                _relayService.RelayMessage(new RelayMessageFromTwitch(obj.StreamName, "Relay disabled"));
+                _relayService.RelayMessage(new RelayMessageFromTwitch(obj.StreamName, "Relay disabled"),GetRelayLiveStreams());
                 client.LeaveChannel(obj.StreamName);
             }
         }

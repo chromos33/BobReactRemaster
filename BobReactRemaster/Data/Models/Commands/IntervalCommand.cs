@@ -9,7 +9,6 @@ namespace BobReactRemaster.Data.Models.Commands
     public class IntervalCommand : ChatCommand
     {
         public int AutoInverval { get; set; }
-        public DateTime? LastExecution { get; set; }
 
         public void InitData(IntervalCommandSaveData data)
         {

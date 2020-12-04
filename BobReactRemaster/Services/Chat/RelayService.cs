@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Discord;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.Services.Chat.GeneralClasses;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Api.Core.Models.Undocumented.Comments;
 
@@ -15,19 +17,15 @@ namespace BobReactRemaster.Services.Chat
 {
     public class RelayService: IRelayService
     {
-        //TODO: Create Tests for this ... and figure out how to mock/something dbcontext
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMessageBus _messageBus;
-        public RelayService(IServiceScopeFactory scopeFactory, IMessageBus messageBus)
+        public RelayService(IMessageBus messageBus)
         {
-            _scopeFactory = scopeFactory;
             _messageBus = messageBus;
         }
-        public void RelayMessage(RelayMessage MessageObject)
+        //A LiveStream in the List requires a reference to RelayChannel otherwise nothing will be Relayed because that signals no Relay enabled
+        public void RelayMessage(RelayMessage MessageObject,List<LiveStream> LiveStreamsWithRelayChannelDataIncluded)
         {
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var Messages = MessageObject.GetMessageBusMessages(context);
+            var Messages = MessageObject.GetMessageBusMessages(LiveStreamsWithRelayChannelDataIncluded);
             foreach (var Message in Messages)
             {
                 if (Message != null)
@@ -36,10 +34,5 @@ namespace BobReactRemaster.Services.Chat
                 }
             }
         }
-    }
-    public enum SourceType
-    {
-        Discord,
-        Twitch
     }
 }

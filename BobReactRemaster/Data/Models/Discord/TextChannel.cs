@@ -28,46 +28,19 @@ namespace BobReactRemaster.Data.Models.Discord
         {
         }
 
-        public TextChannel(SocketTextChannel channel)
+        public TextChannel(ulong channelId,string name,string guildname)
         {
-            ChannelID = channel.Id;
-            Name = channel.Name;
+            ChannelID = channelId;
+            Name = name;
             IsPermanentRelayChannel = false;
             IsRelayChannel = true;
-            Guild = channel.Guild.Name;
+            Guild = guildname;
         }
 
-        public TextChannel(string Name)
+        public void Update(string channelName,string guildName)
         {
-            this.Name = Name;
-            IsPermanentRelayChannel = false;
-            IsRelayChannel = false;
-        }
-
-        public void EnableRelayChannel()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DisableRelayChannel()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EnablePermanentRelayChannel()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DisablePermanentRelayChannel()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(SocketTextChannel socketTextChannel)
-        {
-            Name = socketTextChannel.Name;
-            Guild = socketTextChannel.Guild.Name;
+            Name = channelName;
+            Guild = guildName;
         }
     }
 }

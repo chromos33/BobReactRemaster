@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.Services.Chat.GeneralClasses;
@@ -21,18 +22,18 @@ namespace BobReactRemaster.Services.Chat.Discord
             Guild = guild;
             Message = message;
         }
-        public override List<BaseMessageData> GetMessageBusMessages(ApplicationDbContext context)
+        public override List<BaseMessageData> GetMessageBusMessages(List<LiveStream> LiveStreams)
         {
             List<BaseMessageData> List = new List<BaseMessageData>();
 
-            var TwitchStream = context.TwitchStreams.Include(x => x.RelayChannel).FirstOrDefault(x =>
+            var LiveStream = LiveStreams.FirstOrDefault(x =>
                 x.RelayChannel != null &&
                 String.Equals(x.RelayChannel.Guild, Guild, StringComparison.CurrentCultureIgnoreCase) &&
                 String.Equals(x.RelayChannel.Name, Channel, StringComparison.CurrentCultureIgnoreCase)
             );
-            if (TwitchStream != null)
+            if (LiveStream != null)
             {
-                List.Add(TwitchStream.getRelayMessageData(Message));
+                List.Add(LiveStream.getRelayMessageData(Message));
             }
 
 

@@ -68,5 +68,16 @@ namespace BobReactRemaster.Tests.Services.Chat.Twitch
             Thread.Sleep(LimiterTime - 10);
             Assert.IsNull(queue.NextQueuedMessage());
         }
+
+        [Test]
+        public void EnableModeratorMode_ChangesState()
+        {
+            int LimiterTime = 2000;
+            MessageQueue queue = new MessageQueue(false, TimeSpan.FromMilliseconds(LimiterTime));
+            Assert.AreEqual(false,queue.isModerator);
+            queue.EnableModeratorMode();
+            Assert.AreEqual(true,queue.isModerator);
+            
+        }
     }
 }

@@ -31,6 +31,14 @@ namespace BobReactRemaster.Tests.Models.User
 
             Assert.AreEqual(user.UserName,"chromos33");
         }
+
+        [Test]
+        public void Constructor_TwoArguments_ValidObject()
+        {
+            Member _user = new Member("username","discriminator");
+            Assert.AreEqual("username",_user.UserName);
+            Assert.AreEqual("discriminator",_user.DiscordDiscriminator);
+        }
         [Test]
         public void Constructor_ValidUserName_EmptySubscriptionList()
         {

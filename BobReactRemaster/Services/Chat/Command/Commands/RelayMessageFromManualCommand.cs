@@ -20,7 +20,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
             stream = Stream;
             message = Message;
         }
-        public override List<BaseMessageData> GetMessageBusMessages(ApplicationDbContext context)
+        public override List<BaseMessageData> GetMessageBusMessages(List<LiveStream> LiveStreams)
         {
             List<BaseMessageData> List = new List<BaseMessageData>();
             if (stream != null)

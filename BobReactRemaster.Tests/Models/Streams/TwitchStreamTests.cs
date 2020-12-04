@@ -72,7 +72,7 @@ namespace BobRemastered.Tests.Models.Streams
         public void SetRelayChannel_TextChannel_ValidRelayChannelSet()
         {
             TwitchStream stream = new TwitchStream("SomeStream");
-            TextChannel test = new TextChannel("Test");
+            TextChannel test = new TextChannel(56,"Test","");
             stream.SetRelayChannel(test);
             Assert.AreEqual(stream.RelayChannel, test);
 

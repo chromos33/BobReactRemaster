@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.BaseClasses;
 
 namespace BobReactRemaster.Services.Chat.GeneralClasses
@@ -8,6 +9,6 @@ namespace BobReactRemaster.Services.Chat.GeneralClasses
     {
         public string Message { get; set; }
 
-        public abstract List<BaseMessageData> GetMessageBusMessages(ApplicationDbContext context);
+        public abstract List<BaseMessageData> GetMessageBusMessages(List<LiveStream> LiveStreams);
     }
 }

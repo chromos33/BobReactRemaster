@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Discord;
+using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
@@ -99,7 +101,8 @@ namespace BobReactRemaster.Services.Chat.Discord
                 {
                     if (!context.DiscordTextChannels.Any(x => x.ChannelID == TextChannel.Id))
                     {
-                        var NewTextChannel = new TextChannel((SocketTextChannel) TextChannel);
+                        var channel = (SocketTextChannel) TextChannel;
+                        var NewTextChannel = new TextChannel(channel.Id,channel.Name,channel.Guild.Name);
                         context.DiscordTextChannels.Add(NewTextChannel);
                         write = true;
                     }
@@ -124,7 +127,8 @@ namespace BobReactRemaster.Services.Chat.Discord
                     var channel = context.DiscordTextChannels.FirstOrDefault(x => x.ChannelID == arg2.Id);
                     if (channel != null)
                     {
-                        channel.Update((SocketTextChannel)arg2);
+                        var tmpchannel = (SocketTextChannel) arg2;
+                        channel.Update(tmpchannel.Name,tmpchannel.Guild.Name);
                         context.SaveChanges();
                     }
                 }
@@ -151,14 +155,15 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             if (arg.GetType() == typeof(SocketTextChannel))
             {
-                var textchannel = (SocketTextChannel) arg;
-                if (textchannel.Category.Name.ToLower() == "community streams")
+                var TextChannel = (SocketTextChannel) arg;
+                if (TextChannel.Category.Name.ToLower() == "community streams")
                 {
                     using var scope = _scopeFactory.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    if (!context.DiscordTextChannels.Any(x => x.ChannelID == textchannel.Id))
+                    if (!context.DiscordTextChannels.Any(x => x.ChannelID == TextChannel.Id))
                     {
-                        var NewTextChannel = new TextChannel(textchannel);
+                        var channel = (SocketTextChannel)TextChannel;
+                        var NewTextChannel = new TextChannel(channel.Id, channel.Name, channel.Guild.Name);
                         context.DiscordTextChannels.Add(NewTextChannel);
                         context.SaveChanges();
                     }
@@ -166,7 +171,12 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
             return Task.CompletedTask;
         }
-
+        private List<LiveStream> GetRelayLiveStreams()
+        {
+            var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            return context.TwitchStreams.Include(x => x.RelayChannel).Cast<LiveStream>().ToList();
+        }
         private Task MessageReceived(SocketMessage arg)
         {
             if (!arg.Author.IsBot)
@@ -182,7 +192,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                             GuildName,
                             arg.Channel.Name,
                             MessageWithUserName
-                        ));
+                        ),GetRelayLiveStreams());
                     }
                     catch (Exception e)
                     {

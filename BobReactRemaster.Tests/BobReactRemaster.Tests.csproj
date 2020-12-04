@@ -18,8 +18,4 @@
     <ProjectReference Include="..\BobReactRemaster\BobReactRemaster.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Chat\Twitch\" />
-  </ItemGroup>
-
 </Project>
