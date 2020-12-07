@@ -77,5 +77,66 @@ namespace BobRemastered.Tests.Models.Streams
             Assert.AreEqual(stream.RelayChannel, test);
 
         }
+
+        [Test]
+        public void GetStreamListData_ValidTwitchStream_ValidReturn()
+        {
+            var streamname = "Stream";
+            var id = 5;
+            var stream = new TwitchStream(streamname);
+            stream.Id = 5;
+            var result = stream.GetStreamListData();
+            Assert.AreEqual(5,result.ID);
+            Assert.AreEqual(streamname,result.Name);
+            Assert.AreEqual(StreamState.Stopped,result.StreamState);
+        }
+
+        [Test]
+        public void GetUpTimeTask_ValidTask()
+        {
+            var streamname = "Stream";
+            var stream = new TwitchStream(streamname);
+            
+            stream.StartStream();
+            stream.UpTimeInterval = 15;
+            var Started = stream.Started;
+            var Task = stream.GetUpTimeTask();
+            Assert.IsFalse(Task.Executable());
+
+        }
+
+        [Test]
+        public void HasStaticCommands()
+        {
+            var streamname = "Stream";
+            var stream = new TwitchStream(streamname);
+            Assert.IsFalse(stream.HasStaticCommands());
+            stream.SetTwitchCredential(new TwitchCredential());
+            Assert.IsTrue(stream.HasStaticCommands());
+        }
+
+        [Test]
+        public void UnsetRelayChannel_ValidStates()
+        {
+            var streamname = "Stream";
+            var stream = new TwitchStream(streamname);
+            stream.SetRelayChannel(new TextChannel(UInt64.MinValue,"test","test" ));
+            Assert.IsNotNull(stream.RelayChannel);
+            stream.UnsetRelayChannel();
+            Assert.IsNull(stream.RelayChannel);
+        }
+
+        [Test]
+        public void GetStreamStartedMessage_ValidResponse()
+        {
+            var streamname = "Stream";
+            var stream = new TwitchStream(streamname);
+            var titel = "test";
+            var result = stream.GetStreamStartedMessage(titel);
+            var expected = $"{streamname} hat angefangen {titel} zu streamen.";
+            Assert.AreEqual(expected,expected);
+
+        }
+
     }
 }

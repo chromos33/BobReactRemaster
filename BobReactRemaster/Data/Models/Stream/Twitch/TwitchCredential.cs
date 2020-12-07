@@ -43,10 +43,9 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
             return returnurl;
         }
 
-        public string getTwitchAuthLink(TwitchOauthStoreData data, string webserverAddress)
+        public string getTwitchAuthLink(TwitchOauthStoreData data, string webserverAddress,string GUID)
         {
-            string state = Guid.NewGuid().ToString();
-            validationKey = state;
+            validationKey = GUID;
             string returnurl = getTwitchReturnURL(webserverAddress);
             string link = $"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id={ClientID}&redirect_uri={returnurl}&force_verify=true";
             if (!string.IsNullOrEmpty(data.Scopes))
@@ -62,7 +61,7 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
                 link = link.Remove(link.Length - 1);
             }
 
-            link += $"&state={state}";
+            link += $"&state={GUID}";
             return link;
         }
         

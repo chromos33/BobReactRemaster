@@ -69,7 +69,8 @@ namespace BobReactRemaster.Controllers
             var scope = _scopeFactory.CreateScope();
             var Option = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<WebServerSettingsOptions>>();
             string WebserverAddress = Option.Value.Address;
-            string link = Credential.getTwitchAuthLink(Data,WebserverAddress);
+            var guid = Guid.NewGuid().ToString();
+            string link = Credential.getTwitchAuthLink(Data,WebserverAddress,guid);
             _context.SaveChanges();
 
             return Ok(new {Link= link});
@@ -97,7 +98,8 @@ namespace BobReactRemaster.Controllers
                     var scope = _scopeFactory.CreateScope();
                     var Option = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<WebServerSettingsOptions>>();
                     string WebserverAddress = Option.Value.Address;
-                    string link = Stream.APICredential.getTwitchAuthLink(Data, WebserverAddress);
+                    var guid = Guid.NewGuid().ToString();
+                    string link = Stream.APICredential.getTwitchAuthLink(Data, WebserverAddress,guid);
                     _context.SaveChanges();
                     return Ok(new {Link = link});
                 }
