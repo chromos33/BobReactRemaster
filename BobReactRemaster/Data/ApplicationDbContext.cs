@@ -29,6 +29,7 @@ namespace BobReactRemaster.Data
         public DbSet<ManualCommand> ManualCommands { get; set; }
 
         public DbSet<IntervalCommand> IntervalCommands { get; set; }
+        public DbSet<Quote> Quotes { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {

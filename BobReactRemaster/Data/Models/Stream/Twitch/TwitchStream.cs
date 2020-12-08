@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.Interfaces;
@@ -28,6 +29,9 @@ namespace BobReactRemaster.Data.Models.Stream
         {
             this.StreamName = StreamName;
             Subscriptions = new List<StreamSubscription>();
+            RelayIntervalCommands = new List<IntervalCommand>();
+            RelayManualCommands = new List<ManualCommand>();
+            Quotes = new List<Quote>();
             State = StreamState.Stopped;
         }
 

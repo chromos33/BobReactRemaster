@@ -31,6 +31,7 @@ namespace BobReactRemaster.Data.Models.Stream
 
         public List<IntervalCommand> RelayIntervalCommands { get; set; }
         public List<ManualCommand> RelayManualCommands { get; set; }
+        public List<Quote> Quotes { get; set; }
 
         public abstract void SetURL(string URL);
         public abstract void StartStream();
