@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.Services.Chat.Command.Commands;
 
 namespace BobReactRemaster.Data.Models.Stream
 {

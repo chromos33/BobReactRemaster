@@ -78,7 +78,10 @@ namespace BobReactRemaster.Services.Chat.Twitch
         {
             var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            return context.TwitchStreams.Include(x => x.RelayChannel).Cast<LiveStream>().ToList();
+            var test = context.DiscordTextChannels.ToList();
+            var streams = context.TwitchStreams.Include(x => x.RelayChannel).AsEnumerable();
+            var LiveStreams = streams.Cast<LiveStream>();
+            return LiveStreams.ToList();
         }
 
         private void ChannelJoined(object sender, OnJoinedChannelArgs e)
@@ -167,7 +170,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             HandleQueueModeratorStatus(e);
             string MessageWithUserName = $"{e.ChatMessage.Username}: {e.ChatMessage.Message}";
             _relayService.RelayMessage(new RelayMessageFromTwitch(e.ChatMessage.Channel,MessageWithUserName),GetRelayLiveStreams());
-            commandCenter?.HandleCommandMessage(new TwitchCommandMessage(e.ChatMessage.Message,e.ChatMessage.Channel,e.ChatMessage.Username));
+            commandCenter?.HandleCommandMessageAsync(new TwitchCommandMessage(e.ChatMessage.Message,e.ChatMessage.Channel,e.ChatMessage.Username,e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster));
         }
 
         private void HandleQueueModeratorStatus(OnMessageReceivedArgs e)

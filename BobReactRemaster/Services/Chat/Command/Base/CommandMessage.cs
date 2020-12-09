@@ -9,5 +9,6 @@ namespace BobReactRemaster.Services.Chat.Commands.Base
     public abstract class CommandMessage : BaseMessageData
     {
         public string Message { get; protected set; }
+        public bool IsElevated { get; protected set; }
     }
 }

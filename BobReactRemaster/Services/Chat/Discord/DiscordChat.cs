@@ -175,7 +175,9 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            return context.TwitchStreams.Include(x => x.RelayChannel).Cast<LiveStream>().ToList();
+            var streams = context.TwitchStreams.Include(x => x.RelayChannel).AsEnumerable();
+            var LiveStreams = streams.Cast<LiveStream>();
+            return LiveStreams.ToList();
         }
         private Task MessageReceived(SocketMessage arg)
         {

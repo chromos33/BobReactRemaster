@@ -26,7 +26,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command.Twitch
             var Stream = new TwitchStream("test");
             Stream.SetTwitchCredential(new TwitchCredential(){  Token = "adsf", ClientID = "test", isMainAccount = false});
             var Command = new TwitchGameChangeCommand(null,Stream);
-            Assert.IsTrue(Command.IsTriggerable(new TwitchCommandMessage("!game test","","")));
+            Assert.IsTrue(Command.IsTriggerable(new TwitchCommandMessage("!game test","","",false)));
         }
         [Test]
         public void IsTriggerable_invalidMessage_ReturnsFalse()
@@ -34,7 +34,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command.Twitch
             var Stream = new TwitchStream("test");
             Stream.SetTwitchCredential(new TwitchCredential() { Token = "adsf", ClientID = "test", isMainAccount = false });
             var Command = new TwitchGameChangeCommand(null, Stream);
-            Assert.IsFalse(Command.IsTriggerable(new TwitchCommandMessage("! game test", "", "")));
+            Assert.IsFalse(Command.IsTriggerable(new TwitchCommandMessage("! game test", "", "",false)));
         }
     }
 }

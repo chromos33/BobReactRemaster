@@ -7,6 +7,7 @@ using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
+using BobReactRemaster.EventBus.MessageDataTypes.Relay;
 using BobReactRemaster.EventBus.MessageDataTypes.Relay.Twitch;
 using BobReactRemaster.Services.Chat.Command;
 using BobReactRemaster.Services.Chat.Command.Commands;
@@ -23,18 +24,13 @@ namespace BobReactRemaster.Services.Chat.Commands
     //Punny
     public class CommandCenter : BackgroundService
     {
-        //TODO: Initialize Commands from Database on Startup
-        //Differentiate between Manual Commands and Interval commands
-        //Change ExecuteAsync or Add Task to Scheduler for IntervalCommands
-        //TODO: Add Other Commands Statically like TwitchAPI Commands and such
-        //TODO add "Event" to MessageBus when Commands are updated to renew
-        //
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMessageBus bus;
         private SchedulerService scheduler;
         private List<StreamTasksStorage> StreamTasksStorage = new List<StreamTasksStorage>();
         private List<ICommand> ManualCommands = new List<ICommand>();
         private List<ICommand> StaticStreamCommands = new List<ICommand>();
+        private List<QuoteCommand> QuoteCommands = new List<QuoteCommand>();
         public CommandCenter(IServiceScopeFactory scopeFactory, IMessageBus bus)
         {
             _scopeFactory = scopeFactory;
@@ -43,6 +39,7 @@ namespace BobReactRemaster.Services.Chat.Commands
             bus.RegisterToEvent<RefreshIntervalRelayCommands>(RefreshIntervalCommands);
             bus.RegisterToEvent<RelayStartedMessageData>(InitRelayStartCommands);
             bus.RegisterToEvent<RelayStoppedMessageData>(RemoveRelayCommands);
+            bus.RegisterToEvent<RefreshQuoteCommands>(RefreshRelayQuoteCommands);
             RefreshManualCommands();
         }
 
@@ -59,9 +56,9 @@ namespace BobReactRemaster.Services.Chat.Commands
 
         private void InitRelayStartCommands(RelayStartedMessageData obj)
         {
+            RefreshIntervalCommands();
             if (obj.Stream.UpTimeInterval > 0)
             {
-                RefreshIntervalCommands();
                 var Storage = StreamTasksStorage.FirstOrDefault(x => x.StreamName.ToLower() == obj.Stream.StreamName.ToLower());
                 if (Storage == null)
                 {
@@ -74,10 +71,24 @@ namespace BobReactRemaster.Services.Chat.Commands
 
             if (obj.Stream.HasStaticCommands())
             {
-                var Commands = obj.Stream.GetStaticCommands(bus);
+                var Commands = obj.Stream.GetStaticCommands(bus).ToList();
+                //Commands that Require _scopeFactory as they need DataBase Access
+                Commands.Add(new AddQuoteCommand(bus,obj.Stream,_scopeFactory));
                 StaticStreamCommands.AddRange(Commands);
             }
             
+        }
+
+        private void RefreshRelayQuoteCommands(RefreshQuoteCommands data)
+        {
+            QuoteCommands.RemoveAll(x => x.IsFromLiveStream(data.Stream));
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var Quotes = context.Quotes.Include(x => x.stream).Where(x => x.stream.Id == data.Stream.Id);
+            foreach (Quote quote in Quotes)
+            {
+                QuoteCommands.Add(new QuoteCommand(bus,data.Stream,quote));
+            }
         }
 
         private void RefreshIntervalCommands(RefreshIntervalRelayCommands obj = null)
@@ -118,10 +129,11 @@ namespace BobReactRemaster.Services.Chat.Commands
 
         
 
-        public void HandleCommandMessage(CommandMessage msg)
+        public async Task HandleCommandMessageAsync(CommandMessage msg)
         {
             HandleCommandList(ManualCommands,msg);
             HandleCommandList(StaticStreamCommands,msg);
+            HandleCommandList(QuoteCommands,msg);
         }
 
         private void HandleCommandList(IEnumerable<ICommand> List,CommandMessage msg)

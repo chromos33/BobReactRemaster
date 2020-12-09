@@ -16,7 +16,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command
             var Trigger = "!command";
             var Response = "response";
             var Command = new ManualRelayCommand(Trigger,Response, new MessageBus(),null);
-            var CommandMessage = new TwitchCommandMessage(Trigger,"","");
+            var CommandMessage = new TwitchCommandMessage(Trigger,"","",false);
             Assert.IsTrue(Command.IsTriggerable(CommandMessage));
         }
         [Test]
@@ -25,7 +25,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command
             var Trigger = "!command";
             var Response = "response";
             var Command = new ManualRelayCommand(Trigger, Response, new MessageBus(),null);
-            var CommandMessage = new TwitchCommandMessage("!other","","");
+            var CommandMessage = new TwitchCommandMessage("!other","","",false);
             Assert.IsFalse(Command.IsTriggerable(CommandMessage));
         }
     }
