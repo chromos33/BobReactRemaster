@@ -95,7 +95,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             //Add Uptime Task
             var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            TwitchStream stream = context.TwitchStreams.Include(x => x.APICredential).FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
+            TwitchStream stream = context.TwitchStreams.Include(x => x.APICredential).Include(x => x.Quotes).FirstOrDefault(x => x.StreamName.ToLower() == e.Channel.ToLower());
             if (stream != null)
             {
                 MessageBus.Publish(new RelayStartedMessageData(stream));

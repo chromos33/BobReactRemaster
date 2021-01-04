@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.EventBus.MessageDataTypes.Relay;
 using BobReactRemaster.Services.Chat.Commands.Base;
 using BobReactRemaster.Services.Chat.Commands.Interfaces;
 using IdentityServer4.Extensions;
@@ -44,6 +45,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
                 context.Quotes.Add(tmp);
                 context.SaveChanges();
                 Bus.Publish(_livestream.getRelayMessageData($"Quote added ({tmp.Id})"));
+                Bus.Publish(new QuoteCommandAdded(_livestream,tmp));
             }
             else
             {

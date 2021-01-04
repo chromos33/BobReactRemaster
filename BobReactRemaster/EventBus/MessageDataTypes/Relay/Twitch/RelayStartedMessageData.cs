@@ -1,5 +1,6 @@
 ﻿using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.BaseClasses;
+using BobReactRemaster.EventBus.Interfaces;
 
 namespace BobReactRemaster.EventBus.MessageDataTypes.Relay.Twitch
 {
@@ -11,5 +12,6 @@ namespace BobReactRemaster.EventBus.MessageDataTypes.Relay.Twitch
         {
             Stream = stream;
         }
+        
     }
 }

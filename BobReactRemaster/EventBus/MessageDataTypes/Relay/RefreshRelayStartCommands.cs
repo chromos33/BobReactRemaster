@@ -7,13 +7,15 @@ using BobReactRemaster.EventBus.BaseClasses;
 
 namespace BobReactRemaster.EventBus.MessageDataTypes.Relay
 {
-    public class RefreshQuoteCommands: BaseMessageData
+    public class QuoteCommandAdded: BaseMessageData
     {
         public LiveStream Stream;
+        public Quote Quote;
 
-        public RefreshQuoteCommands(LiveStream stream)
+        public QuoteCommandAdded(LiveStream stream, Quote quote)
         {
             Stream = stream;
+            Quote = quote;
         }
     }
 }

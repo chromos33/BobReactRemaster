@@ -12,6 +12,7 @@ using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Twitch;
+using BobReactRemaster.Services.Chat.Command.Commands;
 using BobReactRemaster.Services.Chat.Command.Commands.Twitch;
 using BobReactRemaster.Services.Chat.Commands.Interfaces;
 using BobReactRemaster.Services.Scheduler;
@@ -90,14 +91,11 @@ namespace BobReactRemaster.Data.Models.Stream
             return APICredential != null;
         }
 
-        public override IEnumerable<ICommand> GetStaticCommands(IMessageBus bus)
+        public override bool HasQuotes()
         {
-            List<ICommand> Commands = new List<ICommand>();
-
-            Commands.Add(new TwitchStreamTitleChangeCommand(bus,this));
-            Commands.Add(new TwitchGameChangeCommand(bus,this));
-            return Commands;
+            return Quotes.Any();
         }
+
 
         public void SetRelayChannel(TextChannel channel)
         {
@@ -118,6 +116,14 @@ namespace BobReactRemaster.Data.Models.Stream
             }
 
             return message;
+        }
+        public override IEnumerable<ICommand> GetStaticCommands(IMessageBus bus)
+        {
+            List<ICommand> Commands = new List<ICommand>();
+
+            Commands.Add(new TwitchStreamTitleChangeCommand(bus, this));
+            Commands.Add(new TwitchGameChangeCommand(bus, this));
+            return Commands;
         }
     }
 }

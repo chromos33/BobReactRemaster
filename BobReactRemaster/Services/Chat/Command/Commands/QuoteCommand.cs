@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.EventBus.MessageDataTypes.Relay;
+using BobReactRemaster.Migrations;
 using BobReactRemaster.Services.Chat.Commands.Base;
 using BobReactRemaster.Services.Chat.Commands.Interfaces;
 
@@ -12,34 +14,59 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
     public class QuoteCommand : ICommand
     {
         private readonly IMessageBus Bus;
-        private readonly LiveStream _livestream;
-        private readonly Quote quote;
+        private readonly LiveStream LiveStream;
+        private readonly List<Quote> Quotes;
         private readonly string Trigger = "!quote";
-        public QuoteCommand(IMessageBus bus, LiveStream livestream, Quote quote)
+        private Random R;
+        public QuoteCommand(IMessageBus bus, LiveStream liveStream)
         {
             Bus = bus;
-            _livestream = livestream;
-            this.quote = quote;
+            LiveStream = liveStream;
+            Quotes = liveStream.Quotes;
+            Bus.RegisterToEvent<QuoteCommandAdded>(AddQuoteCommand);
+            R = new Random();
         }
+
+        private void AddQuoteCommand(QuoteCommandAdded obj)
+        {
+            if (IsFromLiveStream(obj.Stream))
+            {
+                Quotes.Add(obj.Quote);
+            }
+        }
+
         public bool IsTriggerable(CommandMessage msg)
         {
-            if (msg.Message.StartsWith(Trigger))
-            {
-                var parameter = msg.Message.Replace(Trigger, "");
-                int ID = 0;
-                return parameter.Length > 0 && Int32.TryParse(parameter, out ID) && quote.Id == ID;
-            }
-            return false;
+            return msg.Message.StartsWith(Trigger);
         }
 
         public void TriggerCommand(CommandMessage msg)
         {
-            Bus.Publish(_livestream.getRelayMessageData(quote.ToString()));
+            var parameters = msg.Message.Replace(Trigger, "");
+            Quote tmpquote = null;
+            if (parameters != "")
+            {
+                Int32.TryParse(parameters, out int idparam);
+                tmpquote = Quotes.FirstOrDefault(x => x.Id == idparam);
+            }
+            else
+            {
+                tmpquote = Quotes.ElementAt(R.Next(0, Quotes.Count()));
+            }
+
+            if (tmpquote != null)
+            {
+                Bus.Publish(LiveStream.getRelayMessageData(tmpquote.ToString()));
+            }
+            else
+            {
+                Bus.Publish(LiveStream.getRelayMessageData("Kein Quote gefunden. !quote [optionale ID]"));
+            }
         }
 
         public bool IsFromLiveStream(LiveStream stream)
         {
-            return stream.Id == _livestream.Id;
+            return stream.Id == LiveStream.Id;
         }
     }
 }

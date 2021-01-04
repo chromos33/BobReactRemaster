@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services.Chat.Command.Commands;
 using BobReactRemaster.Services.Chat.Commands.Interfaces;
 using BobReactRemaster.Services.Scheduler;
 
@@ -48,9 +49,15 @@ namespace BobReactRemaster.Data.Models.Stream.DLive
             throw new NotImplementedException();
         }
 
+        public override bool HasQuotes()
+        {
+            throw new NotImplementedException();
+        }
+
         public override IEnumerable<ICommand> GetStaticCommands(IMessageBus bus)
         {
             throw new NotImplementedException();
         }
+
     }
 }

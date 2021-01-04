@@ -39,7 +39,6 @@ namespace BobReactRemaster.Services.Chat.Commands
             bus.RegisterToEvent<RefreshIntervalRelayCommands>(RefreshIntervalCommands);
             bus.RegisterToEvent<RelayStartedMessageData>(InitRelayStartCommands);
             bus.RegisterToEvent<RelayStoppedMessageData>(RemoveRelayCommands);
-            bus.RegisterToEvent<RefreshQuoteCommands>(RefreshRelayQuoteCommands);
             RefreshManualCommands();
         }
 
@@ -76,19 +75,12 @@ namespace BobReactRemaster.Services.Chat.Commands
                 Commands.Add(new AddQuoteCommand(bus,obj.Stream,_scopeFactory));
                 StaticStreamCommands.AddRange(Commands);
             }
-            
-        }
 
-        private void RefreshRelayQuoteCommands(RefreshQuoteCommands data)
-        {
-            QuoteCommands.RemoveAll(x => x.IsFromLiveStream(data.Stream));
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var Quotes = context.Quotes.Include(x => x.stream).Where(x => x.stream.Id == data.Stream.Id);
-            foreach (Quote quote in Quotes)
+            if (obj.Stream.HasQuotes())
             {
-                QuoteCommands.Add(new QuoteCommand(bus,data.Stream,quote));
+                QuoteCommands.Add(new QuoteCommand(bus,obj.Stream));
             }
+            
         }
 
         private void RefreshIntervalCommands(RefreshIntervalRelayCommands obj = null)
