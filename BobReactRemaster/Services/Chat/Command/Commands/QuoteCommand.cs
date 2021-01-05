@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.EventBus.MessageDataTypes.Relay;
 using BobReactRemaster.Migrations;
 using BobReactRemaster.Services.Chat.Commands.Base;
@@ -17,22 +18,19 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
         private readonly LiveStream LiveStream;
         private readonly List<Quote> Quotes;
         private readonly string Trigger = "!quote";
-        private Random R;
+        private Random R = new Random();
         public QuoteCommand(IMessageBus bus, LiveStream liveStream)
         {
             Bus = bus;
             LiveStream = liveStream;
             Quotes = liveStream.Quotes;
-            Bus.RegisterToEvent<QuoteCommandAdded>(AddQuoteCommand);
-            R = new Random();
+            //TODO find out why this stalls
+            //bus.RegisterToEvent<QuoteCommandAdded>(AddQuoteCommand);
         }
 
-        private void AddQuoteCommand(QuoteCommandAdded obj)
+        public void AddQuoteCommand(Quote obj)
         {
-            if (IsFromLiveStream(obj.Stream))
-            {
-                Quotes.Add(obj.Quote);
-            }
+            Quotes.Add(obj);
         }
 
         public bool IsTriggerable(CommandMessage msg)

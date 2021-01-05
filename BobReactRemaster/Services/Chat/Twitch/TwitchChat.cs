@@ -45,11 +45,29 @@ namespace BobReactRemaster.Services.Chat.Twitch
         {
             client = new TwitchClient();
             client.OnMessageReceived += OnMessageReceived;
+            client.OnChatCommandReceived += OnChatCommandReceived;
+            client.OnWhisperReceived += OnWhisperReceived;
+            client.OnConnected += OnConnected;
             client.OnConnected += Connected;
             client.OnJoinedChannel += ChannelJoined;
             client.OnLeftChannel += ChannelLeft;
             client.OnConnectionError += NotConnected;
             client.OnIncorrectLogin += LoginAuthFailed;
+        }
+
+        private void OnWhisperReceived(object? sender, OnWhisperReceivedArgs e)
+        {
+            Console.WriteLine("test");
+        }
+
+        private void OnConnected(object? sender, OnConnectedArgs e)
+        {
+            Console.WriteLine("test");
+        }
+
+        private void OnChatCommandReceived(object? sender, OnChatCommandReceivedArgs e)
+        {
+            Console.WriteLine("test");
         }
 
 
@@ -124,7 +142,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
 
         private bool MessageQueueExists(string channelname)
         {
-            return Queues.FirstOrDefault(x => String.Equals(x.ChannelName, channelname, StringComparison.CurrentCultureIgnoreCase)) != null;
+            return Queues.Any(x => String.Equals(x.ChannelName, channelname, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private void Connected(object sender, OnConnectedArgs e)

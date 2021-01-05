@@ -26,7 +26,17 @@ namespace BobReactRemaster.EventBus
 
         public void RegisterToEvent<TEventBase>(Action<TEventBase> action) where TEventBase : BaseMessageData
         {
-            Events.Add(new Subscription<TEventBase>(action));
+            try
+            {
+                Events.Add(new Subscription<TEventBase>(action));
+            }
+            catch (Exception e)
+            {
+                    Console.WriteLine(e);
+                    throw;
+            }
+
+            Console.WriteLine("test");
         }
     }
 }
