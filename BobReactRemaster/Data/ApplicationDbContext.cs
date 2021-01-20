@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.Data.Models.Discord;
+using BobReactRemaster.Data.Models.Meetings;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.DLive;
 using BobReactRemaster.Data.Models.Stream.Twitch;
@@ -30,6 +31,13 @@ namespace BobReactRemaster.Data
 
         public DbSet<IntervalCommand> IntervalCommands { get; set; }
         public DbSet<Quote> Quotes { get; set; }
+
+        public DbSet<MeetingTemplate> MeetingTemplates { get; set; }
+        public DbSet<MeetingDateTemplate> MeetingDateTemplates { get; set; }
+        public DbSet<ReminderTemplate> ReminderTemplates { get; set; }
+        public DbSet<MeetingTemplate_Member> MeetingTemplates_Members { get; set; }
+        public DbSet<MeetingSubscription> MeetingSubscriptions { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {
@@ -42,6 +50,31 @@ namespace BobReactRemaster.Data
                 .HasMany(u => u.StreamSubscriptions)
                 .WithOne(ss => ss.Member)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Member>()
+                .HasMany(m => m.RegisteredToMeetingTemplates)
+                .WithOne(t => t.RegisteredMember)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Member>()
+                .HasMany(m => m.MeetingSubscriptions)
+                .WithOne(s => s.Subscriber)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<MeetingTemplate>()
+                .HasMany(t => t.Dates)
+                .WithOne(d => d.Template)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<MeetingTemplate>()
+                .HasOne(t => t.ReminderTemplate)
+                .WithOne(rt => rt.MeetingTemplate)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Meeting>()
+                .HasMany(m => m.Subscriber)
+                .WithOne(s => s.Meeting)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
             builder.Entity<TwitchStream>()
                 .HasMany(s => s.Subscriptions)
                 .WithOne(ss => (TwitchStream) ss.LiveStream)

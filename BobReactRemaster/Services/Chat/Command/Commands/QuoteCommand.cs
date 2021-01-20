@@ -24,8 +24,6 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
             Bus = bus;
             LiveStream = liveStream;
             Quotes = liveStream.Quotes;
-            //TODO find out why this stalls
-            //bus.RegisterToEvent<QuoteCommandAdded>(AddQuoteCommand);
         }
 
         public void AddQuoteCommand(Quote obj)

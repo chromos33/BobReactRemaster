@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using BobReactRemaster.Data.Models.Meetings;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using TwitchLib.Client.Models;
@@ -23,6 +24,10 @@ namespace BobReactRemaster.Data.Models.User
         public string PasswordHash { get; private set; }
         public string UserRole { get; set; }
 
+        public List<MeetingTemplate_Member> RegisteredToMeetingTemplates { get; set; }
+
+        public List<MeetingSubscription> MeetingSubscriptions { get; set; }
+
         private Member()
         {
 
@@ -38,6 +43,8 @@ namespace BobReactRemaster.Data.Models.User
             PasswordHash = encryptPassword(password);
             UserRole = userRole.ToString();
             StreamSubscriptions = new List<StreamSubscription>();
+            RegisteredToMeetingTemplates = new List<MeetingTemplate_Member>();
+            MeetingSubscriptions = new List<MeetingSubscription>();
         }
 
         public Member(string username,string discriminator)
@@ -47,6 +54,8 @@ namespace BobReactRemaster.Data.Models.User
             DiscordDiscriminator = discriminator;
             DiscordUserName = username;
             StreamSubscriptions = new List<StreamSubscription>();
+            RegisteredToMeetingTemplates = new List<MeetingTemplate_Member>();
+            MeetingSubscriptions = new List<MeetingSubscription>();
         }
 
         public string ResetPassword()

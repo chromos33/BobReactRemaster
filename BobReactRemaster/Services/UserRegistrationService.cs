@@ -33,7 +33,6 @@ namespace BobReactRemaster.Services
 
                 context.Members.Add(newMember);
                 context.SaveChanges();
-                //TODO: Add all streams as Subscriptions
                 return Password;
             }
             return null;
