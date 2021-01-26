@@ -2,11 +2,12 @@ import React from 'react';
 import NaviLink from './NaviLink';
 import '../../css/Navi.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUser, faFilm, faCogs,faBell  } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faFilm, faCogs,faBell,faHandshake  } from '@fortawesome/free-solid-svg-icons'
 library.add(faUser);
 library.add(faFilm);
 library.add(faCogs);
 library.add(faBell);
+library.add(faHandshake);
 export function Navi(props)
 {
     const Links = 
@@ -50,6 +51,20 @@ export function Navi(props)
                     Icon: ["fas","user"],
                     Link: "/Profile"
                 },
+            ]
+        },
+        {
+            ID:"Meeting",
+            Title: "Meeting",
+            Icon: ["fas","handshake"],
+            FirstLevel: true,
+            SubLinks: [
+                {
+                    ID : "MeetingAdmin",
+                    Title: "Admin",
+                    Icon: ["fas","cogs"],
+                    Link: "/MeetingAdmin"
+                }
             ]
         }
     ];

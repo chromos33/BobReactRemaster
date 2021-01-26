@@ -6,6 +6,7 @@ const Login = lazy(() => import('./components/Login'));
 const Test = lazy(() => import('./components/Test'));
 const Setup = lazy(() => import('./components/Setup/Setup'));
 const Stream = lazy(() => import('./components/Stream/Setup'));
+const MeetingAdmin = lazy(() => import('./components/Meeting/Admin/List'));
 const SubscriptionHolder = lazy(() => import('./components/Subscription/Holder'));
 
 export default function App()  {
@@ -21,6 +22,7 @@ export default function App()  {
                 <Route exact path='/SetupView' component={Setup} />
                 <Route exact path='/Streams' component={Stream} />
                 <Route exact path='/Subscriptions' component={SubscriptionHolder} />
+                <Route exact path='/MeetingAdmin' component={MeetingAdmin} />
               </Switch>
             </Suspense>
           </Router>
