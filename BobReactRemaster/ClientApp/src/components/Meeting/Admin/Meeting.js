@@ -1,10 +1,15 @@
 import React, {useState} from 'react';
 import { getCookie } from "../../../helper/cookie";
 import '../../../css/Button.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilRuler, faTrash  } from '@fortawesome/free-solid-svg-icons';
+import '../../../css/MeetingAdmin.css';
+import Member from './Member';
 export function Meeting(props){
     const [Members,setMembers] = useState(props.data.members);
     const [currentSelectedMemberIndex,setcurrentSelectedMember] = useState(0);
-
+    
+    
     const handleAddMember = () => {
         var tmp = Members;
         tmp.push(props.AvailableMembers[currentSelectedMemberIndex]);
@@ -36,15 +41,29 @@ export function Meeting(props){
         });
         return (<select onChange={e => {setcurrentSelectedMember(e.target.value);}} value={currentSelectedMemberIndex}>{Options}</select>);
     }
+    const handleMemberDelete = (id) => {
+        var tmpArray = Members;
+        var tmpIndex = null;
+        tmpArray.forEach((member,index) => 
+        {
+            if(member.id === id)
+            {
+                tmpIndex = index
+            }
+        });
+        tmpArray.splice(tmpIndex,1);
+        var savearray = tmpArray.map(x => x);
+        setMembers(savearray);
+    }
     const renderMemberList = () => {
         if(Members.length === 0)
         {
             return null;
         }
         var renderedMembers = Members.map(m => {
-            return <span key={m.id}>{m.name}</span>
+            return (<Member Delete={handleMemberDelete} key={m.id} id={m.id} name={m.name} />);
         })
-        return (<div>{renderedMembers}</div>);
+        return (<div className="MemberList">{renderedMembers}</div>);
     }
     const renderMemberAddButton = () => {
         if(getAvailableMembers().length > 0)

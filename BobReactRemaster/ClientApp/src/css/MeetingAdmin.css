@@ -1,0 +1,23 @@
+.MemberList > div > span
+{
+    display:block;
+    border-bottom:1px solid #BAC6D1;
+    padding:10px 15px;
+    color:#BAC6D1;
+}
+.MemberList > div
+{
+    position:relative;
+}
+
+.MemberList > div > svg
+{
+    position:absolute;
+    right:20px;
+    top:12px;
+    color:#BAC6D1;
+}
+.MemberList > div > svg.active
+{
+    color:red;
+}
