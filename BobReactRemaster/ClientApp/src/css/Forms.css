@@ -1,0 +1,28 @@
+.SelectBox
+{
+    position:relative;
+}
+.SelectBox svg
+{
+    color:#BAC6D1;
+    position:absolute;
+    top:5px;
+    right:20px;
+    opacity:0;
+    transition:0.1s linear all;
+}
+.SelectBox svg.active
+{
+    opacity:1;
+}
+input{
+    border-color: #BAC6D1;
+    border-style: solid;
+    border-top-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 1px;
+    width:calc(100% - 5px);
+    background:transparent;
+    color:#BAC6D1;
+}

@@ -2,13 +2,15 @@ import React, {useState} from 'react';
 import { getCookie } from "../../../helper/cookie";
 import '../../../css/Button.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilRuler, faTrash  } from '@fortawesome/free-solid-svg-icons';
+import { faPencilRuler, faTrash, faChevronDown,faChevronUp  } from '@fortawesome/free-solid-svg-icons';
 import '../../../css/MeetingAdmin.css';
+import '../../../css/Forms.css';
 import Member from './Member';
 export function Meeting(props){
     const [Members,setMembers] = useState(props.data.members);
     const [currentSelectedMemberIndex,setcurrentSelectedMember] = useState(0);
-    
+    const [Name,setName] = useState(props.data.name);
+    const [SelectOpen,setSelectOpen] = useState(false);
     
     const handleAddMember = () => {
         var tmp = Members;
@@ -39,7 +41,7 @@ export function Meeting(props){
         var Options = availableMembers.map(x => {
             return (<option key={x.id} value={x.id}>{x.name}</option>);
         });
-        return (<select onChange={e => {setcurrentSelectedMember(e.target.value);}} value={currentSelectedMemberIndex}>{Options}</select>);
+        return (<select onFocus={e => {setSelectOpen(true)}} onBlur={e => (setSelectOpen(false))} onChange={e => {setcurrentSelectedMember(e.target.value);}} value={currentSelectedMemberIndex}>{Options}</select>);
     }
     const handleMemberDelete = (id) => {
         var tmpArray = Members;
@@ -72,10 +74,32 @@ export function Meeting(props){
         }
         return null;
     }
+    const ChevDownClass = () => {
+        if(!SelectOpen)
+        {
+            return "active"
+        }
+        return "";
+    }
+    const ChevUpClass = () => {
+        if(SelectOpen)
+        {
+            return "active"
+        }
+        return "";
+    }
     return (
-        <div>
+        <div className="Meeting">
+            <div className="MeetingNameBox">
+                <label for="Name">Name</label>
+                <input name="Name" value={Name} onChange={(e) => {setName(e.value)}} />
+            </div>
             <div className="MemberListBox">
+                <div className="SelectBox">
                 {renderAvailableMemberSelect()}
+                <FontAwesomeIcon className={ChevDownClass()}  icon={faChevronDown} />
+                <FontAwesomeIcon className={ChevUpClass()} icon={faChevronUp} />
+                </div>
                 {renderMemberAddButton()}
                 {renderMemberList()}
             </div>
