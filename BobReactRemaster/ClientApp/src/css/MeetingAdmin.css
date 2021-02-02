@@ -25,3 +25,42 @@
 {
     color:red;
 }
+.MeetingHeader
+{
+    position: relative;
+}
+.MeetingHeader span
+{
+    padding:5px 60px 5px 0;
+    display:block;
+    color:#BAC6D1;
+}
+.MeetingHeader svg{
+    cursor:pointer;
+}
+.MeetingHeader svg.editModeToggle
+{
+    position:absolute;
+    right:5px;
+    top:6px;
+    color:#BAC6D1;
+}
+.MeetingHeader svg.deleteMeeting
+{
+    position:absolute;
+    right:30px;
+    top:6px;
+    color:#BAC6D1;
+}
+.MeetingHeader svg.deleteMeeting.confirm
+{
+    color:red !important;
+}
+.editClosed
+{
+    display:none;
+}
+.editOpen
+{
+    display: block;
+}

@@ -11,7 +11,8 @@ export function Meeting(props){
     const [currentSelectedMemberIndex,setcurrentSelectedMember] = useState(0);
     const [Name,setName] = useState(props.data.name);
     const [SelectOpen,setSelectOpen] = useState(false);
-    
+    const [EditOpen,setEditOpen] = useState(props.data.editopen);
+    const [DeleteConfirm,setDeleteConfirm] = useState(false);
     const handleAddMember = () => {
         var tmp = Members;
         tmp.push(props.AvailableMembers[currentSelectedMemberIndex]);
@@ -88,23 +89,64 @@ export function Meeting(props){
         }
         return "";
     }
+    const ToggleEdit = () => {
+        setEditOpen(!EditOpen);
+    }
+    var deleteTimeout = null;
+    const Delete = ()  => {
+        clearTimeout(deleteTimeout);
+        if(DeleteConfirm)
+        {
+            //requires parent functionprop that deletes this meeting from datalist
+        }
+        else
+        {
+            setDeleteConfirm(true);
+            deleteTimeout = setTimeout(() => {
+                setDeleteConfirm(false);
+            }, 5000);
+        }
+        
+    }
+    const DeleteCSSClasses = () => {
+        if(DeleteConfirm)
+        {
+            return "deleteMeeting confirm";
+        }
+        return "deleteMeeting"
+    }
+    const EditOpenCSSClasses = () => {
+        if(EditOpen)
+        {
+            return "editOpen";
+        }
+        return "editClosed";
+    }
     return (
         <div className="Meeting">
-            <div className="MeetingNameBox">
-                <label for="Name">Name</label>
-                <input name="Name" value={Name} onChange={(e) => {setName(e.value)}} />
+            <div className="MeetingHeader">
+                <span>{Name}</span>
+                <FontAwesomeIcon className="editModeToggle" icon={faPencilRuler} onClick={ToggleEdit}/>
+                <FontAwesomeIcon className={DeleteCSSClasses()} icon={faTrash} onClick={Delete}/>
             </div>
-            <div className="MemberListBox">
-                <div className="SelectBox">
-                {renderAvailableMemberSelect()}
-                <FontAwesomeIcon className={ChevDownClass()}  icon={faChevronDown} />
-                <FontAwesomeIcon className={ChevUpClass()} icon={faChevronUp} />
+            <div className={EditOpenCSSClasses()}>
+                <div className="MeetingNameBox">
+                    <label htmlFor="Name">Name</label>
+                    <input name="Name" value={Name} onChange={(e) => {setName(e.target.value)}} />
                 </div>
-                {renderMemberAddButton()}
-                {renderMemberList()}
+                <div className="MemberListBox">
+                    <div className="SelectBox">
+                    {renderAvailableMemberSelect()}
+                    <FontAwesomeIcon className={ChevDownClass()}  icon={faChevronDown} />
+                    <FontAwesomeIcon className={ChevUpClass()} icon={faChevronUp} />
+                    </div>
+                    {renderMemberAddButton()}
+                    {renderMemberList()}
+                </div>
             </div>
-            {props.data.name}
         </div>
     );
+    
+    
 }
 export default Meeting;
