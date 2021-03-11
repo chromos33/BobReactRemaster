@@ -78,7 +78,7 @@ export function Navi(props)
         }
     });
     return (
-        <div className="NaviMenu">
+        <div className="NaviMenu shadow">
            {Menu}
         </div>
         )

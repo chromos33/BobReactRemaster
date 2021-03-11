@@ -10,7 +10,7 @@ import TwitchStream from './TwitchStream';
 export function TwitchStreamSetup(){
     /* States */
     const [init,setInit] = useState(false);
-    const [Streams,setStreams] = useState(null);
+    const [Streams,setStreams] = useState([]);
 
 
     /* Event Handler */

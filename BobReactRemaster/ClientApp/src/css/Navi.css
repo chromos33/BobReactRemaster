@@ -7,3 +7,14 @@
     left:0;
     transform:translateY(-50%);
 }
+.NaviMenu::before{
+    box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.19);
+    -webkit-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.19);
+    -moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.19);
+    content:"";
+    left:0;
+    width:40px;
+    height: 100%;;
+    position:absolute;
+    
+}

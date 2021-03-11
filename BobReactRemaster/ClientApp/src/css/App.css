@@ -1,20 +1,29 @@
-body { background-color: #485358; }
+body {
+  background-color: #243B53;
+}
 
 .loader {
-    border: 16px solid #485358; /* Light grey */
-    border-top: 16px solid #BAC6D1; /* Blue */
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-    display:inline-block;
+  border: 16px solid #485358;
+  /* Light grey */
+  border-top: 16px solid #BAC6D1;
+  /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+
+  100% {
+    transform: rotate(360deg);
   }
-  .mt-20
-  {
-    margin-top:20px;
-  }
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
