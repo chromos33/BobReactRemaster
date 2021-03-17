@@ -1,14 +1,16 @@
-import React from 'react';
-import { BrowserRouter as Route } from 'react-router-dom';
-import { Redirect } from 'react-router'
-export function PrivateRoute({ component: Component, authed, ...rest }) {
-    if(authed)
-    {
-        return (<Route render={(props) => <Component {...props} />} />)
+import React, {lazy,Suspense} from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import {getCookie} from "../helper/cookie";
+export function PrivateRoute({ component: RenderComponent,  ...rest }) {
+    const IsAuthed = () => {
+        return getCookie("Token") !== null;
     }
-    else
-    {
-        return (<Redirect from="*" to="/" />);
-    }
+    return (
+        <Route {...rest} render={props => (
+            IsAuthed() ?
+                <RenderComponent {...props} />
+            : <Redirect to="/" />
+        )} />
+    );
 }
 export default PrivateRoute;

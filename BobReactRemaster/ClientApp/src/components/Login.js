@@ -50,10 +50,11 @@ export function Login() {
             return false;
         }).catch((error) => {
         })
+        console.log(loginResult);
         if(loginResult !== false)
         {
             setCookie("Token",loginResult,30);
-            history.push("/Test");
+            history.push("/Subscriptions");
         }
         else{
             setLoginEmpty(true);

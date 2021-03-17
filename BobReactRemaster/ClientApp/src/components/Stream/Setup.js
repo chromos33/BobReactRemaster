@@ -4,7 +4,7 @@ import TwitchStreamSetup from './Twitch/TwitchStreamList';
 
 export function StreamSetup()
 {
-    
+    alert("test");
     return (
         <div className="">
             <TwitchStreamSetup/>
