@@ -15,12 +15,10 @@ export default function App()  {
     //TODO secure SetupView further because not everyone should be here
     return (
       <Suspense fallback={<div>Loading...</div>}>
-        
           <BrowserRouter>
             <Suspense fallback={<div></div>}>
               <Switch>
                 <Route exact path='/' component={Login} />
-                
                 <Layout>
                   <PrivateRoute exact path='/Test' component={Test} />
                   <PrivateRoute exact path='/SetupView' component={Setup} />

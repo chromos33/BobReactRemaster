@@ -1,25 +1,15 @@
-.card {
-    padding: 10px;
-    background: #272c2e;
-    display: inline-block;
-    border-radius: 3px;
-}
-.tab_card {
-    background: #272c2e;
-    display: inline-block;
-    border-radius: 3px;
-}
-.card input[type="submit"] {
-    background: black !important;
-    color: #BAC6D1;
-}
-.card_top {
-    padding: 10px;
-    position: relative;
-    border-bottom: 1px solid #BAC6D1;
-}
-.inner_card
+.card
 {
-    background: #272c2e;
-    display: block;
+    border:4px solid #486581;
+    background:#334E68;
+    margin-bottom:20px;
+}
+.card_area
+{
+    border-bottom:4px solid #486581;
+    padding:10px;
+}
+.card_area:last-child
+{
+    border-bottom: none !important;
 }

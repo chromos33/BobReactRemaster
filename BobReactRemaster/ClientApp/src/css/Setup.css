@@ -1,40 +1,106 @@
-.card label,
-.card input
+.setupviewcontainer .card
 {
-    display:block;
+    max-width:calc(100vw - 50px);
+    width:500px;
 }
-.card .checkbox label,
-.card .checkbox input
+.DiscordTokenForm
 {
-    display:inline-block;
+    grid-template-rows:30px 10px 30px 10px 30px;
+    grid-template-columns: 30% 70%;
 }
-.card input[type="text"]
+.DiscordTokenForm :nth-child(1)
 {
-    width: calc(100% - 5px);
-    font-size:14px;
+    grid-column-start:1;
+    grid-column-end:1;
+    grid-row-start:1;
+    grid-row-end:1;
 }
-.card input[type="submit"]
+.DiscordTokenForm :nth-child(2)
 {
-    background: #272c2e !important;
-    font-size: 16px !important;
-    line-height: 16px !important;
-    padding: 10px 20px !important;
-    cursor: pointer;
-    display: inline-block;
-    border:none;
-    border-radius:5px;
+    grid-column-start:2;
+    grid-column-end:2;
+    grid-row-start:1;
+    grid-row-end:1;
 }
-.flexmasonry
+.DiscordTokenForm :nth-child(3)
 {
-    display:flex;
-    flex-flow: column wrap;
-    margin-left: -8px;
-    width:100%;
-    max-height:100vh;
-
+    grid-column-start:1;
+    grid-column-end:1;
+    grid-row-start:3;
+    grid-row-end:3;
 }
-.flexmasonry > div
+.DiscordTokenForm :nth-child(4)
 {
-    margin: 0 8px 8px 0;
-    max-width:220px;
+    grid-column-start:2;
+    grid-column-end:2;
+    grid-row-start:3;
+    grid-row-end:3;
+}
+.DiscordTokenForm :nth-child(5)
+{
+    grid-column-start:1;
+    grid-column-end:3;
+    grid-row-start:5;
+    grid-row-end:5;
+}
+.TwitchOAuthForm
+{
+    grid-template-rows:30px 10px 30px 10px 30px 10px auto 10px 30px;
+    grid-template-columns: 30% 70%;
+}
+.TwitchOAuthForm :nth-child(1)
+{
+    grid-column-start:1;
+    grid-column-end:1;
+    grid-row-start:1;
+    grid-row-end:1;
+}
+.TwitchOAuthForm :nth-child(2)
+{
+    grid-column-start:2;
+    grid-column-end:2;
+    grid-row-start:1;
+    grid-row-end:1;
+}
+.TwitchOAuthForm :nth-child(3)
+{
+    grid-column-start:1;
+    grid-column-end:1;
+    grid-row-start:3;
+    grid-row-end:3;
+}
+.TwitchOAuthForm :nth-child(4)
+{
+    grid-column-start:2;
+    grid-column-end:2;
+    grid-row-start:3;
+    grid-row-end:3;
+}
+.TwitchOAuthForm :nth-child(5)
+{
+    grid-column-start:1;
+    grid-column-end:1;
+    grid-row-start:5;
+    grid-row-end:5;
+}
+.TwitchOAuthForm :nth-child(6)
+{
+    grid-column-start:2;
+    grid-column-end:2;
+    grid-row-start:5;
+    grid-row-end:5;
+}
+.TwitchOAuthForm :nth-child(7)
+{
+    grid-column-start:1;
+    grid-column-end:3;
+    grid-row-start:7;
+    grid-row-end:7;
+}
+.TwitchOAuthForm :nth-child(8)
+{
+    grid-column-start:1;
+    grid-column-end:3;
+    grid-row-start:9;
+    grid-row-end:9;
 }

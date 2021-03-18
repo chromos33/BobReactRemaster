@@ -1,0 +1,8 @@
+.container
+{
+    display:grid;
+}
+.container_col_two
+{
+    grid-template-columns: 50% 50%;
+}

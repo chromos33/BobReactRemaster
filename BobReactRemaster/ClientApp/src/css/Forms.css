@@ -16,13 +16,12 @@
     opacity:1;
 }
 input{
-    border-color: #BAC6D1;
+    border-color: #486581;
     border-style: solid;
     border-top-width: 0;
     border-left-width: 0;
     border-right-width: 0;
-    border-bottom-width: 1px;
-    width:calc(100% - 5px);
+    border-bottom-width: 2px;
     background:transparent;
-    color:#BAC6D1;
+    color:#BCCCDC;
 }

@@ -5,13 +5,15 @@ body{
     font-size:16px;
 }
 input[type="text"],
-input[type="number"],
-textarea
+input[type="number"]
 {
-    background:#BAC6D1;
     margin-bottom:10px;
     font-size:16px;
     max-width:100%;
+}
+textarea
+{
+
 }
 label{
     color:#BAC6D1;

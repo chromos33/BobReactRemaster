@@ -41,12 +41,16 @@ export function DiscordTokenForm(props)
         loadDataFromServer();
     }
 
-    return (<form className="DiscordTokenForm" onSubmit={handleSubmit}>
-        <label>ClientID</label>
-        <input type="text" name="" value={clientID} onChange={e => setClientID(e.target.value)}/>
-        <label>Token</label>
-        <input type="text" value={Token} onChange={e => setToken(e.target.value)}/>
-        <input type="submit" value="Save"/>
-    </form>);
+    return (
+        <div className="card_area">
+            <form className="DiscordTokenForm container" onSubmit={handleSubmit}>
+                <label>ClientID</label>
+                <input type="text" name="" value={clientID} onChange={e => setClientID(e.target.value)}/>
+                <label>Token</label>
+                <input type="text" value={Token} onChange={e => setToken(e.target.value)}/>
+                <input class="button" type="submit" value="Save"/>
+            </form>
+        </div>
+    );
 }
 export default DiscordTokenForm;

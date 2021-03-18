@@ -72,19 +72,21 @@ export function TwitchTokenOAuth(props)
         loadDataFromServer();
     }
     return(
-        <form className="TwitchOAuthForm" onSubmit={handleSubmit}>
-            <label>ClientID</label>
-            <input type="text" name="ClientID" value={clientID} onChange={e => setClientID(e.target.value)}/>
-            <label>Secret</label>
-            <input type="text" name="Secret" value={Secret} onChange={e => setSecret(e.target.value)}/>
-            <label>ChatUserName</label>
-            <input type="text" name="ChatUserName" value={ChatUserName} onChange={e => setChatUserName(e.target.value)}/>
-            {props.TwitchScopes.length > 0 && (<div>
-                <label>Scopes</label>
-                {ScopeOptions}
-            </div>)}
-            <input type="submit" value="Authorisieren"/>
-        </form>
+        <div className="card_area">
+            <form className="TwitchOAuthForm container" onSubmit={handleSubmit}>
+                <label>ClientID</label>
+                <input type="text" name="ClientID" value={clientID} onChange={e => setClientID(e.target.value)}/>
+                <label>Secret</label>
+                <input type="text" name="Secret" value={Secret} onChange={e => setSecret(e.target.value)}/>
+                <label>Chat UserName</label>
+                <input type="text" name="ChatUserName" value={ChatUserName} onChange={e => setChatUserName(e.target.value)}/>
+                {props.TwitchScopes.length > 0 && (<div>
+                    <label>Scopes</label>
+                    {ScopeOptions}
+                </div>)}
+                <input className="button" type="submit" value="Authorisieren"/>
+            </form>
+        </div>
     );
 }
 

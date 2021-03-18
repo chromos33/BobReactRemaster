@@ -1,6 +1,6 @@
 ﻿import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
-import {setCookie} from "../helper/cookie";
+import {setCookie,getCookie} from "../helper/cookie";
 import logo from "../images/BobDeathmicLogo.png";
 import '../css/Login.css';
 
@@ -10,7 +10,10 @@ export function Login() {
     const [loginempty, setLoginEmpty] = useState(false);
     const [passwd,setPassword] = useState("");
     const [passwdempty, setPasswordEmpty] = useState(false);
-
+    if(getCookie("Token") !== null)
+    {
+        history.push("/Subscriptions");
+    }
     const checkFakeForm = async (e) => {
         if(login === "")
         {
