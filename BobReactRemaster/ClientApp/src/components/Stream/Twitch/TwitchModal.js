@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
 import '../../../css/Stream.css';
+import '../../../css/Cards.css';
+import '../../../css/Tabs.css';
 import Twitch_General from "./Twitch_General";
 import Twitch_Relay from "./Twitch_Relay";
 import Twitch_Quotes from "./Twitch_Quotes";
 import Twitch_Auth from "./Twitch_Auth";
 import Twitch_Commands from "../Commands/Commands";
+import Tooltip from "../../Tooltip";
 
 const Tabs = {
     GENERAL: "General",
@@ -40,29 +43,26 @@ export function TwitchModal(props){
             break;
     }
     return (
-        <div className="shadowlayer">
-            <div className="TwitchModal">
-                <div className="ModalHeader">
-                    <span onClick={() => setTab(Tabs.GENERAL)}>General</span>
+            <div className="TwitchModal card_area border_top card_area--nopadding">
+                <div className="TabHeader">
+                    <span onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier wird der Allgemeines über den Stream editiert" /></span>
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.AUTH)}>API</span>
+                        <span onClick={() => setTab(Tabs.AUTH)}>API <Tooltip text="Hier kann man Bob bei Twitch authorisieren, damit er den Channel/Stream editieren kann (Titel/Game)" /></span>
                     }
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.RELAY)}>Relay</span>
+                        <span onClick={() => setTab(Tabs.RELAY)}>Relay <Tooltip text="Hier wird das Relay gemanaged." /></span>
                     }
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.QUOTES)}>Quotes</span>
+                        <span onClick={() => setTab(Tabs.QUOTES)}>Quotes <Tooltip text="Liste von Quotes die diesem Stream zugewiesen sind." /></span>
                     }
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.COMMANDS)}>Commands</span>
+                        <span onClick={() => setTab(Tabs.COMMANDS)}>Commands <Tooltip text="Benutzer definierte Befehle die man bei Bob ausführen kann wenn das Relay aktiv ist" /></span>
                     }
                 </div>
                 <div className="ModalBody">
                     {Body}
                 </div>
-                <span onClick={props.CloseModal} className="ModalCloser">X</span>
             </div>
-        </div>
     );
 }
 export default TwitchModal;

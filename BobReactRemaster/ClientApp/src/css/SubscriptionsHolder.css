@@ -1,0 +1,5 @@
+.SubscriptionHolder .card
+{
+    max-width:calc(100vw - 50px);
+    width:500px;
+}

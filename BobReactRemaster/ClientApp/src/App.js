@@ -22,7 +22,7 @@ export default function App()  {
                 <Layout>
                   <PrivateRoute exact path='/Test' component={Test} />
                   <PrivateRoute exact path='/SetupView' component={Setup} />
-                  <PrivateRoute exact path='/Streams' Component={Stream} />
+                  <PrivateRoute exact path='/Streams' component={Stream} />
                   <PrivateRoute exact path='/Subscriptions' component={SubscriptionHolder} />
                   <PrivateRoute exact path='/MeetingAdmin' component={MeetingAdmin} />
                 </Layout>

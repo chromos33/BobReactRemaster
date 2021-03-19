@@ -83,10 +83,15 @@ export function NaviLink(props)
                 var dimensionGiver = Container.querySelector(".contentDimensions");
                 if(dimensionGiver !== null)
                 {
-                    var width = dimensionGiver.clientWidth;
-                    var height = dimensionGiver.clientHeight;
-                    setExpandedWidth(width);
-                    setExpandedHeight(height);
+                    console.log(dimensionGiver);
+                    
+                    setTimeout(() => {
+                        var width = dimensionGiver.clientWidth;
+                        var height = dimensionGiver.clientHeight;
+                        console.log(width);
+                        setExpandedWidth(width);
+                        setExpandedHeight(height);
+                    },50);
                 }
                 
             }

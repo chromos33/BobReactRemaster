@@ -10,8 +10,8 @@ export function TwitchStream(props){
     const [StreamName,setStreamName] = useState(props.StreamName);
     const [StreamID,setStreamID] = useState(props.StreamID);
     const [DeleteState,setDeleteState] = useState(false);
-    const OpenEdit = () => {
-        setmodalOpen(true);
+    const ToggleEdit = () => {
+        setmodalOpen(!modalOpen);
     }
     var timeout = null;
     const Delete = () => {
@@ -64,11 +64,11 @@ export function TwitchStream(props){
     }
     
     return (
-        <div className="stream">
-            <div className="relative stream_header">
+        <div className="stream card_area card_area--nopadding">
+            <div className="relative stream_header card-title">
                 <span>{StreamName}</span>
                 <span className={StateClass}></span>
-                <FontAwesomeIcon icon={faPencilRuler} onClick={OpenEdit}/>
+                <FontAwesomeIcon icon={faPencilRuler} onClick={ToggleEdit}/>
                 {StreamID > 0 &&
                     <FontAwesomeIcon className={deleteClass} icon={faTrash} onClick={Delete}/>
                 }

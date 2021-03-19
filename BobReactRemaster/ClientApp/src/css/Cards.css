@@ -9,7 +9,27 @@
     border-bottom:4px solid #486581;
     padding:10px;
 }
+.card-title
+{
+    padding:10px;
+}
+.card_area--nopadding
+{
+    padding:0;
+}
 .card_area:last-child
 {
     border-bottom: none !important;
+}
+.card_area--slim
+{
+    padding:3px 10px 1px 10px;
+}
+.position-relative
+{
+    position: relative;
+}
+.border_top
+{
+    border-top:4px solid #486581;
 }

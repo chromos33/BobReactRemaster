@@ -1,0 +1,19 @@
+.TabHeader
+{
+    display:flex;
+    justify-content: space-evenly;
+}
+.TabHeader > span
+{
+    display:block;
+    flex:1;
+    padding:10px 20px;
+    border-bottom:4px solid #486581;
+    border-right:4px solid #486581;
+    cursor:pointer;
+    white-space: nowrap;
+}
+.TabHeader > span:last-child
+{
+    border-right: none;
+}
