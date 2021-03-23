@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { getCookie } from "../../../helper/cookie";
+import '../../../css/Button.css';
 
 export function Twitch_General(props){
     const [StreamName,setStreamName] = useState(props.StreamName)
@@ -47,9 +48,10 @@ export function Twitch_General(props){
 
     return (<div className="streamGeneral">
         <form onSubmit={handleSubmit}>
-            <label>Stream Name</label>
-            <input type="text" name="StreamName" value={StreamName} onChange={(e) => setStreamName(e.target.value)}/>
-            <input type="submit" value="Speichern"/>
+            <div className="formInputsContainer">
+                <input type="text" name="StreamName" value={StreamName} onChange={(e) => setStreamName(e.target.value)}/>
+            </div>
+            <input className="button card_button" type="submit" value="Speichern"/>
         </form>
     </div>);
 }

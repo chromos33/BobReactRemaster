@@ -6,3 +6,10 @@
     border-radius: 0;
     cursor: pointer;
 }
+
+.card_button
+{
+    width: calc(100% - 8px);
+    padding:10px 5px;
+    margin:4px;
+}

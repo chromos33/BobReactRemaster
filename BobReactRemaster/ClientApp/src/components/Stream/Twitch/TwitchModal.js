@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import '../../../css/Stream.css';
 import '../../../css/Cards.css';
+import '../../../css/Button.css';
 import '../../../css/Tabs.css';
 import Twitch_General from "./Twitch_General";
 import Twitch_Relay from "./Twitch_Relay";
@@ -45,7 +46,7 @@ export function TwitchModal(props){
     return (
             <div className="TwitchModal card_area border_top card_area--nopadding">
                 <div className="TabHeader">
-                    <span onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier wird der Allgemeines über den Stream editiert" /></span>
+                    <span onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier wird Allgemeines über den Stream editiert" /></span>
                     {props.StreamID > 0 && 
                         <span onClick={() => setTab(Tabs.AUTH)}>API <Tooltip text="Hier kann man Bob bei Twitch authorisieren, damit er den Channel/Stream editieren kann (Titel/Game)" /></span>
                     }

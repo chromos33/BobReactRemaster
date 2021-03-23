@@ -135,46 +135,20 @@
     background:rgba(0,0,0,0.7);
 }
 
+.formInputsContainer
+{
+    padding:20px;
+}
+
 .ModalBody
 {
     max-width:100vw;
     max-height:100vh;
 }
-.streamGeneral,
-.streamAuth,
-.streamRelay,
-.streamCommands
-{
-    padding:10px;
-}
 .streamGeneral label,
 .streamGeneral input
 {
     display:block;    
-}
-.streamGeneral input[type="submit"],
-span.savebtn
-{
-    display:inline-block;
-    padding:10px;
-    background:#272c2e;
-    color:#BAC6D1;
-    border:none !important;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-.streamAuth input[type="submit"]
-{
-    background: #272c2e !important;
-    font-size: 16px !important;
-    line-height: 16px !important;
-    padding: 10px 20px !important;
-    cursor: pointer;
-    display: inline-block;
-    border:none;
-    border-radius:5px;
-    color:#BAC6D1;
 }
 .streamRelay .status,
 .streamRelay .randomrelaystate
