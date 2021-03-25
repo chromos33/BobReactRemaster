@@ -43,21 +43,46 @@ export function TwitchModal(props){
             Body = null;
             break;
     }
+    var GeneralTabCSSClass = "";
+    if(tab === Tabs.GENERAL)
+    {
+        GeneralTabCSSClass = "active";
+    }
+    var APITabCSSClass = "";
+    if(tab === Tabs.AUTH)
+    {
+        APITabCSSClass = "active";
+    }
+    var RelayTabCSSClass = "";
+    if(tab === Tabs.RELAY)
+    {
+        RelayTabCSSClass = "active";
+    }
+    var QuotesTabCSSClass = "";
+    if(tab === Tabs.QUOTES)
+    {
+        QuotesTabCSSClass = "active";
+    }
+    var CommandsTabCSSClass = "";
+    if(tab === Tabs.COMMANDS)
+    {
+        CommandsTabCSSClass = "active";
+    }
     return (
             <div className="TwitchModal card_area border_top card_area--nopadding">
                 <div className="TabHeader">
-                    <span onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier wird Allgemeines über den Stream editiert" /></span>
+                    <span className={GeneralTabCSSClass} onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier wird Allgemeines über den Stream editiert" /></span>
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.AUTH)}>API <Tooltip text="Hier kann man Bob bei Twitch authorisieren, damit er den Channel/Stream editieren kann (Titel/Game)" /></span>
+                        <span className={APITabCSSClass} onClick={() => setTab(Tabs.AUTH)}>API <Tooltip text="Hier kann man Bob bei Twitch authorisieren, damit er den Channel/Stream editieren kann (Titel/Game)" /></span>
                     }
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.RELAY)}>Relay <Tooltip text="Hier wird das Relay gemanaged." /></span>
+                        <span className={RelayTabCSSClass} onClick={() => setTab(Tabs.RELAY)}>Relay <Tooltip text="Hier wird das Relay gemanaged." /></span>
                     }
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.QUOTES)}>Quotes <Tooltip text="Liste von Quotes die diesem Stream zugewiesen sind." /></span>
+                        <span className={QuotesTabCSSClass} onClick={() => setTab(Tabs.QUOTES)}>Quotes <Tooltip text="Liste von Quotes die diesem Stream zugewiesen sind." /></span>
                     }
                     {props.StreamID > 0 && 
-                        <span onClick={() => setTab(Tabs.COMMANDS)}>Commands <Tooltip text="Benutzer definierte Befehle die man bei Bob ausführen kann wenn das Relay aktiv ist" /></span>
+                        <span className={CommandsTabCSSClass} onClick={() => setTab(Tabs.COMMANDS)}>Commands <Tooltip text="Benutzer definierte Befehle die man bei Bob ausführen kann wenn das Relay aktiv ist" /></span>
                     }
                 </div>
                 <div className="ModalBody">

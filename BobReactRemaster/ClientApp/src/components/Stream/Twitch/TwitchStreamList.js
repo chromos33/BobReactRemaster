@@ -20,7 +20,7 @@ export function TwitchStreamSetup(){
         var tmp = Streams;
         tmp.push({id:0,name:"Name",streamState: 0});
         var savearray = tmp.map(x => x);
-        setStreams(savearray)
+        setStreams(savearray);
     }
     const switchSetupView = (e) => {
     }

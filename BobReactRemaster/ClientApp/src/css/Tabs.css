@@ -13,6 +13,10 @@
     cursor:pointer;
     white-space: nowrap;
 }
+.TabHeader > span.active
+{
+    background:#243B53;
+}
 .TabHeader > span:last-child
 {
     border-right: none;

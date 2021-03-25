@@ -51,3 +51,7 @@ select option{
     color:#BAC6D1 !important;
     pointer-events: none;
 }
+.font-closewhite
+{
+    color:#F0F4F8;
+}

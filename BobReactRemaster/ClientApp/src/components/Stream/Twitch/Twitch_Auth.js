@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import { getCookie } from "../../../helper/cookie";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck  } from '@fortawesome/free-solid-svg-icons';
 
 export function Twitch_Auth(props){
     const [StreamName,setStreamName] = useState(props.StreamName)
@@ -48,7 +50,8 @@ export function Twitch_Auth(props){
         return (
             <div key={scopekey} className="checkbox">
                 <input onChange={toggleScope} type="checkbox"  name="Scopes" value={scope}/>
-                <label>{scope}</label>
+                <span className="fakeCheckbox"><FontAwesomeIcon icon={faCheck}/></span>
+                <label className="font-closewhite">{scope}</label>
             </div>
         )
     });
@@ -56,11 +59,11 @@ export function Twitch_Auth(props){
 
     return (<div className="streamAuth">
         <form className="TwitchOAuthForm" onSubmit={handleSubmit}>
-            {TwitchScopes.length > 0 && (<div>
-                <label>Scopes</label>
+            {TwitchScopes.length > 0 && (<div className="formInputsContainer">
+                <label className="font-closewhite">Rechte</label>
                 {ScopeOptions}
             </div>)}
-            <input type="submit" value="Authorisieren"/>
+            <input className="button card_button" type="submit" value="Authorisieren"/>
         </form>
     </div>);
 }
