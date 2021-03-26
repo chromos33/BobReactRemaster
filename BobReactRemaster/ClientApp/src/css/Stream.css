@@ -5,7 +5,11 @@
 }
 
 
-
+.formInputsContainer span,
+.formInputsContainer input
+{
+    color:#F0F4F8;
+}
 
 
 .addStreamBtn
@@ -203,4 +207,12 @@
     display: inline-block;
     border:none;
     border-radius:5px;
+}
+.activitystate
+{
+    right:0 !important;
+}
+.block
+{
+    display:block;
 }

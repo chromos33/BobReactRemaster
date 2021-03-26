@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { faPowerOff,faChevronDown  } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCookie } from "../../../helper/cookie";
+import ReactSlider from 'react-slider'
+import Tooltip from "../../Tooltip";
 export function Twitch_Relay(props){
 
     const [relaystate,setrelaystate] = useState(false);
@@ -13,10 +15,7 @@ export function Twitch_Relay(props){
     const [UpTimeInterval,setUpTimeInterval] = useState(0);
 
     const handleUptimeIntervalChange = (e) => {
-        if(e.target.value !== "")
-        {
-            setUpTimeInterval(e.target.value);
-        }
+        setUpTimeInterval(e);
     }
     //add ServerQuery for Data before rendering
     //+ Sync "Query"
@@ -81,15 +80,15 @@ export function Twitch_Relay(props){
         //TODO: Maybe add reload data on 404 aka if tried to add channel that has been taken since this loaded for the first time aka Feedback
     }
 
-    var relaystatecssclass = "";
+    var relaystatecssclass = "activitystate";
     if(relaystate)
     {
-        relaystatecssclass = "active"
+        relaystatecssclass += "active"
     }
-    var randomrelaychannelstatecssclass = "";
+    var randomrelaychannelstatecssclass = "activitystate ";
     if(randomrelaychannelstate)
     {
-        randomrelaychannelstatecssclass = "active"
+        randomrelaychannelstatecssclass += "active"
     }
     if(dataLoaded)
     {
@@ -109,6 +108,7 @@ export function Twitch_Relay(props){
             RelayChannelSelect = (
                 <div>
                     <span className="d-block">Fester Stream Channel</span>
+                    <Tooltip text="Dein Relay Channel (Stream_StreamerName)" />
                     <div className="customselect">
                         
                         <select onChange={(e) => {setcurrentchannelID(e.target.value)}}>
@@ -117,26 +117,37 @@ export function Twitch_Relay(props){
                         </select>
                         <FontAwesomeIcon icon={faChevronDown}/>
                     </div>
+                    <div className="block">
+                    <br/>
+                    </div>
+                    
                 </div>
             );
         }
+        const RenderThumb = (props,state) => {
+            return (<span {...props}><span>{state.value}</span></span>)
+        };
         if(relaystate)
         {
             return (<div className="streamRelay">
-                <div className="status" style={{marginBottom:"15px"}}>
-                    <span>Aktiv</span>
-                    <FontAwesomeIcon className={relaystatecssclass} icon={faPowerOff} onClick={() => {setrelaystate(!relaystate)}}/>
+                <div className="formInputsContainer">
+                    <div className="status" style={{marginBottom:"15px"}}>
+                        <span>Aktiv</span>
+                        <FontAwesomeIcon className={relaystatecssclass} icon={faPowerOff} onClick={() => {setrelaystate(!relaystate)}}/>
+                    </div>
+                    <div className="randomrelaystate" style={{marginBottom:"15px"}}>
+                        <span>Random Relay Channel</span>
+                        <Tooltip text="Ob (sofern frei) einer der Stream_X Discordchannel verwendet wird" />
+                        <FontAwesomeIcon className={randomrelaychannelstatecssclass} icon={faPowerOff} onClick={() => {setrandomrelaychannelstate(!randomrelaychannelstate)}}/>
+                    </div>
+                    {RelayChannelSelect}
+                    <div className="UpTimeInterval" style={{marginBottom:"15px"}}>
+                        <span>Uptime Ansagen Interval</span>
+                        <Tooltip text="Wie oft Bob ansagt wielang du schon streamst (in Minuten, 0 = aus)" />
+                        <ReactSlider renderThumb={RenderThumb} min={0} ariaLabelForHandle={UpTimeInterval} max={60} value={UpTimeInterval} onChange={e => handleUptimeIntervalChange(e)}/>
+                    </div>
                 </div>
-                <div className="UpTimeInterval" style={{marginBottom:"15px"}}>
-                    <span>Uptime Ansagen Intervall (in Minuten, bei 0 aus)</span><br/>
-                    <input type="number" value={UpTimeInterval} onChange={e => handleUptimeIntervalChange(e)}/>
-                </div>
-                <div className="randomrelaystate" style={{marginBottom:"15px"}}>
-                    <span>Random Relay Channel</span>
-                    <FontAwesomeIcon className={randomrelaychannelstatecssclass} icon={faPowerOff} onClick={() => {setrandomrelaychannelstate(!randomrelaychannelstate)}}/>
-                </div>
-                {RelayChannelSelect}
-                <span onClick={Sync} className="savebtn mt-20">Speichern</span>
+                <span onClick={Sync} className="button card_button mt-20">Speichern</span>
             </div>);
         }
         else{
@@ -145,7 +156,7 @@ export function Twitch_Relay(props){
                     <span>Aktiv</span>
                     <FontAwesomeIcon className={relaystatecssclass} icon={faPowerOff} onClick={() => {setrelaystate(!relaystate)}}/>
                 </div>
-                <span onClick={Sync} className="savebtn mt-20">Speichern</span>
+                <span onClick={Sync} className="button card_button mt-20">Speichern</span>
             </div>);
         }
         
