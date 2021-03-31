@@ -60,7 +60,7 @@ body
 .error
 {
     margin:0 auto !important;
-    background-color:red;
+    background-color:#cc0000;
     color:white;
     width:calc(100% - 10px);
 }

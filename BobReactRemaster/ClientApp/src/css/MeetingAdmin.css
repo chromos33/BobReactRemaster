@@ -23,7 +23,7 @@
 }
 .MemberList > div > svg.active
 {
-    color:red;
+    color:#cc0000;
 }
 .MeetingHeader
 {
@@ -54,7 +54,7 @@
 }
 .MeetingHeader svg.deleteMeeting.confirm
 {
-    color:red !important;
+    color:#cc0000 !important;
 }
 .editClosed
 {
