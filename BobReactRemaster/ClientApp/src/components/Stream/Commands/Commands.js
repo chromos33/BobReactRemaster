@@ -125,21 +125,21 @@ export function Twitch_Commands(props){
         setIntervalCommands(savearray);
     }
     return (<div className="streamCommands">
-        <div className="inner_card">
-            <div className="card_top">
+        <div className="card_ignorelast">
+            <div className="card_area relative">
                 <span className="h1">Trigger Commands</span>
                 <span className="addStreamBtn" onClick={addManualCommand}><FontAwesomeIcon icon={faPlusSquare}/></span>
             </div>
-            <div className="card_body">
+            <div className="card_area card_area--nopadding">
                 {renderManualCommands()}
             </div>
         </div>
-        <div className="inner_card">
-            <div className="card_top">
+        <div className="card_ignorelast">
+            <div className="card_area relative">
                 <span className="h1">Auto Commands</span>
                 <span className="addStreamBtn" onClick={addIntervalCommand}><FontAwesomeIcon icon={faPlusSquare}/></span>
             </div>
-            <div className="card_body">
+            <div className="card_area card_area--nopadding">
                 {renderIntervalCommands()}
             </div>
         </div>

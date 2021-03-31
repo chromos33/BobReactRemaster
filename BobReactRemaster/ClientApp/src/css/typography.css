@@ -12,7 +12,13 @@ input[type="number"] {
     max-width: 100%;
 }
 
-textarea {}
+textarea {
+    border:2px solid #486581;
+    background-color: transparent;
+    color: #BCCCDC;
+    font-family: 'Roboto';
+    font-size: 16px;
+}
 
 label {
     color: #BAC6D1;

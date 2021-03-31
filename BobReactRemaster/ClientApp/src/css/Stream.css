@@ -45,7 +45,7 @@
 }
 .bg_red
 {
-    background-color: red;
+    background-color: #cc0000;
 }
 .stream,
 .command{
@@ -71,12 +71,21 @@
 .stream svg:nth-child(4).active,
 .command svg:nth-child(3).active
 {
-    color:red;
+    color:#cc0000;
 }
-.command_header,
-.command_body
+.command_header
 {
-    border-bottom: 1px solid #BAC6D1;
+    border-bottom: 3px solid #486581;
+    padding:5px 15px;
+}
+.command_body{
+    border-bottom: 3px solid #486581;
+    padding:5px 10px;
+}
+.card-area:last-child .command_header,
+.card-area:last-child .command_body
+{
+    border-bottom: none;
 }
 .stream_header svg,
 .command_header svg
@@ -163,7 +172,7 @@
     position:absolute;
     right:0;
     top:0;
-    color:red;
+    color:#cc0000;
     transition:0.25s ease all;
     cursor:pointer;
 }
@@ -196,17 +205,6 @@
 {
     width: calc(100% - 5px);
     font-size:14px;
-}
-.form input[type="submit"]
-{
-    background: #BAC6D1 !important;
-    font-size: 16px !important;
-    line-height: 16px !important;
-    padding: 10px 20px !important;
-    cursor: pointer;
-    display: inline-block;
-    border:none;
-    border-radius:5px;
 }
 .activitystate
 {

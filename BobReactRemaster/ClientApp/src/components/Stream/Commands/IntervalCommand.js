@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { getCookie } from "../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilRuler,faTrash  } from '@fortawesome/free-solid-svg-icons';
+import ReactSlider from 'react-slider';
 
 export function IntervalCommand(props){
     const [CommandName,setCommandName] = useState(props.data.name);
@@ -96,13 +97,16 @@ export function IntervalCommand(props){
                         <label>Antwort</label>
                         <textarea type="text" name="Response" value={CommandResponse} onChange={e => setCommandResponse(e.target.value)}/>
                         <label>Interval</label>
-                        <input type="number" name="Interval" value={CommandInterval} onChange={e => setCommandInterval(e.target.value)}/>
-                        <input type="submit" value="Speichern"/>
+                        <ReactSlider renderThumb={RenderThumb} min={0} ariaLabelForHandle={CommandInterval} max={60} value={CommandInterval} onChange={e => setCommandInterval(e)}/>
+                        <input type="submit" className="button card_button" value="Speichern"/>
                     </form>
                 </div>
             );
         }
     }
+    const RenderThumb = (props,state) => {
+        return (<span {...props}><span>{state.value}</span></span>)
+    };
     return (
         <div className="command">
             <div className="relative command_header">

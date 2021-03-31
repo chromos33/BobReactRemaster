@@ -21,6 +21,10 @@
 {
     border-bottom: none !important;
 }
+.card_ignorelast .card_area
+{
+    border-bottom:4px solid #486581 !important; 
+}
 .card_area--slim
 {
     padding:3px 10px 1px 10px;

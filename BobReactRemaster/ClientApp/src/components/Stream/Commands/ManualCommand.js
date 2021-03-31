@@ -96,7 +96,7 @@ export function ManualCommand(props){
                         <textarea type="text" name="Response" value={CommandResponse} onChange={e => setCommandResponse(e.target.value)}/>
                         <label>Auslöser</label>
                         <input type="text" name="Trigger" value={CommandTrigger} onChange={e => setCommandTrigger(e.target.value)}/>
-                        <input type="submit" value="Speichern"/>
+                        <input type="submit" className="button card_button" value="Speichern"/>
                     </form>
                 </div>
             );
@@ -111,10 +111,7 @@ export function ManualCommand(props){
                     <FontAwesomeIcon className={deleteClass} icon={faTrash} onClick={Delete}/>
                 }
             </div>
-            
                 {RenderModal()}
-            
-            
         </div>
     );
 }

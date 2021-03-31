@@ -11,7 +11,7 @@
 .subscription svg{
     position:absolute;
     right:10px;
-    color:red;
+    color:#cc0000;
     cursor:pointer;
     transition:0.25s linear all;
 }
@@ -23,5 +23,5 @@
     color:green;
 }
 .subscription svg.active:hover{
-    color:red;
+    color:#cc0000;
 }
