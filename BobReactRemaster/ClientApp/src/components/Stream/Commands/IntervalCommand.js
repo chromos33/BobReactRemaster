@@ -47,8 +47,8 @@ export function IntervalCommand(props){
             data[key] = value;
         });
         data["CommandID"] = parseInt(CommandID);
-        data["Interval"] = parseInt(data["Interval"]);
-        console.log(CommandID);
+        data["Interval"] = parseInt(CommandInterval);
+        console.log(data);
         if(CommandID > 0)
         {
             fetch("/RelayCommands/SaveIntervalCommand",{

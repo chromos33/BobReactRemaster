@@ -1,0 +1,39 @@
+.Quote{
+    grid-template-columns: 30% auto 30px;
+    grid-template-rows: auto;
+}
+.quote_grid_col1
+{
+    grid-column-start:1;
+    grid-column-end:1;
+    grid-row-start:1;
+    grid-row-end:1;
+}
+.quote_grid_col2
+{
+    grid-column-start:2;
+    grid-column-end:2;
+    grid-row-start:1;
+    grid-row-end:1;
+}
+.quote_grid_col3
+{
+    grid-column-start:3;
+    grid-column-end:3;
+    grid-row-start:1;
+    grid-row-end:1;
+    position: relative;
+}
+
+.Quote svg{
+    position:absolute;
+    right:0;
+    top:50%;
+    transform: translateY(-50%);
+    transition:0.25s ease all;
+    cursor:pointer;
+}
+.Quote svg.active
+{
+    color:#cc0000;
+}
