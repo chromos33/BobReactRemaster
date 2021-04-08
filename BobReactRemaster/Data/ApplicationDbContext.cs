@@ -36,7 +36,7 @@ namespace BobReactRemaster.Data
         public DbSet<MeetingDateTemplate> MeetingDateTemplates { get; set; }
         public DbSet<ReminderTemplate> ReminderTemplates { get; set; }
         public DbSet<MeetingTemplate_Member> MeetingTemplates_Members { get; set; }
-        public DbSet<MeetingSubscription> MeetingSubscriptions { get; set; }
+        public DbSet<MeetingParticipation> MeetingSubscriptions { get; set; }
         public DbSet<Meeting> Meetings { get; set; }
         public ApplicationDbContext(
             DbContextOptions options) : base(options)

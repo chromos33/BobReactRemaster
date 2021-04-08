@@ -16,7 +16,5 @@ namespace BobReactRemaster.Data.Models.Meetings
         public int MeetingTemplateId { get; set; }
         public MeetingTemplate MeetingTemplate { get; set; }
 
-        public int MeetingId { get; set; }
-        public Meeting Meeting { get; set; }
     }
 }

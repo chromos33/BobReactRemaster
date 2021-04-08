@@ -26,7 +26,7 @@ namespace BobReactRemaster.Data.Models.User
 
         public List<MeetingTemplate_Member> RegisteredToMeetingTemplates { get; set; }
 
-        public List<MeetingSubscription> MeetingSubscriptions { get; set; }
+        public List<MeetingParticipation> MeetingSubscriptions { get; set; }
 
         private Member()
         {
@@ -44,7 +44,7 @@ namespace BobReactRemaster.Data.Models.User
             UserRole = userRole.ToString();
             StreamSubscriptions = new List<StreamSubscription>();
             RegisteredToMeetingTemplates = new List<MeetingTemplate_Member>();
-            MeetingSubscriptions = new List<MeetingSubscription>();
+            MeetingSubscriptions = new List<MeetingParticipation>();
         }
 
         public Member(string username,string discriminator)
@@ -55,7 +55,7 @@ namespace BobReactRemaster.Data.Models.User
             DiscordUserName = username;
             StreamSubscriptions = new List<StreamSubscription>();
             RegisteredToMeetingTemplates = new List<MeetingTemplate_Member>();
-            MeetingSubscriptions = new List<MeetingSubscription>();
+            MeetingSubscriptions = new List<MeetingParticipation>();
         }
 
         public string ResetPassword()

@@ -13,5 +13,7 @@ namespace BobReactRemaster.Data.Models.Meetings
         public int ID { get; set; }
         public Member RegisteredMember { get; set; }
         public MeetingTemplate MeetingTemplate { get; set; }
+
+        public bool IsAuthor { get; set; }
     }
 }

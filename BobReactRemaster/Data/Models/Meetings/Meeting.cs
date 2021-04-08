@@ -10,7 +10,7 @@ namespace BobReactRemaster.Data.Models.Meetings
     {
         [Key]
         public int ID { get; set; }
-        public List<MeetingSubscription> Subscriber { get; set; }
+        public List<MeetingParticipation> Subscriber { get; set; }
         public DateTime MeetingDate { get; set; }
 
         public DateTime ReminderDate { get; set; }
