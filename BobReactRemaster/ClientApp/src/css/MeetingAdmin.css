@@ -1,37 +1,21 @@
-.Meeting
+.MeetingAdminList .card
 {
-    padding:0 5px;
-}
-.MemberList > div > span
-{
-    display:block;
-    border-bottom:1px solid #BAC6D1;
-    padding:10px 15px;
-    color:#BAC6D1;
+    max-width:calc(100vw - 50px);
+    width:700px;
 }
 .MemberList > div
 {
     position:relative;
 }
 
-.MemberList > div > svg
-{
-    position:absolute;
-    right:20px;
-    top:12px;
-    color:#BAC6D1;
-}
-.MemberList > div > svg.active
-{
-    color:#cc0000;
-}
 .MeetingHeader
 {
     position: relative;
+    border-bottom:3px solid #486581;
 }
 .MeetingHeader span
 {
-    padding:5px 60px 5px 0;
+    padding:5px 70px 5px 10px;
     display:block;
     color:#BAC6D1;
 }
@@ -41,14 +25,14 @@
 .MeetingHeader svg.editModeToggle
 {
     position:absolute;
-    right:5px;
+    right:15px;
     top:6px;
     color:#BAC6D1;
 }
 .MeetingHeader svg.deleteMeeting
 {
     position:absolute;
-    right:30px;
+    right:40px;
     top:6px;
     color:#BAC6D1;
 }
@@ -63,4 +47,7 @@
 .editOpen
 {
     display: block;
+}
+.SelectBox svg{
+    pointer-events: none;
 }

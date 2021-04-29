@@ -1,7 +1,11 @@
 import React, {useState} from 'react';
 import { getCookie } from "../../../helper/cookie";
 import '../../../css/Cards.css';
+import '../../../css/MeetingAdmin.css';
 import '../../../css/Stream.css';
+import '../../../css/Grid.css';
+import '../../../css/Forms.css';
+import '../../../css/Button.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusSquare  } from '@fortawesome/free-solid-svg-icons';
 import Meeting from './Meeting';
@@ -29,13 +33,15 @@ export function List(){
     }
 
     return (
-        <div className="tab_card">
-            <div className="card_top">
-                <span className="h1">Meetings</span>
-                <span className="addStreamBtn" onClick={handleAddMeeting}><FontAwesomeIcon icon={faPlusSquare}/></span>
-            </div>
-            <div className="card_body">
-            {Body}
+        <div className="MeetingAdminList">
+            <div className="card">
+                <div className="card_area position-relative">
+                    <span className="h1">Meetings</span>
+                    <span className="addStreamBtn" onClick={handleAddMeeting}><FontAwesomeIcon icon={faPlusSquare}/></span>
+                </div>
+                <div className="card_area card_area--nopadding">
+                {Body}
+                </div>
             </div>
         </div>
     );

@@ -12,6 +12,7 @@
     border-right:4px solid #486581;
     cursor:pointer;
     white-space: nowrap;
+    color:#BAC6D1;
 }
 .TabHeader > span.active
 {

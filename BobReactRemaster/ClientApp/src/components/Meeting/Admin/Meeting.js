@@ -5,7 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilRuler, faTrash, faChevronDown,faChevronUp  } from '@fortawesome/free-solid-svg-icons';
 import '../../../css/MeetingAdmin.css';
 import '../../../css/Forms.css';
+import '../../../css/Tabs.css';
+import '../../../css/Button.css';
+import '../../../css/Cards.css';
 import Member from './Member';
+import Tooltip from "../../Tooltip";
+const Tabs = {
+    VOTING: "Voting",
+    GENERAL: "General",
+    DATES: "Dates",
+    REMINDER: "Reminder"
+}
 export function Meeting(props){
     const [Members,setMembers] = useState(props.data.members);
     const [currentSelectedMemberIndex,setcurrentSelectedMember] = useState(0);
@@ -13,6 +23,7 @@ export function Meeting(props){
     const [SelectOpen,setSelectOpen] = useState(false);
     const [EditOpen,setEditOpen] = useState(props.data.editopen);
     const [DeleteConfirm,setDeleteConfirm] = useState(false);
+    const [tab,setTab] = useState(Tabs.VOTING)
     const handleAddMember = () => {
         var tmp = Members;
         tmp.push(props.AvailableMembers[currentSelectedMemberIndex]);
@@ -122,6 +133,45 @@ export function Meeting(props){
         }
         return "editClosed";
     }
+    var Body = null;
+    switch(tab)
+    {
+        case Tabs.GENERAL:
+            Body = <span>General</span>
+            break;
+        case Tabs.VOTING:
+            Body = <span>Voting</span>
+            break;
+        case Tabs.DATES:
+            Body = <span>Dates</span>
+            break;
+        case Tabs.REMINDER:
+            Body = <span>Reminder</span>
+            break;
+        default:
+            Body = null;
+            break;
+    }
+    var VotingTabCSSClass = "";
+    if(tab === Tabs.VOTING)
+    {
+        VotingTabCSSClass = "active";
+    }
+    var GeneralTabCSSClass = "";
+    if(tab === Tabs.GENERAL)
+    {
+        GeneralTabCSSClass = "active";
+    }
+    var DatesTabCSSClass = "";
+    if(tab === Tabs.DATES)
+    {
+        DatesTabCSSClass = "active";
+    }
+    var ReminderTabCSSClass = "";
+    if(tab === Tabs.REMINDER)
+    {
+        ReminderTabCSSClass = "active";
+    }
     return (
         <div className="Meeting">
             <div className="MeetingHeader">
@@ -130,6 +180,16 @@ export function Meeting(props){
                 <FontAwesomeIcon className={DeleteCSSClasses()} icon={faTrash} onClick={Delete}/>
             </div>
             <div className={EditOpenCSSClasses()}>
+            <div className="TabHeader">
+            <span className={VotingTabCSSClass} onClick={() => setTab(Tabs.VOTING)}>Voting <Tooltip text="Hier stimmt Ihr für dieses Meeting ab" /></span>
+            <span className={GeneralTabCSSClass} onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier stellt man Name und Mitglieder ein" /></span>
+            <span className={DatesTabCSSClass} onClick={() => setTab(Tabs.DATES)}>Termina <Tooltip text="Hier erstellt/bearbeitet man Termine" /></span>
+            <span className={ReminderTabCSSClass} onClick={() => setTab(Tabs.REMINDER)}>Errinnerung <Tooltip text="Hier stellt man den Tag ein an dem die Spieler erinnert werden abzustimmen." /></span>
+            </div>
+            <div className="ModalBody">
+            {Body}
+            </div>
+            {/*
                 <div className="MeetingNameBox">
                     <label htmlFor="Name">Name</label>
                     <input name="Name" value={Name} onChange={(e) => {setName(e.target.value)}} />
@@ -143,6 +203,7 @@ export function Meeting(props){
                     {renderMemberAddButton()}
                     {renderMemberList()}
                 </div>
+            */}
             </div>
         </div>
     );
