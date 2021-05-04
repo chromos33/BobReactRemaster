@@ -10,8 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusSquare  } from '@fortawesome/free-solid-svg-icons';
 import Meeting from './Meeting';
 export function List(){
-    const [Meetings,setMeetings] = useState([{id:0,name:"Neues Meeting",members:[],editopen: false}]);
-    const [AvailableMembers,setAvailableMembers] = useState([{id:0,name:"Peter"},{id:1,name:"Franz"},{id:2,name:"Alfred"}]);
+    const [Meetings,setMeetings] = useState([]);
+    
     // Do not forget to only supply Meetings that the user is admin of
     const handleAddMeeting = () => {
         var tmp = Meetings;
@@ -27,8 +27,7 @@ export function List(){
     if(Meetings != null)
     {
         Body = Meetings.map((meeting,key) => {
-            console.log(meeting);
-            return <Meeting AvailableMembers={AvailableMembers} key={key} data={meeting} />
+            return <Meeting key={key} data={meeting} />
         });
     }
 

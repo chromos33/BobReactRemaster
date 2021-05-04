@@ -14,6 +14,6 @@ namespace BobReactRemaster.Data.Models.Meetings
         public DateTime MeetingDate { get; set; }
 
         public DateTime ReminderDate { get; set; }
-
+        public int MeetingTemplateID { get; set; }
     }
 }
