@@ -58,14 +58,7 @@ export function Navi(props)
             Title: "Meeting",
             Icon: ["fas","handshake"],
             FirstLevel: true,
-            SubLinks: [
-                {
-                    ID : "MeetingAdmin",
-                    Title: "Admin",
-                    Icon: ["fas","cogs"],
-                    Link: "/MeetingAdmin"
-                }
-            ]
+            Link: "/MeetingAdmin"
         }
     ];
     var Menu = Links.map((Link) => {

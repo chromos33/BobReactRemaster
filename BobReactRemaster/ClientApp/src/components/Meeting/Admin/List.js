@@ -14,14 +14,29 @@ export function List(){
     
     // Do not forget to only supply Meetings that the user is admin of
     const handleAddMeeting = () => {
-        var tmp = Meetings;
-        if(tmp == null)
-        {
-            tmp = [];
-        }
-        tmp.push({id:0,name:"Neues Meeting",members:[],editopen: true});
-        var savearray = tmp.map(x => x);
-        setMeetings(savearray);
+        fetch("/Meeting/CreateMeeting",{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            }
+        })
+        .then(response => {
+            console.log(response.body);
+            return response.json();
+        })
+        .then(json => {
+            console.log(json);
+            var tmp = Meetings;
+            if(tmp == null)
+            {
+                tmp = [];
+            }
+            tmp.push({id:json.MeetingID,name:"Neues Meeting",members:[],editopen: true});
+            var savearray = tmp.map(x => x);
+            setMeetings(savearray);
+        });
+        
     }
     var Body = null;
     if(Meetings != null)

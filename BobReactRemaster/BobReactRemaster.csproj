@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="EventBus\MessageDataTypes\Discord\" />
+    <Folder Include="JSONModels\Meeting\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
