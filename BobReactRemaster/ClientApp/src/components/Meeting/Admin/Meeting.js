@@ -16,6 +16,7 @@ const Tabs = {
     REMINDER: "Reminder"
 }
 export function Meeting(props){
+    console.log(props);
     const [Name,setName] = useState(props.data.name);
     const [EditOpen,setEditOpen] = useState(props.data.editopen);
     const [DeleteConfirm,setDeleteConfirm] = useState(false);
@@ -57,7 +58,7 @@ export function Meeting(props){
     switch(tab)
     {
         case Tabs.GENERAL:
-            Body = <General />
+            Body = <General MeetingID={props.data.id} />
             break;
         case Tabs.VOTING:
             Body = <span>Voting</span>

@@ -9,6 +9,7 @@ using BobReactRemaster.Data.Models.Meetings;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace BobReactRemaster.Controllers
 {
@@ -29,16 +30,28 @@ namespace BobReactRemaster.Controllers
         [Authorize(Policy = Policies.User)]
         public IActionResult CreateMeeting()
         {
-            MeetingTemplate tmp = new MeetingTemplate();
-            _context.MeetingTemplates.Add(tmp);
+            var UserName = User.FindFirst("fullName")?.Value;
+            if (UserName != null)
+            {
+                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).First(q => q.UserName.ToLower() == UserName);
+                MeetingTemplate tmp = new MeetingTemplate();
+                MeetingTemplate_Member tmpmanymany = new MeetingTemplate_Member(user,tmp);
+                tmpmanymany.IsAuthor = true;
+                _context.MeetingTemplates_Members.Add(tmpmanymany);
+                
+                _context.MeetingTemplates.Add(tmp);
+                _context.SaveChanges();
 
 
-            return Ok(new { MeetingID = tmp.ID});
+                return Ok(new { MeetingID = tmp.ID });
+            }
+
+            return NotFound();
+
         }
         [HttpGet]
         [Route("LoadGeneralMeetingData")]
         [Authorize(Policy = Policies.User)]
-        [Authorize(Policy = Policies.Admin)]
         public IActionResult LoadGeneralMeetingData(int ID)
         {
             MeetingTemplate meetingTemplate = _context.MeetingTemplates.FirstOrDefault(x => x.ID == ID);

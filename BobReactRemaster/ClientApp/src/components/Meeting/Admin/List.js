@@ -22,17 +22,16 @@ export function List(){
             }
         })
         .then(response => {
-            console.log(response.body);
             return response.json();
         })
         .then(json => {
-            console.log(json);
             var tmp = Meetings;
             if(tmp == null)
             {
                 tmp = [];
             }
-            tmp.push({id:json.MeetingID,name:"Neues Meeting",members:[],editopen: true});
+            
+            tmp.push({id:json.meetingID,name:"Neues Meeting",members:[],editopen: true});
             var savearray = tmp.map(x => x);
             setMeetings(savearray);
         });
