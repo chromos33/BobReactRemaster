@@ -11,6 +11,7 @@ import { faPlusSquare  } from '@fortawesome/free-solid-svg-icons';
 import Meeting from './Meeting';
 export function List(){
     const [Meetings,setMeetings] = useState([]);
+    const [Init,setInit] = useState(false);
     
     // Do not forget to only supply Meetings that the user is admin of
     const handleAddMeeting = () => {
@@ -35,8 +36,25 @@ export function List(){
             var savearray = tmp.map(x => x);
             setMeetings(savearray);
         });
-        
     }
+    const loadMeetings = () => {
+        fetch("/Meeting/GetMeetingsTemplates",{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            }
+        }).then(response => response.json())
+        .then(json => {
+            setInit(true);
+            setMeetings(json.meetingTemplates);
+        })
+    }
+    if(!Init)
+    {
+        loadMeetings();
+    }
+    
     var Body = null;
     if(Meetings != null)
     {

@@ -8,6 +8,7 @@ using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Meetings;
 using BobReactRemaster.Data.Models.User;
 using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -86,6 +87,30 @@ namespace BobReactRemaster.Controllers
 
 
             return Ok(new {AvailableMembers = AvailableMembers,RegisteredMember = RegisteredMembers,Name= meetingTemplate.Name});
+        }
+
+        [HttpGet]
+        [Route("GetMeetingsTemplates")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult GetMeetingsTemplates()
+        {
+            var UserName = User.FindFirst("fullName")?.Value;
+            if (UserName != null)
+            {
+                var user = _context.CompleteMeetingTemplateFromMember().First(q => q.UserName.ToLower() == UserName);
+                //var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).Include(x => x.).First(q => q.UserName.ToLower() == UserName);
+                List<dynamic> MeetingTemplateJSON = new List<dynamic>();
+                foreach (MeetingTemplate template in user.RegisteredToMeetingTemplates.Select(x => x.MeetingTemplate))
+                {
+                    MeetingTemplateJSON.Add(new {ID = template.ID, Name = template.Name});
+                }
+
+
+                return Ok(new { MeetingTemplates = MeetingTemplateJSON });
+            }
+
+            return NotFound();
+
         }
     }
 }
