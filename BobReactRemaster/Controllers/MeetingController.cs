@@ -55,7 +55,7 @@ namespace BobReactRemaster.Controllers
         [Authorize(Policy = Policies.User)]
         public IActionResult LoadGeneralMeetingData(int ID)
         {
-            MeetingTemplate meetingTemplate = _context.MeetingTemplates.FirstOrDefault(x => x.ID == ID);
+            MeetingTemplate meetingTemplate = _context.MeetingTemplates.Include(x => x.Members).ThenInclude(y => y.RegisteredMember).FirstOrDefault(x => x.ID == ID);
             if (meetingTemplate == null)
             {
                 return NotFound();

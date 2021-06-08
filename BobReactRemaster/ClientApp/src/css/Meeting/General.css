@@ -1,0 +1,23 @@
+.AddMemberField
+{
+    display:grid;
+    grid-template-columns:  65% 5% 30%;
+    grid-template-rows:100%;
+    width: 100%;
+}
+.AddMemberField select
+{
+    grid-row-start:1;
+    grid-row-end:1;
+    grid-column-start:1;
+    grid-column-end:1;
+}
+.AddMemberField .AddMemberBtn
+{
+    grid-row-start:1;
+    grid-row-end:1;
+    grid-column-start:3;
+    grid-column-end:3;
+    text-align: center;
+    line-height:24px;
+}
