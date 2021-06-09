@@ -5,10 +5,11 @@ import '../../../../css/Button.css';
 import '../../../../css/Meeting/General.css';
 import { getCookie } from "../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusSquare,faChevronDown,faChevronUp  } from '@fortawesome/free-solid-svg-icons';
+import { faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function General(props){
     const [availableMembers, setAvailableMembers] = useState(null);
     const [registeredMembers, setRegisteredMembers] = useState(null);
+    const [DeleteConfirm,setDeleteConfirm] = useState(false);
     const [invitedMembers, setInvitedMembers] = useState([]);
     const [Name, setName] = useState("");
     const [SelectedAddMember, setSelectedAddMember] = useState("Auswählen");
@@ -41,7 +42,6 @@ export function General(props){
             var array = invitedMembers;
             array.push(SelectedAddMember);
             var savearray = array.map(x => x);
-            console.log(savearray);
             setInvitedMembers(savearray);
         }
         
@@ -59,6 +59,59 @@ export function General(props){
             }
         });
         return Members;
+    }
+    const InvitedMembers = () => {
+        var Members = [];
+        availableMembers.forEach(x => {
+            if(!invitedMembers.includes(x.userName))
+            {
+                Members.push(x)
+            }
+        });
+        return Members;
+    }
+    const getDisplayMembers = () => {
+        var Members = [];
+        availableMembers.forEach(x => {
+            if(!Members.some(y => y.userName === x.userName))
+            {
+                Members.push(x);
+            }
+        });
+        availableMembers.forEach(x => {
+            if(invitedMembers.some(y => y === x.userName) && !Members.some(y => y.userName === x.userName))
+            {
+                Members.push(x);
+            }
+        });
+        return Members;
+    }
+    var deleteTimeout = null;
+    const RemoveMember = (e) => {
+        clearTimeout(deleteTimeout);
+        if(DeleteConfirm)
+        {
+            //requires parent functionprop that deletes this meeting from datalist
+        }
+        else
+        {
+            setDeleteConfirm(true);
+            deleteTimeout = setTimeout(() => {
+                setDeleteConfirm(false);
+            }, 5000);
+        }
+    }
+    const renderDisplayMembers = () => {
+        return getDisplayMembers().map((x) => {
+            return (<span>{x.userName} <FontAwesomeIcon icon={faTrash} className={DeleteCSSClasses(x)} onClick={RemoveMember(x)}/></span>);
+        });
+    }
+    const DeleteCSSClasses = () => {
+        if(DeleteConfirm)
+        {
+            return "memberdelete confirm";
+        }
+        return "memberdelete";
     }
     if(Name === "")
     {
@@ -83,6 +136,11 @@ export function General(props){
                     <span onClick={handleAddMemberClick} className="AddMemberBtn button">Einladen</span>
                 </div>
                 }
+                <div className="MemberList">
+                    {renderDisplayMembers()}
+                    {renderDisplayMembers()}
+                    {renderDisplayMembers()}
+                </div>
                 
             </div>
         </div>

@@ -21,3 +21,27 @@
     text-align: center;
     line-height:24px;
 }
+.MemberList
+{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:10px;
+    margin-top:20px;
+}
+.MemberList span
+{
+    background-color: #486581;
+    padding:5px;
+    position:relative;
+}
+.MemberList span svg
+{
+    position:absolute;
+    right:10px;
+    top:5px;
+    cursor:pointer;
+}
+.MemberList span svg.confirm
+{
+    color:red;
+}
