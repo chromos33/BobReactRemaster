@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
-import Member from '../Member';
 import '../../../../css/Forms.css';
 import '../../../../css/Button.css';
 import '../../../../css/Meeting/General.css';
+import Member from "./Member";
 import { getCookie } from "../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function General(props){
     const [availableMembers, setAvailableMembers] = useState(null);
     const [registeredMembers, setRegisteredMembers] = useState(null);
-    const [DeleteConfirm,setDeleteConfirm] = useState(false);
+    
     const [invitedMembers, setInvitedMembers] = useState([]);
     const [Name, setName] = useState("");
     const [SelectedAddMember, setSelectedAddMember] = useState("Auswählen");
@@ -86,32 +86,16 @@ export function General(props){
         });
         return Members;
     }
-    var deleteTimeout = null;
-    const RemoveMember = (e) => {
-        clearTimeout(deleteTimeout);
-        if(DeleteConfirm)
-        {
-            //requires parent functionprop that deletes this meeting from datalist
-        }
-        else
-        {
-            setDeleteConfirm(true);
-            deleteTimeout = setTimeout(() => {
-                setDeleteConfirm(false);
-            }, 5000);
-        }
+    const removeMember = (m) => {
+        console.log(m);
+        //TODO first if I send all members to backend to update or remove I can just merge both lists and save on logic
+        //TODO Delete Member from invited or registered member..
     }
+    var deleteTimeout = null;
     const renderDisplayMembers = () => {
         return getDisplayMembers().map((x) => {
-            return (<span>{x.userName} <FontAwesomeIcon icon={faTrash} className={DeleteCSSClasses(x)} onClick={RemoveMember(x)}/></span>);
+            return (<Member data={x} handleRemoveMember={removeMember} />);
         });
-    }
-    const DeleteCSSClasses = () => {
-        if(DeleteConfirm)
-        {
-            return "memberdelete confirm";
-        }
-        return "memberdelete";
     }
     if(Name === "")
     {
