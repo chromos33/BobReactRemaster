@@ -7,10 +7,8 @@ import { getCookie } from "../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function General(props){
-    const [availableMembers, setAvailableMembers] = useState(null);
-    const [registeredMembers, setRegisteredMembers] = useState(null);
+    const [Members, setMembers] = useState(null);
     
-    const [invitedMembers, setInvitedMembers] = useState([]);
     const [Name, setName] = useState("");
     const [SelectedAddMember, setSelectedAddMember] = useState("Auswählen");
     const [Init, setInit] = useState(false);
@@ -29,20 +27,28 @@ export function General(props){
             return response.json();
         })
         .then(json => {
-            setAvailableMembers(json.availableMembers);
-            setRegisteredMembers(json.registeredMembers);
+            console.log(json);
+            setMembers(json.membersForTransfer);
             setName(json.name);
             setInit(true);
             setLoadInProgress(false);
         });
     }
+    if(Init === false)
+    {
+        return null;
+    }
     const handleAddMemberClick = () => {
         if(SelectedAddMember !== "Auswählen")
         {
-            var array = invitedMembers;
-            array.push(SelectedAddMember);
-            var savearray = array.map(x => x);
-            setInvitedMembers(savearray);
+            var array = Members.map(x => {
+                if(x.UserName === SelectedAddMember)
+                {
+                    x.registered = true;
+                }
+                return x;
+            });
+            setMembers(array);
         }
         
 
@@ -51,40 +57,25 @@ export function General(props){
         setSelectedAddMember(e.target.value);
     } 
     const InviteableMembers = () => {
-        var Members = [];
-        availableMembers.forEach(x => {
-            if(!invitedMembers.includes(x.userName))
+        var InviteableMembers = [];
+        Members.forEach(x => {
+            if(x.registered === false)
             {
-                Members.push(x)
+                InviteableMembers.push(x)
             }
         });
-        return Members;
+        return InviteableMembers;
     }
     const InvitedMembers = () => {
-        var Members = [];
-        availableMembers.forEach(x => {
-            if(!invitedMembers.includes(x.userName))
+        var InvitedMembers = [];
+        Members.forEach(x => {
+            console.log(x);
+            if(x.registered === true)
             {
-                Members.push(x)
+                InvitedMembers.push(x)
             }
         });
-        return Members;
-    }
-    const getDisplayMembers = () => {
-        var Members = [];
-        availableMembers.forEach(x => {
-            if(!Members.some(y => y.userName === x.userName))
-            {
-                Members.push(x);
-            }
-        });
-        availableMembers.forEach(x => {
-            if(invitedMembers.some(y => y === x.userName) && !Members.some(y => y.userName === x.userName))
-            {
-                Members.push(x);
-            }
-        });
-        return Members;
+        return InvitedMembers;
     }
     const removeMember = (m) => {
         console.log(m);
@@ -93,7 +84,7 @@ export function General(props){
     }
     var deleteTimeout = null;
     const renderDisplayMembers = () => {
-        return getDisplayMembers().map((x) => {
+        return InvitedMembers().map((x) => {
             return (<Member data={x} handleRemoveMember={removeMember} />);
         });
     }

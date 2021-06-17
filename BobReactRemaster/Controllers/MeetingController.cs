@@ -62,8 +62,7 @@ namespace BobReactRemaster.Controllers
             }
 
             var Members = _context.Members.AsQueryable();
-            List<dynamic> AvailableMembers = new List<dynamic>();
-            List<dynamic> RegisteredMembers = new List<dynamic>();
+            List<dynamic> MembersForTransfer = new List<dynamic>();
             foreach (var Member in Members)
             {
                 var found = false;
@@ -77,16 +76,16 @@ namespace BobReactRemaster.Controllers
 
                 if (!found)
                 {
-                    AvailableMembers.Add(new { UserName= Member.UserName});
+                    MembersForTransfer.Add(new { UserName= Member.UserName, Registered = false});
                 }
                 else
                 {
-                    RegisteredMembers.Add(new { UserName= Member.UserName});
+                    MembersForTransfer.Add(new { UserName= Member.UserName, Registered = true});
                 }
             }
 
 
-            return Ok(new {AvailableMembers = AvailableMembers,RegisteredMember = RegisteredMembers,Name= meetingTemplate.Name});
+            return Ok(new {MembersForTransfer = MembersForTransfer,Name= meetingTemplate.Name});
         }
 
         [HttpGet]
