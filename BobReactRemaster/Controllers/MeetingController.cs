@@ -11,6 +11,7 @@ using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using BobReactRemaster.JSONModels.Meeting;
 
 namespace BobReactRemaster.Controllers
 {
@@ -85,7 +86,7 @@ namespace BobReactRemaster.Controllers
             }
 
 
-            return Ok(new {MembersForTransfer = MembersForTransfer,Name= meetingTemplate.Name});
+            return Ok(new {MembersForTransfer = MembersForTransfer,Name= meetingTemplate.Name,ID = ID});
         }
 
         [HttpGet]
@@ -108,6 +109,15 @@ namespace BobReactRemaster.Controllers
                 return Ok(new { MeetingTemplates = MeetingTemplateJSON });
             }
 
+            return NotFound();
+
+        }
+        [HttpPost]
+        [Route("SaveMeetingGeneral")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult SaveMeetingGeneral([FromBody] MeetingGeneralData data)
+        {
+            
             return NotFound();
 
         }

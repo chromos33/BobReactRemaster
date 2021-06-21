@@ -6,7 +6,6 @@ import { getCookie } from "../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function Member(props){
-    console.log(props);
     const [DeleteConfirm,setDeleteConfirm] = useState(false);
     const DeleteCSSClasses = () => {
         if(DeleteConfirm)
@@ -20,7 +19,6 @@ export function Member(props){
         clearTimeout(deleteTimeout);
         if(DeleteConfirm)
         {
-            console.log(props);
             props.handleRemoveMember(props);
             //requires parent functionprop that deletes this meeting from datalist
         }

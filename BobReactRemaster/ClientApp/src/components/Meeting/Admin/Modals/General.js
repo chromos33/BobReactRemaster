@@ -27,7 +27,6 @@ export function General(props){
             return response.json();
         })
         .then(json => {
-            console.log(json);
             setMembers(json.membersForTransfer);
             setName(json.name);
             setInit(true);
@@ -42,7 +41,8 @@ export function General(props){
         if(SelectedAddMember !== "Auswählen")
         {
             var array = Members.map(x => {
-                if(x.UserName === SelectedAddMember)
+                console.log(x);
+                if(x.userName === SelectedAddMember)
                 {
                     x.registered = true;
                 }
@@ -69,7 +69,6 @@ export function General(props){
     const InvitedMembers = () => {
         var InvitedMembers = [];
         Members.forEach(x => {
-            console.log(x);
             if(x.registered === true)
             {
                 InvitedMembers.push(x)
@@ -78,9 +77,14 @@ export function General(props){
         return InvitedMembers;
     }
     const removeMember = (m) => {
-        console.log(m);
-        //TODO first if I send all members to backend to update or remove I can just merge both lists and save on logic
-        //TODO Delete Member from invited or registered member..
+        var savearray = Members.map( x => {
+            if(x.userName === m.data.userName)
+            {
+                x.registered = false;
+            }
+            return x;
+        });
+        setMembers(savearray);
     }
     var deleteTimeout = null;
     const renderDisplayMembers = () => {
@@ -95,10 +99,24 @@ export function General(props){
     var options = InviteableMembers().map(x => {
         return <option>{x.userName}</option>
     });
+    const handleSave = () => {
+        fetch("/Meeting/SaveMeetingGeneral",{
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            },
+            body: JSON.stringify({
+                Members: Members,
+                MeetingID: props.MeetingID
+            })
+        }).then(response => {
+        });
+    }
     //TODO List of Members Either already registered or invited ones
     return (
         
-        <div className="MeetingAdminList">
+        <div className="MeetingContainer">
             <div className="formInputsContainer">
                 <label>Event Name</label>
                 <input type="text" name="StreamName" value={Name} onChange={(e) => setName(e.target.value)}/>
@@ -113,10 +131,10 @@ export function General(props){
                 }
                 <div className="MemberList">
                     {renderDisplayMembers()}
-                    {renderDisplayMembers()}
-                    {renderDisplayMembers()}
                 </div>
-                
+            </div>
+            <div className="Actions">
+                <span onClick={handleSave} className="button card_button" type="submit" >Speichern</span>
             </div>
         </div>
     );
