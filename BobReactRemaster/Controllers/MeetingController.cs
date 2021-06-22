@@ -117,6 +117,31 @@ namespace BobReactRemaster.Controllers
         [Authorize(Policy = Policies.User)]
         public IActionResult SaveMeetingGeneral([FromBody] MeetingGeneralData data)
         {
+            var Meeting = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).First(x => x.ID == data.MeetingID);
+            if(Meeting != null)
+            {
+                foreach(MeetingGeneralMember member in data.Members)
+                {
+                    if(member.registered == false && Meeting.Members.Any(x => x.RegisteredMember.UserName.ToLower() == member.userName.ToLower()))
+                    {
+                        MeetingTemplate_Member remove = Meeting.Members.First(x => x.RegisteredMember.UserName.ToLower() == member.userName.ToLower());
+                        _context.MeetingTemplates_Members.Remove(remove);
+                        return Ok();
+                    }
+                    else if(member.registered && !Meeting.Members.Any(x => x.RegisteredMember.UserName.ToLower() == member.userName.ToLower()))
+                    {
+                        Member NewMember = _context.Members.First(x => x.UserName.ToLower() == member.userName.ToLower());
+                        if(NewMember != null)
+                        {
+                            MeetingTemplate_Member add = new MeetingTemplate_Member();
+                            add.RegisteredMember = NewMember;
+                            Meeting.Members.Add(add);
+                        }
+                    }
+                }
+                _context.SaveChanges();
+                return Ok();
+            }
             
             return NotFound();
 
