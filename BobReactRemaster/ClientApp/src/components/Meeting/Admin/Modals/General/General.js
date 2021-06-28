@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import '../../../../css/Forms.css';
-import '../../../../css/Button.css';
-import '../../../../css/Meeting/General.css';
+import '../../../../../css/Forms.css';
+import '../../../../../css/Button.css';
+import '../../../../../css/Meeting/General.css';
 import Member from "./Member";
-import { getCookie } from "../../../../helper/cookie";
+import { getCookie } from "../../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function General(props){

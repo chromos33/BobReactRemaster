@@ -90,6 +90,24 @@ namespace BobReactRemaster.Controllers
         }
 
         [HttpGet]
+        [Route("LoadDatesMeetingData")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult LoadDatesMeetingData(int ID)
+        {
+            MeetingTemplate meetingTemplate = _context.MeetingTemplates.AsQueryable().Include(x => x.Dates).FirstOrDefault(x => x.ID == ID);
+            if (meetingTemplate == null)
+            {
+                return NotFound();
+            }
+            List<dynamic> Dates = new List<dynamic>();
+            foreach (MeetingDateTemplate date in meetingTemplate.Dates)
+            {
+                Dates.Add(new { Day = date.DayOfWeek, Start = date.Start, End = date.End });
+            }
+            return Ok(Dates);
+        }
+
+        [HttpGet]
         [Route("GetMeetingsTemplates")]
         [Authorize(Policy = Policies.User)]
         public IActionResult GetMeetingsTemplates()

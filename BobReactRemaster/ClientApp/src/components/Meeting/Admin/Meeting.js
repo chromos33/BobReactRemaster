@@ -8,7 +8,8 @@ import '../../../css/Tabs.css';
 import '../../../css/Button.css';
 import '../../../css/Cards.css';
 import Tooltip from "../../Tooltip";
-import General from "./Modals/General";
+import General from "./Modals/General/General";
+import Dates from "./Modals/Dates/Dates";
 const Tabs = {
     VOTING: "Voting",
     GENERAL: "General",
@@ -64,7 +65,7 @@ export function Meeting(props){
             Body = <span>Voting</span>
             break;
         case Tabs.DATES:
-            Body = <span>Dates</span>
+            Body = <Dates MeetingID={props.data.id} />
             break;
         case Tabs.REMINDER:
             Body = <span>Reminder</span>
