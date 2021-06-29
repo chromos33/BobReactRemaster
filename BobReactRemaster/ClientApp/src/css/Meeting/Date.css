@@ -1,0 +1,36 @@
+.Date
+{
+    display:grid;
+    grid-template-columns:auto 30% 30%;
+    grid-template-rows: 50px;
+}
+.Date .Day
+{
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    padding:0 20px 0 0;
+}
+.Date .StartTime
+{
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    padding:0 10px;
+}
+.Date .EndTime
+{
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    padding:0 0 0 10px;
+}
+.Date .Day input,
+.Date .StartTime input,
+.Date .EndTime input
+{
+    display:block;
+}

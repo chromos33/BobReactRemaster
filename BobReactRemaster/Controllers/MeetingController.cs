@@ -102,7 +102,7 @@ namespace BobReactRemaster.Controllers
             List<dynamic> Dates = new List<dynamic>();
             foreach (MeetingDateTemplate date in meetingTemplate.Dates)
             {
-                Dates.Add(new { Day = date.DayOfWeek, Start = date.Start, End = date.End });
+                Dates.Add(new { ID= date.ID, Day = date.DayOfWeek, Start = date.Start.ToString("HH:mm"), End = date.End.ToString("HH:mm") });
             }
             return Ok(Dates);
         }
@@ -127,6 +127,15 @@ namespace BobReactRemaster.Controllers
                 return Ok(new { MeetingTemplates = MeetingTemplateJSON });
             }
 
+            return NotFound();
+
+        }
+        [HttpPost]
+        [Route("SaveMeetingDates")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult SaveMeetingDates([FromBody] MeetingDateTemplateJSONData data)
+        {
+            //TODO Update/Remove/Add
             return NotFound();
 
         }
