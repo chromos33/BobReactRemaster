@@ -13,6 +13,7 @@ namespace BobReactRemaster.JSONModels.Meeting
     }
     public class MeetingDateTemplateJSON
     {
+        public int id { get; set; }
         public WeekDay day { get; set; }
         public DateTime start { get; set; }
         public DateTime end { get; set; }

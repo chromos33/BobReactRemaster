@@ -1,7 +1,7 @@
 .Date
 {
     display:grid;
-    grid-template-columns:auto 30% 30%;
+    grid-template-columns:auto 30% 30% 20px;
     grid-template-rows: 50px;
 }
 .Date .Day
@@ -27,6 +27,14 @@
     grid-row-start: 1;
     grid-row-end: 1;
     padding:0 0 0 10px;
+}
+.Date .DeleteAction
+{
+    grid-column-start: 4;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    padding:0 10px;
 }
 .Date .Day input,
 .Date .StartTime input,

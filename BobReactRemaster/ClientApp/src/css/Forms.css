@@ -58,3 +58,13 @@ input[type="checkbox"]:checked + .fakeCheckbox svg
 {
     display:block;
 }
+
+.delete
+{
+    color:#F0F4F8;
+    cursor:pointer;
+}
+.delete.confirm
+{
+    color:red;
+}

@@ -136,6 +136,34 @@ namespace BobReactRemaster.Controllers
         public IActionResult SaveMeetingDates([FromBody] MeetingDateTemplateJSONData data)
         {
             //TODO Update/Remove/Add
+            
+            var Meeting = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).Include(x => x.Dates).First(x => x.ID == data.MeetingID);
+            if (Meeting != null)
+            {
+                //Update
+                var Date = Meeting.Dates.FirstOrDefault(x => data.Templates.Any(y => { return y.id == x.ID; }));
+                if(Date != null)
+                {
+                    Date.Update(data.Templates.First(x => x.id == Date.ID));
+                }
+                //Remove
+                Date = Meeting.Dates.FirstOrDefault(x => data.Templates.All(y => { return y.id != x.ID; }));
+                if (Date != null)
+                {
+                    Meeting.Dates.Remove(Date);
+                }
+                //Add
+                foreach(var newDate in data.Templates.Where(x => Meeting.Dates.All(y => { return y.ID != x.id; })))
+                {
+                    MeetingDateTemplate newTemplate = new MeetingDateTemplate();
+                    newTemplate.Update(newDate);
+                    Meeting.Dates.Add(newTemplate);
+                }
+
+                _context.SaveChanges();
+
+                return Ok();
+            }
             return NotFound();
 
         }

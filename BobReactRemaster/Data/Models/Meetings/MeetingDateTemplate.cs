@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BobReactRemaster.JSONModels.Meeting;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,5 +17,12 @@ namespace BobReactRemaster.Data.Models.Meetings
         public WeekDay DayOfWeek { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+
+        public void Update(MeetingDateTemplateJSON data)
+        {
+            DayOfWeek = data.day;
+            Start = data.start;
+            End = data.end;
+        }
     }
 }

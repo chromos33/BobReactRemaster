@@ -6,11 +6,36 @@ import { getCookie } from "../../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function Date(props){
+
+    const [DeleteConfirm,setDeleteConfirm] = useState(false);
+    const DeleteCSSClasses = () => {
+        if(DeleteConfirm)
+        {
+            return "delete confirm";
+        }
+        return "delete";
+    }
     //TODO add Date Component and render with that
     let weekdays = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"]
     let weekdayoptions = weekdays.map((x,index) => {
         return <option value={index}>{x}</option>;
-    })
+    });
+    var deleteTimeout = null;
+    const RemoveDate = () => {
+        clearTimeout(deleteTimeout);
+        if(DeleteConfirm)
+        {
+            props.handleRemoveDate(props.Index);
+            //requires parent functionprop that deletes this meeting from datalist
+        }
+        else
+        {
+            setDeleteConfirm(true);
+            deleteTimeout = setTimeout(() => {
+                setDeleteConfirm(false);
+            }, 5000);
+        }
+    }
     return (
         <div className="Date">
            <div className="Day">
@@ -27,6 +52,9 @@ export function Date(props){
             <label>Endzeit</label>
             <input onChange={x => {props.EndChange(x.target.value,props.Index)}} value={props.end} type="time"/>
            </div> 
+           <div className="DeleteAction">
+            <FontAwesomeIcon icon={faTrash} className={DeleteCSSClasses()} onClick={RemoveDate}/>
+           </div>
         </div>
     );
 

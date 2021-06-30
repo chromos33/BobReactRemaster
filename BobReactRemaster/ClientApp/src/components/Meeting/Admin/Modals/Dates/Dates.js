@@ -30,12 +30,15 @@ export function Dates(props){
     }
     const handleSave = () => {
         //SaveMeetingDates
-        alert("test");
-        let savearray = Dates.map( x => {
-            x.start = "1970-01-01T"+x.start+":00";
-            x.end = "1970-01-01T"+x.end+":00";
-            return x;
-        })
+        let savearray =  Dates.map( x => {
+            return {
+                start : "1970-01-01T"+x.start+":00",
+                end: "1970-01-01T"+x.end+":00",
+                id: x.id,
+                day: x.day
+            }
+        });
+        console.log(Dates);
         fetch("/Meeting/SaveMeetingDates",{
             method: "POST",
             headers:{
@@ -93,15 +96,23 @@ export function Dates(props){
         })
         setDates(savearray);
     }
+    const handleRemoveDate = (index) => {
+        var savearray = Dates.filter((date,i) => {
+            return index !== i;
+        });
+        setDates(savearray);
+        
+    }
     const renderDates = () => {
         if(Dates.length > 0)
         {
             return Dates.map((x,index) => {
-                return <Date key={index} Index={index} WeekDayChange={changeDay} StartChange={changeStart} EndChange={changeEnd} weekday={x.day} start={x.start} end={x.end} />
+                return <Date handleRemoveDate={handleRemoveDate} key={index} Index={index} WeekDayChange={changeDay} StartChange={changeStart} EndChange={changeEnd} weekday={x.day} start={x.start} end={x.end} />
             });
         }
         return null
     }
+    //alert("add remove Action to Date");
     //TODO add Date Component and render with that
     return (
         <div className="MeetingContainer">
