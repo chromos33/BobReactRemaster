@@ -1,0 +1,8 @@
+.formInputsContainer label
+{
+    display:block;
+}
+.formInputsContainer
+{
+    column-gap:20px;
+}

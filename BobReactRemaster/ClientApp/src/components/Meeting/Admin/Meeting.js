@@ -10,6 +10,7 @@ import '../../../css/Cards.css';
 import Tooltip from "../../Tooltip";
 import General from "./Modals/General/General";
 import Dates from "./Modals/Dates/Dates";
+import Reminder from "./Modals/Reminder/Reminder";
 const Tabs = {
     VOTING: "Voting",
     GENERAL: "General",
@@ -68,7 +69,7 @@ export function Meeting(props){
             Body = <Dates MeetingID={props.data.id} />
             break;
         case Tabs.REMINDER:
-            Body = <span>Reminder</span>
+            Body = <Reminder MeetingID={props.data.id} />
             break;
         default:
             Body = null;
@@ -104,9 +105,18 @@ export function Meeting(props){
             <div className={EditOpenCSSClasses()}>
             <div className="TabHeader">
             <span className={VotingTabCSSClass} onClick={() => setTab(Tabs.VOTING)}>Voting <Tooltip text="Hier stimmt Ihr für dieses Meeting ab" /></span>
-            <span className={GeneralTabCSSClass} onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier stellt man Name und Mitglieder ein" /></span>
-            <span className={DatesTabCSSClass} onClick={() => setTab(Tabs.DATES)}>Termina <Tooltip text="Hier erstellt/bearbeitet man Termine" /></span>
-            <span className={ReminderTabCSSClass} onClick={() => setTab(Tabs.REMINDER)}>Errinnerung <Tooltip text="Hier stellt man den Tag ein an dem die Spieler erinnert werden abzustimmen." /></span>
+            {
+                props.data.isAuthor &&
+                <span className={GeneralTabCSSClass} onClick={() => setTab(Tabs.GENERAL)}>General <Tooltip text="Hier stellt man Name und Mitglieder ein" /></span>
+            }
+            {
+                props.data.isAuthor &&
+                <span className={DatesTabCSSClass} onClick={() => setTab(Tabs.DATES)}>Termina <Tooltip text="Hier erstellt/bearbeitet man Termine" /></span>
+            }
+            {
+                props.data.isAuthor &&
+                <span className={ReminderTabCSSClass} onClick={() => setTab(Tabs.REMINDER)}>Errinnerung <Tooltip text="Hier stellt man den Tag ein an dem die Spieler erinnert werden abzustimmen." /></span>
+            }
             </div>
             <div className="ModalBody">
             {Body}

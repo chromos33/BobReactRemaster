@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BobReactRemaster.JSONModels.Meeting;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,5 +17,10 @@ namespace BobReactRemaster.Data.Models.Meetings
         public int MeetingTemplateId { get; set; }
         public MeetingTemplate MeetingTemplate { get; set; }
 
+        internal void Update(MeetingReminderJSONData data)
+        {
+            ReminderDay = data.WeekDay;
+            ReminderTime = data.Time;
+        }
     }
 }

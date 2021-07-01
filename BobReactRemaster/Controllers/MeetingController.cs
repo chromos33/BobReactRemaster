@@ -108,6 +108,30 @@ namespace BobReactRemaster.Controllers
         }
 
         [HttpGet]
+        [Route("LoadReminderData")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult LoadReminderData(int ID)
+        {
+            MeetingTemplate meetingTemplate = _context.MeetingTemplates.AsQueryable().Include(x => x.Dates).FirstOrDefault(x => x.ID == ID);
+            if (meetingTemplate == null)
+            {
+                return NotFound();
+            }
+            dynamic Data;
+            if(meetingTemplate.ReminderTemplate != null)
+            {
+                var template = meetingTemplate.ReminderTemplate;
+                Data = new { WeekDay =  template.ReminderDay,ReminderTime = template.ReminderTime.ToString("HH:mm") };
+            }
+            else
+            {
+                Data = new { WeekDay = 0, ReminderTime = "00:00" };
+            }
+            return Ok(Data);
+
+        }
+
+        [HttpGet]
         [Route("GetMeetingsTemplates")]
         [Authorize(Policy = Policies.User)]
         public IActionResult GetMeetingsTemplates()
@@ -120,7 +144,8 @@ namespace BobReactRemaster.Controllers
                 List<dynamic> MeetingTemplateJSON = new List<dynamic>();
                 foreach (MeetingTemplate template in user.RegisteredToMeetingTemplates.Select(x => x.MeetingTemplate))
                 {
-                    MeetingTemplateJSON.Add(new {ID = template.ID, Name = template.Name});
+                    var isAuthor = template.Members.Where(x => x.IsAuthor && x.RegisteredMember.UserName == user.UserName).Count() == 1;
+                    MeetingTemplateJSON.Add(new {ID = template.ID, Name = template.Name, IsAuthor = isAuthor});
                 }
 
 
@@ -160,6 +185,27 @@ namespace BobReactRemaster.Controllers
                     Meeting.Dates.Add(newTemplate);
                 }
 
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            return NotFound();
+
+        }
+        [HttpPost]
+        [Route("SaveMeetingReminder")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult SaveMeetingReminder([FromBody] MeetingReminderJSONData data)
+        {
+
+            var Meeting = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).Include(x => x.Dates).First(x => x.ID == data.MeetingID);
+            if (Meeting != null)
+            {
+                if(Meeting.ReminderTemplate == null)
+                {
+                    Meeting.ReminderTemplate = new ReminderTemplate();
+                }
+                Meeting.ReminderTemplate.Update(data);
                 _context.SaveChanges();
 
                 return Ok();
