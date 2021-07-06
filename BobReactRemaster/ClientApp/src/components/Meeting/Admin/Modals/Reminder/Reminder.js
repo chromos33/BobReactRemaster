@@ -22,6 +22,7 @@ export function Reminder(props){
             return response.json();
         })
         .then(json => {
+            console.log(json);
             setData(json);
             setInit(true);
         });

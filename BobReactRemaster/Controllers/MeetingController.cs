@@ -112,7 +112,7 @@ namespace BobReactRemaster.Controllers
         [Authorize(Policy = Policies.User)]
         public IActionResult LoadReminderData(int ID)
         {
-            MeetingTemplate meetingTemplate = _context.MeetingTemplates.AsQueryable().Include(x => x.Dates).FirstOrDefault(x => x.ID == ID);
+            MeetingTemplate meetingTemplate = _context.MeetingTemplates.AsQueryable().Include(x => x.Dates).Include(x => x.ReminderTemplate).FirstOrDefault(x => x.ID == ID);
             if (meetingTemplate == null)
             {
                 return NotFound();
@@ -198,14 +198,14 @@ namespace BobReactRemaster.Controllers
         public IActionResult SaveMeetingReminder([FromBody] MeetingReminderJSONData data)
         {
 
-            var Meeting = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).Include(x => x.Dates).First(x => x.ID == data.MeetingID);
+            var Meeting = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).Include(x => x.Dates).Include(x => x.ReminderTemplate).First(x => x.ID == data.MeetingID);
             if (Meeting != null)
             {
                 if(Meeting.ReminderTemplate == null)
                 {
                     Meeting.ReminderTemplate = new ReminderTemplate();
                 }
-                Meeting.ReminderTemplate.Update(data);
+                Meeting.ReminderTemplate.UpdateData(data);
                 _context.SaveChanges();
 
                 return Ok();
