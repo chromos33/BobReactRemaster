@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BobReactRemaster.Data.Models.User;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +16,22 @@ namespace BobReactRemaster.Data.Models.Meetings
 
         public DateTime ReminderDate { get; set; }
         public int MeetingTemplateID { get; set; }
+
+        public Meeting()
+        {
+
+        }
+        public Meeting(List<MeetingTemplate_Member> Members,int MeetingTemplateID, DateTime MeetingDate, DateTime ReminderDate)
+        {
+            this.MeetingTemplateID = MeetingTemplateID;
+            this.MeetingDate = MeetingDate;
+            this.ReminderDate = ReminderDate;
+            foreach(MeetingTemplate_Member Member in Members)
+            {
+                bool IsAuthor = Member.IsAuthor;
+                MeetingParticipation tmp = new MeetingParticipation(this, Member.RegisteredMember,IsAuthor);
+                Subscriber.Add(tmp);
+            }
+        }
     }
 }

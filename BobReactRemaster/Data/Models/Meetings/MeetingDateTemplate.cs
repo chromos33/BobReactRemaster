@@ -14,7 +14,7 @@ namespace BobReactRemaster.Data.Models.Meetings
 
         public MeetingTemplate Template { get; set; }
 
-        public WeekDay DayOfWeek { get; set; }
+        public DayOfWeek DayOfWeek { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
 

@@ -11,7 +11,7 @@ namespace BobReactRemaster.Data.Models.Meetings
     {
         [Key]
         public int ID { get; set; }
-        public WeekDay ReminderDay { get; set; }
+        public DayOfWeek ReminderDay { get; set; }
         public DateTime ReminderTime { get; set; }
 
         public int MeetingTemplateId { get; set; }

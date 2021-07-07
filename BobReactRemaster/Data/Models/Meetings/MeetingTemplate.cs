@@ -24,5 +24,14 @@ namespace BobReactRemaster.Data.Models.Meetings
             Members = new List<MeetingTemplate_Member>();
             LiveMeetings = new List<Meeting>();
         }
+        public List<Meeting> CreateMeetingsForNextWeek()
+        {
+            List<Meeting> Meetings = new List<Meeting>();
+            foreach(MeetingDateTemplate template in Dates)
+            {
+                Meeting tmp = new Meeting();
+            }
+            return Meetings;
+        }
     }
 }

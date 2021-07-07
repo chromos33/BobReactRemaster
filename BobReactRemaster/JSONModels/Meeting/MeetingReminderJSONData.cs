@@ -8,7 +8,7 @@ namespace BobReactRemaster.JSONModels.Meeting
 {
     public class MeetingReminderJSONData
     {
-        public WeekDay WeekDay { get; set; }
+        public DayOfWeek WeekDay { get; set; }
         public DateTime Time { get; set; }
         public int MeetingID { get; set; }
     }

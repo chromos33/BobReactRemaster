@@ -16,7 +16,7 @@ export function Date(props){
         return "delete";
     }
     //TODO add Date Component and render with that
-    let weekdays = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"]
+    let weekdays = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"]
     let weekdayoptions = weekdays.map((x,index) => {
         return <option value={index}>{x}</option>;
     });

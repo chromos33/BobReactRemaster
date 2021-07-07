@@ -20,6 +20,16 @@ namespace BobReactRemaster.Data.Models.Meetings
 
         public MeetingParticipationState State { get; set; }
 
+        public MeetingParticipation()
+        {
+
+        }
+        public MeetingParticipation(Meeting Meeting,Member Subscriber, bool IsAuthor)
+        {
+            this.Subscriber = Subscriber;
+            this.Meeting = Meeting;
+            this.IsAuthor = IsAuthor;
+        }
 
     }
 }
