@@ -26,6 +26,7 @@ namespace BobReactRemaster.Data.Models.Meetings
             this.MeetingTemplateID = MeetingTemplateID;
             this.MeetingDate = MeetingDate;
             this.ReminderDate = ReminderDate;
+            this.Subscriber = new List<MeetingParticipation>();
             foreach(MeetingTemplate_Member Member in Members)
             {
                 bool IsAuthor = Member.IsAuthor;

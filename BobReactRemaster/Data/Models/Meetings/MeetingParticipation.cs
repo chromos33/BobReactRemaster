@@ -24,6 +24,7 @@ namespace BobReactRemaster.Data.Models.Meetings
         {
 
         }
+        //TODO Write Tests
         public MeetingParticipation(Meeting Meeting,Member Subscriber, bool IsAuthor)
         {
             this.Subscriber = Subscriber;
