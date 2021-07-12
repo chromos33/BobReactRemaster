@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Meetings;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.Services.Chat;
 using BobReactRemaster.Services.Scheduler.Tasks;
 using IdentityServer4.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BobReactRemaster.Services.Scheduler
@@ -40,6 +42,10 @@ namespace BobReactRemaster.Services.Scheduler
             foreach (TwitchCredential cred in context.TwitchCredentials.AsEnumerable().Where(x => !x.RefreshToken.IsNullOrEmpty()))
             {
                 Tasks.Add(new TwitchOAuthRefreshTask(cred.ExpireDate.Subtract(TimeSpan.FromMinutes(5)),cred.id,_scopeFactory));
+            }
+            foreach (MeetingTemplate template in context.MeetingTemplates.AsQueryable().Include(x => x.Dates).Include(y => y.LiveMeetings).Where( x => !x.NextWeekLiveMeetingsCreated()))
+            {
+                Tasks.Add(new EventCreationTask(scope, template.NextCreateDateTime()));
             }
             #endregion
         }

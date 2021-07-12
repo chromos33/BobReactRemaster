@@ -12,18 +12,22 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private int? IntervalID;
         private DateTime NextExecutionDate;
         private bool removalQueued;
-        public EventCreationTask()
+        public EventCreationTask(IServiceScopeFactory factory,DateTime ExecutionDate)
         {
-            
+            this.factory = factory;
+            NextExecutionDate = ExecutionDate;
         }
         public bool Executable()
         {
-            throw new NotImplementedException();
+            return DateTime.Compare(NextExecutionDate, DateTime.Now) < 0;
         }
 
         public void Execute()
         {
-            throw new NotImplementedException();
+            //TODO Get DBContext from Factory and Trigger the Create Function on MeetingTemplate
+
+            //Repeat once a week
+            NextExecutionDate = NextExecutionDate.AddDays(7);
         }
 
         public int? GetID()
