@@ -13,18 +13,19 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
         public void InitData_ValidState_CorrectMeeting()
         {
             MeetingTemplate testcase = new MeetingTemplate();
+            testcase.ID = 5;
             MeetingDateTemplate template1 = new MeetingDateTemplate();
             template1.Template = testcase;
             template1.DayOfWeek = DayOfWeek.Monday;
-            template1.Start = DateTime.Now;
-            template1.End = DateTime.Now.Add(TimeSpan.FromHours(4));
+            template1.Start = new DateTime(2020,1,2,0,0,0);
+            template1.End = new DateTime(2020, 1, 2, 4, 0, 0);
             testcase.Dates.Add(template1);
 
             MeetingDateTemplate template2 = new MeetingDateTemplate();
             template2.Template = testcase;
-            template2.DayOfWeek = DayOfWeek.Tuesday;
-            template2.Start = DateTime.Now;
-            template2.End = DateTime.Now.Add(TimeSpan.FromHours(4));
+            template2.DayOfWeek = DayOfWeek.Monday;
+            template2.Start = new DateTime(2020, 1, 2, 0, 0, 0);
+            template2.End = new DateTime(2020, 1, 2, 4, 0, 0);
             testcase.Dates.Add(template2);
 
             Member member1 = new Member("test1", "password", UserRole.Admin);
@@ -37,20 +38,22 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
             testcase.Members.Add(templatemember2);
 
             ReminderTemplate reminder = new ReminderTemplate();
+            reminder.ID = 5;
             reminder.ReminderDay = DayOfWeek.Saturday;
-            reminder.ReminderTime = DateTime.Now;
+            reminder.ReminderTime = new DateTime(2020, 1, 1, 0, 0, 0);
             reminder.MeetingTemplateId = 5;
             reminder.MeetingTemplate = testcase;
 
             testcase.ReminderTemplate = reminder;
 
             //Assert.AreEqual(null, command.LiveStream);
-            var result = testcase.CreateMeetingsForNextWeek();
+            var result = testcase.CreateMeetingsForNextWeek(new DateTime(2020, 1, 2, 0, 0, 0));
 
             Assert.AreEqual(2, result.Count);
             foreach(var meeting in result)
             {
-                Assert.AreEqual(2, meeting.Subscriber);
+                Assert.AreEqual(2, meeting.Subscriber.Count);
+                Assert.AreEqual(new DateTime(2020, 1, 6, 0, 0, 0), meeting.MeetingDate);
             }
 
         }

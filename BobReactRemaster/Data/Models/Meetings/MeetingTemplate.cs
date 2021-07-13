@@ -38,21 +38,23 @@ namespace BobReactRemaster.Data.Models.Meetings
                 }
                 else
                 {
-                    return MostCurrentMeeting.MeetingDate.GetNextDateTimeWithDayAndTime(DayOfWeek.Sunday);
+                    return MostCurrentMeeting.MeetingDate.GetNextDateTimeFromTodayWithDayAndTime(DayOfWeek.Sunday);
                 }
                 
             }
             //today on 23 o'clock create new Meetings from Template if none exist
-            return DateTime.Today.AddHours(23);
-
-
+            return DateTime.Today.SetTime(23,50);
         }
-        public List<Meeting> CreateMeetingsForNextWeek()
+        //DateTime Parameter for better Testing
+        public List<Meeting> CreateMeetingsForNextWeek(DateTime Today)
         {
             List<Meeting> Meetings = new List<Meeting>();
             foreach(MeetingDateTemplate template in Dates)
             {
-                Meeting tmp = new Meeting();
+                DateTime nextMeeting = Today.GetNextDateTimeWithDayAndTime(template.Start, template.DayOfWeek);
+                DateTime nextReminder = Today.GetNextDateTimeWithDayAndTime(ReminderTemplate.ReminderTime, ReminderTemplate.ReminderDay);
+                Meeting tmp = new Meeting(Members,ID,nextMeeting, nextReminder);
+                Meetings.Add(tmp);
             }
             return Meetings;
         }

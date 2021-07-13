@@ -7,13 +7,18 @@ namespace BobReactRemaster.Extensions
 {
     public static class DateTimeExtensions
     {
-        public static DateTime GetNextDateTimeWithDayAndTime(this DateTime daytime,DayOfWeek day)
+        public static DateTime GetNextDateTimeFromTodayWithDayAndTime(this DateTime daytime,DayOfWeek day)
         {
             DateTime Date = DateTime.Today;
-            Date.AddHours(daytime.Hour);
-            Date.AddMinutes(daytime.Minute);
+            Date.SetTime(daytime.Hour, daytime.Minute);
             int daysUntilDay = ((int)day - (int)Date.DayOfWeek + 7) % 7;
             return Date.AddDays(daysUntilDay);
+        }
+        public static DateTime GetNextDateTimeWithDayAndTime(this DateTime date,DateTime time, DayOfWeek day)
+        {
+            var tmp = date.SetTime(time.Hour, time.Minute);
+            int daysUntilDay = ((int)day - (int)tmp.DayOfWeek + 7) % 7;
+            return tmp.AddDays(daysUntilDay);
         }
         public static DateTime SetTime(this DateTime current, int hour)
         {

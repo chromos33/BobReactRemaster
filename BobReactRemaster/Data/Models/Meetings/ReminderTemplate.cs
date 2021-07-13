@@ -17,6 +17,7 @@ namespace BobReactRemaster.Data.Models.Meetings
         public int MeetingTemplateId { get; set; }
         public MeetingTemplate MeetingTemplate { get; set; }
 
+
         internal void UpdateData(MeetingReminderJSONData data)
         {
             ReminderDay = data.WeekDay;

@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BobReactRemaster.Data;
+using BobReactRemaster.Data.Models.Meetings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +13,14 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
     {
         private IServiceScopeFactory factory;
         private int? IntervalID;
+        private int TemplateID;
         private DateTime NextExecutionDate;
         private bool removalQueued;
-        public EventCreationTask(IServiceScopeFactory factory,DateTime ExecutionDate)
+        public EventCreationTask(int TemplateID, IServiceScopeFactory factory,DateTime ExecutionDate)
         {
             this.factory = factory;
             NextExecutionDate = ExecutionDate;
+            this.TemplateID = TemplateID;
         }
         public bool Executable()
         {
@@ -24,10 +29,22 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
 
         public void Execute()
         {
-            //TODO Get DBContext from Factory and Trigger the Create Function on MeetingTemplate
-
-            //Repeat once a week
+            //Repeat once a week and prevent exectuting twice
             NextExecutionDate = NextExecutionDate.AddDays(7);
+            //TODO Get DBContext from Factory and Trigger the Create Function on MeetingTemplate
+            var scope = factory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
+            
+            foreach(Meeting meeting in meetingTemplate.CreateMeetingsForNextWeek(DateTime.Today))
+            {
+                context.Meetings.Add(meeting);
+            }
+            context.SaveChanges();
+
+            
+            
         }
 
         public int? GetID()

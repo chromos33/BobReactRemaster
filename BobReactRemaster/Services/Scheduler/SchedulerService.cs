@@ -43,9 +43,9 @@ namespace BobReactRemaster.Services.Scheduler
             {
                 Tasks.Add(new TwitchOAuthRefreshTask(cred.ExpireDate.Subtract(TimeSpan.FromMinutes(5)),cred.id,_scopeFactory));
             }
-            foreach (MeetingTemplate template in context.MeetingTemplates.AsQueryable().Include(x => x.Dates).Include(y => y.LiveMeetings).Where( x => !x.NextWeekLiveMeetingsCreated()))
+            foreach (MeetingTemplate template in context.MeetingTemplates.AsQueryable().Include(x => x.Dates).Include(y => y.LiveMeetings).Where(x => x.Dates.Count > 0))
             {
-                Tasks.Add(new EventCreationTask(scope, template.NextCreateDateTime()));
+                Tasks.Add(new EventCreationTask(template.ID, _scopeFactory, template.NextCreateDateTime()));
             }
             #endregion
         }
