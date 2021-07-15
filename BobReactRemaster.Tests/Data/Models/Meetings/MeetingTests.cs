@@ -26,12 +26,12 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
             DateTime MeetingDate = DateTime.Now;
             DateTime ReminderDate = DateTime.Now.Subtract(TimeSpan.FromHours(1));
 
-            Meeting testcase = new Meeting(list, MeetingTemplateID, MeetingDate, ReminderDate);
+            Meeting testcase = new Meeting(list, MeetingTemplateID, MeetingDate, MeetingDate, ReminderDate);
 
 
 
 
-            Assert.AreEqual(MeetingDate, testcase.MeetingDate);
+            Assert.AreEqual(MeetingDate, testcase.MeetingDateStart);
             Assert.AreEqual(ReminderDate, testcase.ReminderDate);
             Assert.AreEqual(2, testcase.Subscriber.Count);
             Assert.AreEqual(MeetingTemplateID,testcase.MeetingTemplateID);
@@ -47,7 +47,7 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
             DateTime MeetingDate = DateTime.Now;
             DateTime ReminderDate = DateTime.Now.Subtract(TimeSpan.FromHours(1));
 
-            Meeting meeting = new Meeting(list, MeetingTemplateID, MeetingDate, ReminderDate);
+            Meeting meeting = new Meeting(list, MeetingTemplateID, MeetingDate, MeetingDate, ReminderDate);
             Member member1 = new Member("test1", "password", UserRole.Admin);
             MeetingParticipation testcase = new MeetingParticipation(meeting, member1, true);
 

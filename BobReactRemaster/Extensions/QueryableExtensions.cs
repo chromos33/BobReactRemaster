@@ -17,5 +17,11 @@ namespace BobReactRemaster.Extensions
                 .Include( x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.MeetingTemplate)
                 ;
         }
+        public static IQueryable<Member> CompleteMeetingsFromMember(this ApplicationDbContext context)
+        {
+            return context.Members
+                .Include(x => x.MeetingSubscriptions).ThenInclude(x => x.Meeting)
+                ;
+        }
     }
 }

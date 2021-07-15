@@ -12,7 +12,8 @@ namespace BobReactRemaster.Data.Models.Meetings
         [Key]
         public int ID { get; set; }
         public List<MeetingParticipation> Subscriber { get; set; }
-        public DateTime MeetingDate { get; set; }
+        public DateTime MeetingDateStart { get; set; }
+        public DateTime MeetingDateEnd { get; set; }
 
         public DateTime ReminderDate { get; set; }
         public int MeetingTemplateID { get; set; }
@@ -21,10 +22,11 @@ namespace BobReactRemaster.Data.Models.Meetings
         {
 
         }
-        public Meeting(List<MeetingTemplate_Member> Members,int MeetingTemplateID, DateTime MeetingDate, DateTime ReminderDate)
+        public Meeting(List<MeetingTemplate_Member> Members,int MeetingTemplateID, DateTime MeetingDateStart, DateTime MeetingDateEnd, DateTime ReminderDate)
         {
             this.MeetingTemplateID = MeetingTemplateID;
-            this.MeetingDate = MeetingDate;
+            this.MeetingDateStart = MeetingDateStart;
+            this.MeetingDateEnd = MeetingDateEnd;
             this.ReminderDate = ReminderDate;
             this.Subscriber = new List<MeetingParticipation>();
             foreach(MeetingTemplate_Member Member in Members)

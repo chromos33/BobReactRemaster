@@ -247,5 +247,39 @@ namespace BobReactRemaster.Controllers
             return NotFound();
 
         }
+
+        [HttpGet]
+        [Route("GetMeetings")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult GetMeetings(int MeetingID)
+        {
+            var UserName = User.FindFirst("fullName")?.Value;
+            if (UserName != null)
+            {
+                var Meeting = _context.Meetings.Include(x => x.Subscriber).ThenInclude(y => y.Subscriber).Include(x => x.MeetingDateStart).First(x => x.ID == MeetingID);
+                if(Meeting != null)
+                {
+                    //var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).Include(x => x.).First(q => q.UserName.ToLower() == UserName);
+                    List<dynamic> MeetingParticipations = new List<dynamic>();
+                    foreach (MeetingParticipation participant in Meeting.Subscriber)
+                    {
+                        bool isMe = participant.Subscriber.UserName == UserName;
+                        MeetingParticipations.Add(new { ID = participant.ID, isMe = isMe, State = participant.State });
+                    }
+
+
+                    return Ok(new { MeetingParticipations = MeetingParticipations,
+                                    MeetingDate = Meeting.MeetingDateStart.ToString("MM.dd.yyyy"),
+                                    MeetingStart = Meeting.MeetingDateStart.ToString("HH:mm"),
+                                    MeetingEnd = Meeting.MeetingDateEnd.ToString("HH:mm"),
+
+                    });
+                }
+               
+            }
+
+            return NotFound();
+
+        }
     }
 }

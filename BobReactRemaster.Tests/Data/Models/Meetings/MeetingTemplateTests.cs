@@ -53,7 +53,7 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
             foreach(var meeting in result)
             {
                 Assert.AreEqual(2, meeting.Subscriber.Count);
-                Assert.AreEqual(new DateTime(2020, 1, 6, 0, 0, 0), meeting.MeetingDate);
+                Assert.AreEqual(new DateTime(2020, 1, 6, 0, 0, 0), meeting.MeetingDateStart);
             }
 
         }

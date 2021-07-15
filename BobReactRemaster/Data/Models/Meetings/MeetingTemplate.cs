@@ -29,21 +29,21 @@ namespace BobReactRemaster.Data.Models.Meetings
         }
         public DateTime NextCreateDateTime()
         {
-            var MostCurrentMeeting = LiveMeetings.Where(x => x.MeetingDate == LiveMeetings.Max(x => x.MeetingDate)).FirstOrDefault();
+            var MostCurrentMeeting = LiveMeetings.Where(x => x.MeetingDateStart == LiveMeetings.Max(x => x.MeetingDateStart)).FirstOrDefault();
             if(MostCurrentMeeting != null)
             {
-                if(MostCurrentMeeting.MeetingDate.DayOfWeek == DayOfWeek.Sunday)
+                if(MostCurrentMeeting.MeetingDateStart.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    return MostCurrentMeeting.MeetingDate.SetTime(23, 59);
+                    return MostCurrentMeeting.MeetingDateStart.SetTime(23, 59);
                 }
                 else
                 {
-                    return MostCurrentMeeting.MeetingDate.GetNextDateTimeFromTodayWithDayAndTime(DayOfWeek.Sunday);
+                    return MostCurrentMeeting.MeetingDateStart.GetNextDateTimeFromTodayWithDayAndTime(DayOfWeek.Sunday);
                 }
                 
             }
             //today on 23 o'clock create new Meetings from Template if none exist
-            return DateTime.Today.SetTime(23,50);
+            return DateTime.Today.SetTime(18,0);
         }
         //DateTime Parameter for better Testing
         public List<Meeting> CreateMeetingsForNextWeek(DateTime Today)
@@ -51,9 +51,10 @@ namespace BobReactRemaster.Data.Models.Meetings
             List<Meeting> Meetings = new List<Meeting>();
             foreach(MeetingDateTemplate template in Dates)
             {
-                DateTime nextMeeting = Today.GetNextDateTimeWithDayAndTime(template.Start, template.DayOfWeek);
+                DateTime nextMeetingStart = Today.GetNextDateTimeWithDayAndTime(template.Start, template.DayOfWeek);
+                DateTime nextMeetingEnd = Today.GetNextDateTimeWithDayAndTime(template.End, template.DayOfWeek);
                 DateTime nextReminder = Today.GetNextDateTimeWithDayAndTime(ReminderTemplate.ReminderTime, ReminderTemplate.ReminderDay);
-                Meeting tmp = new Meeting(Members,ID,nextMeeting, nextReminder);
+                Meeting tmp = new Meeting(Members,ID, nextMeetingStart, nextMeetingEnd, nextReminder);
                 Meetings.Add(tmp);
             }
             return Meetings;
