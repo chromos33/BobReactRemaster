@@ -11,6 +11,7 @@ import Tooltip from "../../Tooltip";
 import General from "./Modals/General/General";
 import Dates from "./Modals/Dates/Dates";
 import Reminder from "./Modals/Reminder/Reminder";
+import VotingView from "./Modals/Voting/VotingView";
 const Tabs = {
     VOTING: "Voting",
     GENERAL: "General",
@@ -18,7 +19,6 @@ const Tabs = {
     REMINDER: "Reminder"
 }
 export function Meeting(props){
-    console.log(props);
     const [Name,setName] = useState(props.data.name);
     const [EditOpen,setEditOpen] = useState(props.data.editopen);
     const [DeleteConfirm,setDeleteConfirm] = useState(false);
@@ -63,7 +63,7 @@ export function Meeting(props){
             Body = <General MeetingID={props.data.id} />
             break;
         case Tabs.VOTING:
-            Body = <span>Voting</span>
+            Body = <VotingView MeetingID={props.data.id} />
             break;
         case Tabs.DATES:
             Body = <Dates MeetingID={props.data.id} />
@@ -119,7 +119,7 @@ export function Meeting(props){
             }
             </div>
             <div className="ModalBody">
-            {Body}
+            {EditOpen && Body}
             </div>
             </div>
         </div>

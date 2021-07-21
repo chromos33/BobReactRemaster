@@ -256,7 +256,7 @@ namespace BobReactRemaster.Controllers
             var UserName = User.FindFirst("fullName")?.Value;
             if (UserName != null)
             {
-                var Meeting = _context.Meetings.Include(x => x.Subscriber).ThenInclude(y => y.Subscriber).Include(x => x.MeetingDateStart).First(x => x.ID == MeetingID);
+                var Meeting = _context.Meetings.Include(x => x.Subscriber).ThenInclude( y => y.Subscriber).FirstOrDefault(x => x.ID == MeetingID);
                 if(Meeting != null)
                 {
                     //var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).Include(x => x.).First(q => q.UserName.ToLower() == UserName);
@@ -266,13 +266,10 @@ namespace BobReactRemaster.Controllers
                         bool isMe = participant.Subscriber.UserName == UserName;
                         MeetingParticipations.Add(new { ID = participant.ID, isMe = isMe, State = participant.State });
                     }
-
-
                     return Ok(new { MeetingParticipations = MeetingParticipations,
                                     MeetingDate = Meeting.MeetingDateStart.ToString("MM.dd.yyyy"),
                                     MeetingStart = Meeting.MeetingDateStart.ToString("HH:mm"),
-                                    MeetingEnd = Meeting.MeetingDateEnd.ToString("HH:mm"),
-
+                                    MeetingEnd = Meeting.MeetingDateEnd.ToString("HH:mm")
                     });
                 }
                
