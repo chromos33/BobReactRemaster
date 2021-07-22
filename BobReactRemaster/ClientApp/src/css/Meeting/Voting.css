@@ -1,0 +1,11 @@
+.MeetingVoteHeader
+{
+    border-bottom:2px solid #486581;
+    color:#BCCCDC;
+    display:block;
+    text-align: center;
+}
+.MeetingVote
+{
+    border-bottom:2px solid #486581;
+}

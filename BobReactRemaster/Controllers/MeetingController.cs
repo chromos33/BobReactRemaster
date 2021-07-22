@@ -256,21 +256,29 @@ namespace BobReactRemaster.Controllers
             var UserName = User.FindFirst("fullName")?.Value;
             if (UserName != null)
             {
-                var Meeting = _context.Meetings.Include(x => x.Subscriber).ThenInclude( y => y.Subscriber).FirstOrDefault(x => x.ID == MeetingID);
-                if(Meeting != null)
+                var MeetingTemplate = _context.MeetingTemplates.Include(x => x.LiveMeetings).ThenInclude(x => x.Subscriber).ThenInclude( y => y.Subscriber).FirstOrDefault(x => x.ID == MeetingID);
+                if(MeetingTemplate != null)
                 {
-                    //var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).Include(x => x.).First(q => q.UserName.ToLower() == UserName);
-                    List<dynamic> MeetingParticipations = new List<dynamic>();
-                    foreach (MeetingParticipation participant in Meeting.Subscriber)
+                    List<dynamic> LiveMeetings = new List<dynamic>();
+                    foreach(Meeting liveMeeting in MeetingTemplate.LiveMeetings)
                     {
-                        bool isMe = participant.Subscriber.UserName == UserName;
-                        MeetingParticipations.Add(new { ID = participant.ID, isMe = isMe, State = participant.State });
+                        //var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).Include(x => x.).First(q => q.UserName.ToLower() == UserName);
+                        List<dynamic> MeetingParticipations = new List<dynamic>();
+                        foreach (MeetingParticipation participant in liveMeeting.Subscriber)
+                        {
+                            bool isMe = participant.Subscriber.UserName == UserName;
+                            MeetingParticipations.Add(new { ID = participant.ID, isMe = isMe, State = participant.State,UserName = participant.Subscriber.UserName });
+                        }
+                        LiveMeetings.Add(new
+                        {
+                            MeetingParticipations = MeetingParticipations,
+                            MeetingDate = liveMeeting.MeetingDateStart.ToString("MM.dd.yyyy"),
+                            MeetingStart = liveMeeting.MeetingDateStart.ToString("HH:mm"),
+                            MeetingEnd = liveMeeting.MeetingDateEnd.ToString("HH:mm")
+                        });
                     }
-                    return Ok(new { MeetingParticipations = MeetingParticipations,
-                                    MeetingDate = Meeting.MeetingDateStart.ToString("MM.dd.yyyy"),
-                                    MeetingStart = Meeting.MeetingDateStart.ToString("HH:mm"),
-                                    MeetingEnd = Meeting.MeetingDateEnd.ToString("HH:mm")
-                    });
+                    return Ok(LiveMeetings);
+                    
                 }
                
             }

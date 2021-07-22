@@ -5,6 +5,8 @@ import '../../../../../css/Meeting/General.css';
 import { getCookie } from "../../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash  } from '@fortawesome/free-solid-svg-icons';
+
+import Meeting from "./Meeting";
 export function VotingView(props){
     const [Init, setInit] = useState(false);
     const [Meetings,setMeetings] = useState([]);
@@ -24,27 +26,29 @@ export function VotingView(props){
             return response.json();
         })
         .then(json => {
-           console.log(json);
+            console.log(json);
+            setMeetings(json);
+            setInit(true);
         });
     }
     if(Init === false)
     {
         return null;
     }
-    
     if(Meetings.length === 0)
     {
         return null;
     }
+    const renderMeetings = () => {
+        return Meetings.map(x => {
+            return <Meeting Data={x}/>
+        });
+    };
     //TODO List of Members Either already registered or invited ones
     return (
         
         <div className="MeetingContainer">
-            <div className="formInputsContainer">
-                <label>Event Name</label>
-               
-               
-            </div>
+            {renderMeetings()}
         </div>
     );
 
