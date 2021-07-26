@@ -9,3 +9,72 @@
 {
     border-bottom:2px solid #486581;
 }
+.VotingContainer
+{
+    display:flex;
+    flex-wrap: nowrap;
+}
+.VotingContainer > span
+{
+   flex:0 0 25%;
+   position: relative;
+   opacity: 0.5;
+   height:25px;
+   cursor:pointer;
+   transition:0.5s ease all;
+   text-align: center;
+   color:white;
+   font-size:40px;
+   line-height: 25px;
+}
+.VotingContainer > span svg
+{
+    font-size:16px;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translateX(-50%) translateY(-50%);
+    color:white;
+}
+.VotingContainer > span.active,
+.VotingContainer > span:hover
+{
+    opacity: 1;
+}
+.VotingContainer > span:nth-child(1),
+.bg_default
+{
+    background:rgba(76,96,116,1);
+}
+.VotingContainer > span:nth-child(2),
+.bg_green
+{
+    background:rgba(44,155,22,1);
+}
+.VotingContainer > span:nth-child(3),
+.bg_red
+{
+    background:rgba(255,52,52,1);
+}
+.VotingContainer > span:nth-child(4),
+.bg_yellow
+{
+    background:rgba(216,241,22,1);
+}
+.otherVotes
+{
+    display:flex;
+    width:100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top:4px;
+}
+.otherVotes > span
+{
+    flex:0 0 calc(50% - 2px);
+    text-align: center;
+    display:block;
+    height:25px;
+    padding-top:3px;
+    margin-bottom:2px;
+}
