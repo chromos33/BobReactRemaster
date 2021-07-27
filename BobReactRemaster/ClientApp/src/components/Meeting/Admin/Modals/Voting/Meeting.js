@@ -37,13 +37,47 @@ export function Meeting(props){
         }
         return "";
     }
+    const handleStateChange = (e) => {
+        let newstate = e;
+        let save = Participations.map(x => {
+            if(x.isMe)
+            {
+                console.log(x);
+                console.log(parseInt(newstate));
+                var data = {
+                    ParticipationID: parseInt(x.id),
+                    State: parseInt(newstate),
+                    Info: ""
+                };
+                
+                fetch("/Meeting/UpdateParticipation",{
+                    method: "POST",
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + getCookie("Token"),
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => {
+                    if(response.ok)
+                    {
+                        x.state = e;
+                    }
+                });
+                
+                //controller fetch GET and set state
+                
+            }
+            return x;
+        })
+        setParticipations(save);
+    }
     const renderMyParticipation = () => {
         let my = Participations.find( e => e.isMe);
         return (<div className="VotingContainer">
-            <span className={getDefaultCSSClass(my)}>-</span>
-            <span className={getGreenCSSClass(my)}><FontAwesomeIcon icon={faCheck}/></span>
-            <span className={getYellowCSSClass(my)}><FontAwesomeIcon icon={faTimes}/></span>
-            <span className={getRedCSSClass(my)}><FontAwesomeIcon icon={faQuestion}/></span>
+            <span onClick={(e) => {handleStateChange(0)}} className={getDefaultCSSClass(my)}>-</span>
+            <span onClick={(e) => {handleStateChange(1)}} className={getGreenCSSClass(my)}><FontAwesomeIcon icon={faCheck}/></span>
+            <span onClick={(e) => {handleStateChange(2)}} className={getYellowCSSClass(my)}><FontAwesomeIcon icon={faTimes}/></span>
+            <span onClick={(e) => {handleStateChange(3)}} className={getRedCSSClass(my)}><FontAwesomeIcon icon={faQuestion}/></span>
         </div>);
     }
     const renderOthersParticipations = () => {

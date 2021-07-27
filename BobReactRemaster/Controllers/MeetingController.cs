@@ -248,6 +248,16 @@ namespace BobReactRemaster.Controllers
 
         }
 
+        [HttpPost]
+        [Route("UpdateParticipation")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult UpdateParticipation([FromBody] ParticipationData data)
+        {
+
+
+            return NotFound();
+        }
+
         [HttpGet]
         [Route("GetMeetings")]
         [Authorize(Policy = Policies.User)]
