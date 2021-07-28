@@ -253,7 +253,15 @@ namespace BobReactRemaster.Controllers
         [Authorize(Policy = Policies.User)]
         public IActionResult UpdateParticipation([FromBody] ParticipationData data)
         {
+            MeetingParticipation part = _context.MeetingSubscriptions.AsQueryable().First(x => x.ID == data.ParticipationID);
 
+            if(part != null)
+            {
+                part.State = data.State;
+                part.Message = data.Info;
+                _context.SaveChanges();
+                return Ok();
+            }
 
             return NotFound();
         }

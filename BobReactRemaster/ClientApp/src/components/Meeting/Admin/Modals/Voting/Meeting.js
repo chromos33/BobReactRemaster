@@ -38,38 +38,36 @@ export function Meeting(props){
         return "";
     }
     const handleStateChange = (e) => {
-        let newstate = e;
-        let save = Participations.map(x => {
-            if(x.isMe)
+        let my = Participations.find( e => e.isMe);
+
+        var data = {
+            ParticipationID: parseInt(my.id),
+            State: parseInt(e),
+            Info: ""
+        };
+        
+        fetch("/Meeting/UpdateParticipation",{
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            if(response.ok)
             {
-                console.log(x);
-                console.log(parseInt(newstate));
-                var data = {
-                    ParticipationID: parseInt(x.id),
-                    State: parseInt(newstate),
-                    Info: ""
-                };
-                
-                fetch("/Meeting/UpdateParticipation",{
-                    method: "POST",
-                    headers:{
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + getCookie("Token"),
-                    },
-                    body: JSON.stringify(data)
-                }).then(response => {
-                    if(response.ok)
+                let save = Participations.map(x => {
+                    if(x.isMe)
                     {
-                        x.state = e;
+                        x.state = e;   
+                        //controller fetch GET and set state
+                        
                     }
-                });
-                
-                //controller fetch GET and set state
-                
+                    return x;
+                })
+                setParticipations(save);
             }
-            return x;
-        })
-        setParticipations(save);
+        });
     }
     const renderMyParticipation = () => {
         let my = Participations.find( e => e.isMe);
