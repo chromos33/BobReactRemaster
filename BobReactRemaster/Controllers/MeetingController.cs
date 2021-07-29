@@ -285,7 +285,7 @@ namespace BobReactRemaster.Controllers
                         foreach (MeetingParticipation participant in liveMeeting.Subscriber)
                         {
                             bool isMe = participant.Subscriber.UserName == UserName;
-                            MeetingParticipations.Add(new { ID = participant.ID, isMe = isMe, State = participant.State,UserName = participant.Subscriber.UserName });
+                            MeetingParticipations.Add(new { ID = participant.ID, isMe = isMe, State = participant.State,UserName = participant.Subscriber.UserName, Info = participant.Message });
                         }
                         LiveMeetings.Add(new
                         {

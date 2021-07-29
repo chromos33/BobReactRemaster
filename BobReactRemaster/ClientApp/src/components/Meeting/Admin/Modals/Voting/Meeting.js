@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import '../../../../../css/Forms.css';
 import '../../../../../css/Button.css';
 import '../../../../../css/Meeting/Voting.css';
+import { Tooltip } from "../../../../Tooltip";
 import { getCookie } from "../../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestion,faTimes,faCheck  } from '@fortawesome/free-solid-svg-icons';
@@ -39,11 +40,15 @@ export function Meeting(props){
     }
     const handleStateChange = (e) => {
         let my = Participations.find( e => e.isMe);
-
+        let comment = "";
+        if(e === 3)
+        {
+            comment = prompt("Kommentar eingeben", "");
+        }
         var data = {
             ParticipationID: parseInt(my.id),
             State: parseInt(e),
-            Info: ""
+            Info: comment
         };
         
         fetch("/Meeting/UpdateParticipation",{
@@ -60,8 +65,6 @@ export function Meeting(props){
                     if(x.isMe)
                     {
                         x.state = e;   
-                        //controller fetch GET and set state
-                        
                     }
                     return x;
                 })
@@ -75,7 +78,10 @@ export function Meeting(props){
             <span onClick={(e) => {handleStateChange(0)}} className={getDefaultCSSClass(my)}>-</span>
             <span onClick={(e) => {handleStateChange(1)}} className={getGreenCSSClass(my)}><FontAwesomeIcon icon={faCheck}/></span>
             <span onClick={(e) => {handleStateChange(2)}} className={getYellowCSSClass(my)}><FontAwesomeIcon icon={faTimes}/></span>
-            <span onClick={(e) => {handleStateChange(3)}} className={getRedCSSClass(my)}><FontAwesomeIcon icon={faQuestion}/></span>
+            <span onClick={(e) => {handleStateChange(3)}} className={getRedCSSClass(my)}>
+                <FontAwesomeIcon icon={faQuestion}/>
+                {my.info && <Tooltip text={my.info} />}
+            </span>
         </div>);
     }
     const renderOthersParticipations = () => {
