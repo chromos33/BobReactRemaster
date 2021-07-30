@@ -35,16 +35,33 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             var scope = factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
-            
-            foreach(Meeting meeting in meetingTemplate.CreateMeetingsForNextWeek(DateTime.Today))
-            {
-                context.Meetings.Add(meeting);
-            }
+            CreateEvents(context);
+            DeletePassedEvents(context);
+           
             context.SaveChanges();
 
             
             
+        }
+
+        private void DeletePassedEvents(ApplicationDbContext context)
+        {
+            var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
+
+            foreach (Meeting meeting in meetingTemplate.LiveMeetings.Where(x => DateTime.Compare(x.MeetingDateStart,DateTime.Now) < 0))
+            {
+                context.Meetings.Remove(meeting);
+            }
+        }
+
+        public void CreateEvents(ApplicationDbContext context)
+        {
+            var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
+
+            foreach (Meeting meeting in meetingTemplate.CreateMeetingsForNextWeek(DateTime.Today))
+            {
+                context.Meetings.Add(meeting);
+            }
         }
 
         public int? GetID()
