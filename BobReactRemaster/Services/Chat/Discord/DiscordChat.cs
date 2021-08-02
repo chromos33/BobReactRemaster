@@ -40,6 +40,18 @@ namespace BobReactRemaster.Services.Chat.Discord
             MessageBus.RegisterToEvent<DiscordRelayMessageData>(RelayMessageReceived);
             MessageBus.RegisterToEvent<TwitchStreamStartMessageData>(StreamStarted);
             MessageBus.RegisterToEvent<StreamCreatedMessageData>(StreamCreated);
+            MessageBus.RegisterToEvent<DiscordWhisperData>(SendWhisper);
+        }
+
+        private void SendWhisper(DiscordWhisperData obj)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var member =  context.Members.First(x => x.DiscordUserName == obj.MemberName);
+            if(member != null && obj.Message != "")
+            {
+                _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(obj.Message);
+            }
         }
 
         private void StreamCreated(StreamCreatedMessageData obj)

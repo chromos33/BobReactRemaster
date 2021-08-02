@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BobReactRemaster.Data;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services.Chat.Discord;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +15,47 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private IServiceScopeFactory factory;
         private int? IntervalID;
         private DateTime NextExecutionDate;
+        private int TemplateID;
         private bool removalQueued;
-        public EventReminderTask()
+        private readonly IMessageBus Bus;
+        public EventReminderTask(int TemplateID, IServiceScopeFactory factory, DateTime ExecutionDate, IMessageBus bus)
         {
-
+            this.factory = factory;
+            NextExecutionDate = ExecutionDate;
+            this.TemplateID = TemplateID;
+            Bus = bus;
         }
         public bool Executable()
         {
-            throw new NotImplementedException();
+            return DateTime.Compare(NextExecutionDate, DateTime.Now) < 0;
         }
 
         public void Execute()
         {
-            throw new NotImplementedException();
+            NextExecutionDate = NextExecutionDate.AddDays(7);
+            List<DiscordWhisperData> Output = new List<DiscordWhisperData>();
+            var scope = factory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
+            foreach(var LiveMeeting in meetingTemplate.LiveMeetings)
+            {
+                foreach(var Subscription in LiveMeeting.Subscriber.Where(x => x.State == Data.Models.Meetings.MeetingParticipationState.Undecided))
+                {
+                    var WhisperData = Output.FirstOrDefault(x => x.MemberName == Subscription.Subscriber.DiscordUserName);
+                    if (WhisperData == null)
+                    {
+                        WhisperData = new DiscordWhisperData(Subscription.Subscriber.DiscordUserName,Subscription.GetReminderMessage());
+                    }
+                    else
+                    {
+                        WhisperData.AddToMessage(Subscription.GetReminderMessage());
+                    }
+                }
+            }
+            foreach(DiscordWhisperData EventData in Output)
+            {
+                Bus.Publish(EventData);
+            }
         }
 
         public int? GetID()

@@ -32,5 +32,9 @@ namespace BobReactRemaster.Data.Models.Meetings
             this.IsAuthor = IsAuthor;
         }
 
+        internal string GetReminderMessage()
+        {
+            return $"Du musst noch für {Meeting.MeetingTemplate.Name} am {Meeting.MeetingDateStart} abstimmen.";
+        }
     }
 }
