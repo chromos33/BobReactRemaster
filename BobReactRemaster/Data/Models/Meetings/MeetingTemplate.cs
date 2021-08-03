@@ -43,7 +43,26 @@ namespace BobReactRemaster.Data.Models.Meetings
                 
             }
             //today on 23 o'clock create new Meetings from Template if none exist
-            return DateTime.Today.SetTime(18,0);
+            return DateTime.Today.SetTime(23,0);
+        }
+
+        internal DateTime NextReminderDateTime()
+        {
+            var MostCurrentMeeting = LiveMeetings.Where(x => x.MeetingDateStart == LiveMeetings.Max(x => x.MeetingDateStart)).FirstOrDefault();
+            if (MostCurrentMeeting != null)
+            {
+                if (MostCurrentMeeting.ReminderDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    return MostCurrentMeeting.ReminderDate.SetTime(18, 0);
+                }
+                else
+                {
+                    return MostCurrentMeeting.ReminderDate.GetNextDateTimeFromTodayWithDayAndTime(DayOfWeek.Sunday);
+                }
+
+            }
+            //today on 23 o'clock create new Meetings from Template if none exist
+            return DateTime.Today.SetTime(18, 0);
         }
         //DateTime Parameter for better Testing
         public List<Meeting> CreateMeetingsForNextWeek(DateTime Today)
@@ -59,5 +78,6 @@ namespace BobReactRemaster.Data.Models.Meetings
             }
             return Meetings;
         }
+
     }
 }

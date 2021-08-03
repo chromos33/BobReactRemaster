@@ -18,16 +18,17 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private int TemplateID;
         private bool removalQueued;
         private readonly IMessageBus Bus;
-        public EventReminderTask(int TemplateID, IServiceScopeFactory factory, DateTime ExecutionDate, IMessageBus bus)
+        public EventReminderTask(int TemplateID, IServiceScopeFactory factory, DateTime ExecutionDate)
         {
             this.factory = factory;
             NextExecutionDate = ExecutionDate;
             this.TemplateID = TemplateID;
-            Bus = bus;
+            var scope = factory.CreateScope();
+            Bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
         }
         public bool Executable()
         {
-            return DateTime.Compare(NextExecutionDate, DateTime.Now) < 0;
+            return DateTime.Compare(NextExecutionDate, DateTime.Now) < 0 || true;
         }
 
         public void Execute()
@@ -36,7 +37,7 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             List<DiscordWhisperData> Output = new List<DiscordWhisperData>();
             var scope = factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
+            var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).ThenInclude(y => y.Subscriber).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
             foreach(var LiveMeeting in meetingTemplate.LiveMeetings)
             {
                 foreach(var Subscription in LiveMeeting.Subscriber.Where(x => x.State == Data.Models.Meetings.MeetingParticipationState.Undecided))
@@ -45,6 +46,7 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
                     if (WhisperData == null)
                     {
                         WhisperData = new DiscordWhisperData(Subscription.Subscriber.DiscordUserName,Subscription.GetReminderMessage());
+                        Output.Add(WhisperData);
                     }
                     else
                     {

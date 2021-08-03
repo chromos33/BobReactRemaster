@@ -43,14 +43,19 @@ namespace BobReactRemaster.Services.Chat.Discord
             MessageBus.RegisterToEvent<DiscordWhisperData>(SendWhisper);
         }
 
-        private void SendWhisper(DiscordWhisperData obj)
+        private async void SendWhisper(DiscordWhisperData obj)
         {
+            while (_client.ConnectionState != ConnectionState.Connected && _client.DMChannels.Count() == 0)
+            {
+                await Task.Delay(1000);
+            }
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var member =  context.Members.First(x => x.DiscordUserName == obj.MemberName);
             if(member != null && obj.Message != "")
             {
-                _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(obj.Message);
+                var chatmember = _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator);
+                chatmember.SendMessageAsync(obj.Message);
             }
         }
 
@@ -99,6 +104,13 @@ namespace BobReactRemaster.Services.Chat.Discord
             _client.ChannelDestroyed += ChannelDestroyed;
             _client.ChannelUpdated += ChannelUpdated;
             _client.GuildAvailable += GuildJoined;
+            _client.Connected += Connected;
+        }
+
+        private Task Connected()
+        {
+            Console.WriteLine("Discord Connected");
+            return Task.CompletedTask;
         }
 
         private Task GuildJoined(SocketGuild arg)

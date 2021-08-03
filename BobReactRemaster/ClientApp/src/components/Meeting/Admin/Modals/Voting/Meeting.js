@@ -11,6 +11,7 @@ export function Meeting(props){
     const [LoadInProgress, setLoadInProgress] = useState(false);
     const [Participations,setParticipations] = useState(props.Data.meetingParticipations);
     const getDefaultCSSClass = (participation) => {
+        console.log(participation);
         if(participation.state === 0)
         {
             return "active";
