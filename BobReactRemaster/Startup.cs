@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using BobReactRemaster.Helper;
 
 namespace BobReactRemaster
 {
@@ -71,7 +72,7 @@ namespace BobReactRemaster
                 config.AddPolicy(Policies.User, Policies.UserPolicy());
             });
             services.Configure<WebServerSettingsOptions>(Configuration.GetSection(WebServerSettingsOptions.Position));
-            
+            services.AddControllers(o => o.InputFormatters.Insert(o.InputFormatters.Count, new TextPlainInputFormatter()));
             services.AddSingleton<IMessageBus, MessageBus>();
             services.AddSingleton<IHostedService,SchedulerService>();
             services.AddSingleton<IUserRegistrationService, UserRegistrationService>();

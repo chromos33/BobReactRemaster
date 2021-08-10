@@ -7,6 +7,7 @@ const Login = lazy(() => import('./components/Login'));
 const Test = lazy(() => import('./components/Test'));
 const Setup = lazy(() => import('./components/Setup/Setup'));
 const Stream = lazy(() => import('./components/Stream/Setup'));
+const Import = lazy(() => import('./components/Setup/Import'));
 
 const MeetingAdmin = lazy(() => import('./components/Meeting/Admin/List'));
 const SubscriptionHolder = lazy(() => import('./components/Subscription/Holder'));
@@ -25,6 +26,7 @@ export default function App()  {
                   <PrivateRoute exact path='/Streams' component={Stream} />
                   <PrivateRoute exact path='/Subscriptions' component={SubscriptionHolder} />
                   <PrivateRoute exact path='/MeetingAdmin' component={MeetingAdmin} />
+                  <PrivateRoute exact path='/Import' component={Import} />
                 </Layout>
               </Switch>
             </Suspense>

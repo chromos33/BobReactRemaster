@@ -28,7 +28,7 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         }
         public bool Executable()
         {
-            return DateTime.Compare(NextExecutionDate, DateTime.Now) < 0 || true;
+            return DateTime.Compare(NextExecutionDate, DateTime.Now) < 0;
         }
 
         public void Execute()
