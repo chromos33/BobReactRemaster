@@ -70,6 +70,16 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
         }
 
+        internal SocketGuildUser GetMemberByName(string userName)
+        {
+            var users = _client.Guilds.Where(x => x.Name == "BobTest").FirstOrDefault()?.Users.Where(x => x.Username.ToLower() == userName.ToLower());
+            if(users != null && users.Count() == 1)
+            {
+                return users.FirstOrDefault();
+            }
+            return null;
+        }
+
         private void StreamStarted(TwitchStreamStartMessageData obj)
         {
             using var scope = _scopeFactory.CreateScope();
