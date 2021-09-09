@@ -9,9 +9,10 @@ namespace BobReactRemaster.Auth
     public class AuthData
     {
         [Required] public string UserName { get; set; }       
-        [Required] public string Password { get; set; }       
-
-
-
+        [Required] public string Password { get; set; }  
+    }
+    public class PasswordRequestData
+    {
+        [Required] public string UserName { get; set; }
     }
 }

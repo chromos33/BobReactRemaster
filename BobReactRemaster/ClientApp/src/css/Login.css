@@ -57,6 +57,20 @@ body
     cursor:pointer;
     padding:10px;
 }
+.forgotpwbutton
+{
+    background-color:#334E68;
+    color:#F0F4F8;
+    text-transform: uppercase;
+    text-align: center;
+    cursor:pointer;
+    padding:5px 10px;
+    opacity: 0.5;
+}
+.forgotpwbutton:hover
+{
+    opacity: 1;
+}
 .error
 {
     margin:0 auto !important;

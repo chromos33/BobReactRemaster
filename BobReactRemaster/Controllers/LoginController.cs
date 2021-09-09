@@ -6,6 +6,8 @@ using System.Text;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.User;
+using BobReactRemaster.EventBus.Interfaces;
+using BobReactRemaster.Services.Chat.Discord;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,13 +20,31 @@ namespace BobReactRemaster.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private IMessageBus MessageBus;
         private readonly ApplicationDbContext _context;
-        public LoginController(IConfiguration config, ApplicationDbContext context)
+        public LoginController(IConfiguration config, ApplicationDbContext context, IMessageBus messageBus)
         {
             _config = config;
             _context = context;
+            MessageBus = messageBus;
         }
+        [HttpPost]
+        [Route("RequestPassword")]
+        [AllowAnonymous]
+        public IActionResult RequestPassword([FromBody] PasswordRequestData authData)
+        {
+            Member user = _context.Members.SingleOrDefault(x => x.UserName == authData.UserName);
+            if (user != null)
+            {
+                string pw = user.ResetPassword();
+                _context.SaveChanges();
+                var data = new DiscordWhisperData(user.DiscordUserName, pw);
+                MessageBus.Publish(data);
+                return Ok();
+            }
 
+            return Unauthorized();
+        }
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
@@ -79,7 +99,6 @@ namespace BobReactRemaster.Controllers
                 return user;
              }
              return null;
-
         }
 
     }

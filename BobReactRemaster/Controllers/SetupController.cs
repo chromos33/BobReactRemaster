@@ -89,6 +89,10 @@ namespace BobReactRemaster.Controllers
                     tmp.ResetPassword();
                     _context.Members.Add(tmp);
                 }
+                else
+                {
+                    Console.WriteLine(Member.UserName);
+                }
             }
 
             foreach(var Stream in Data.Streams)

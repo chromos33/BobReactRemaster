@@ -10,6 +10,7 @@ export function Login() {
     const [loginempty, setLoginEmpty] = useState(false);
     const [passwd,setPassword] = useState("");
     const [passwdempty, setPasswordEmpty] = useState(false);
+    const [forgotpwopen, setForgotPWOpen] = useState(false);
     if(getCookie("Token") !== null)
     {
         history.push("/Subscriptions");
@@ -53,7 +54,6 @@ export function Login() {
             return false;
         }).catch((error) => {
         })
-        console.log(loginResult);
         if(loginResult !== false)
         {
             setCookie("Token",loginResult,30);
@@ -88,12 +88,54 @@ export function Login() {
         }
         return "";
     }
+    const forgotpwbuttondesc = () => {
+        if(forgotpwopen)
+        {
+            return "Passwort anfordern";
+        }
+        return "Passwort vergessen?";
+    }
+    const handleForgotPWBtn = (e) => {
+        if(forgotpwopen)
+        {
+            if(login === "")
+            {
+                setLoginEmpty(true);
+                setTimeout(() => {setLoginEmpty(false)},200);
+            }
+            else
+            {
+                fetch("/User/RequestPassword",{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: login
+                    }),
+                }).then(x => {
+                    setForgotPWOpen(false);
+                });
+            }
+            
+        }
+        else
+        {
+            setForgotPWOpen(true);
+        }
+    }
     return (
         <div className="screen-center">
             <img src={logo} alt="Logo"/>
             <input className={loginCSSClasses()} required placeholder="Username" name="login" onChange={(e) => setLogin(e.target.value)} type="text" />
+            {!forgotpwopen &&
+            <>
             <input className={passwdCSSClasses()} required placeholder="Password" onKeyDown={handleKeyDown} onChange= {(e) => setPassword(e.target.value)} name="password" type="password" />
             <span className="loginbutton" onClick={checkFakeForm}>Login</span>
+            </>
+            }
+            
+            <span className="forgotpwbutton" onClick={handleForgotPWBtn}>{forgotpwbuttondesc()}</span>
         </div>
         );
 }

@@ -8,7 +8,7 @@ namespace BobReactRemaster.Services.Chat.Discord
         public string MemberName { get; set; }
         public string Message { get; set; }
 
-        public DiscordWhisperData(string MemberName,string Mesage)
+        public DiscordWhisperData(string MemberName,string Message)
         {
             this.MemberName = MemberName;
             this.Message = Message;

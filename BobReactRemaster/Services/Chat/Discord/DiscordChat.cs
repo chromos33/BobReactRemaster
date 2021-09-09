@@ -72,7 +72,7 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         internal SocketGuildUser GetMemberByName(string userName)
         {
-            var users = _client.Guilds.Where(x => x.Name == "BobTest").FirstOrDefault()?.Users.Where(x => x.Username.ToLower() == userName.ToLower());
+            var users = _client.Guilds.Where(x => x.Name == "Deathmic").FirstOrDefault()?.Users.Where(x => x.Username.ToLower() == userName.ToLower());
             if(users != null && users.Count() == 1)
             {
                 return users.FirstOrDefault();
