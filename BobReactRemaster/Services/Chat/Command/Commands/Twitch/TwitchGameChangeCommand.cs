@@ -59,7 +59,11 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
 
         public bool IsTriggerable(CommandMessage msg)
         {
-            return msg.Message.StartsWith(Trigger);
+            if (msg.Message.StartsWith(Trigger))
+            {
+                return msg.Message.Split(" ").FirstOrDefault()?.Equals(Trigger) ?? false;
+            }
+            return false;
         }
 
         public void TriggerCommand(CommandMessage msg)
