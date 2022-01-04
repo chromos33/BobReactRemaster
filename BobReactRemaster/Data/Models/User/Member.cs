@@ -10,6 +10,7 @@ using BobReactRemaster.Data.Models.Meetings;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using TwitchLib.Client.Models;
+using BobReactRemaster.Data.Models.GiveAways;
 
 namespace BobReactRemaster.Data.Models.User
 {
@@ -27,6 +28,13 @@ namespace BobReactRemaster.Data.Models.User
         public List<MeetingTemplate_Member> RegisteredToMeetingTemplates { get; set; }
 
         public List<MeetingParticipation> MeetingSubscriptions { get; set; }
+
+        //GiveAway Admin Relation
+        public List<GiveAways.GiveAway_Member> GiveAways { get; set; }
+
+        public List<Gift> GivenGifts { get; set; }
+
+        public List<Gift> WonGifts { get; set; }
 
         private Member()
         {

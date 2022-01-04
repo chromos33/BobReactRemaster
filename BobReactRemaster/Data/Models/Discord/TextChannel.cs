@@ -24,6 +24,9 @@ namespace BobReactRemaster.Data.Models.Discord
         public string Guild { get; set; }
 
         public int? LiveStreamID {get; set; }
+
+        public List<GiveAways.GiveAway> GiveAways { get; set; }   
+
         private TextChannel()
         {
         }

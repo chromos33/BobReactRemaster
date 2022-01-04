@@ -67,6 +67,10 @@ export function Twitch_Quotes(props){
         }
     }
     const RenderQuotes = () => {
+        if(Quotes === undefined)
+        {
+            return null;
+        }
         return Quotes.map(quote => {
             var deleteClass = "";
             console.log(quote);

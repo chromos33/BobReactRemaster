@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.Data.Models.Discord;
+using BobReactRemaster.Data.Models.GiveAways;
 using BobReactRemaster.Data.Models.Meetings;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.DLive;
@@ -38,6 +39,11 @@ namespace BobReactRemaster.Data
         public DbSet<MeetingTemplate_Member> MeetingTemplates_Members { get; set; }
         public DbSet<MeetingParticipation> MeetingSubscriptions { get; set; }
         public DbSet<Meeting> Meetings { get; set; }
+
+        public DbSet<Gift> Gifts { get; set; }
+        public DbSet<GiveAway> GiveAways { get; set; }
+
+        public DbSet<GiveAway_Member> GiveAway_Member { get; set; } 
         public ApplicationDbContext(
             DbContextOptions options) : base(options)
         {
@@ -50,7 +56,23 @@ namespace BobReactRemaster.Data
                 .HasMany(u => u.StreamSubscriptions)
                 .WithOne(ss => ss.Member)
                 .OnDelete(DeleteBehavior.Cascade);
-
+            builder.Entity<Member>()
+                .HasMany(u => u.GiveAways)
+                .WithOne(ga => ga.Member)
+                .OnDelete(DeleteBehavior.Cascade);
+            //TODO check if ClientCascade only deletes member -> giveaway and not giveaway -> member
+            builder.Entity<GiveAway>()
+                .HasMany(ga => ga.Admins)
+                .WithOne(m => m.GiveAway)
+                .OnDelete(DeleteBehavior.ClientCascade);
+            builder.Entity<Gift>()
+                .HasOne(u => u.Owner)
+                .WithMany(g => g.GivenGifts)
+                .OnDelete(DeleteBehavior.ClientCascade);
+            builder.Entity<Gift>()
+                .HasOne(g => g.Winner)
+                .WithMany(m => m.WonGifts)
+                .OnDelete(DeleteBehavior.ClientCascade);
             builder.Entity<Member>()
                 .HasMany(m => m.RegisteredToMeetingTemplates)
                 .WithOne(t => t.RegisteredMember)
