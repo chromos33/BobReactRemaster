@@ -35,7 +35,15 @@ namespace BobReactRemaster.Data.Models.User
         public List<Gift> GivenGifts { get; set; }
 
         public List<Gift> WonGifts { get; set; }
-
+        public int TestWonGiftsCount { get; set; } = 0;
+        public int GetWonGiftsCount()
+        {
+            if(TestWonGiftsCount > 0)
+            {
+                return TestWonGiftsCount;
+            }
+            return WonGifts.Count;
+        }
         private Member()
         {
 
