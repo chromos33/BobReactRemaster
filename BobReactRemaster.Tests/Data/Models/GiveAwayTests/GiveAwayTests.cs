@@ -22,7 +22,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             Member member = new Member("test","test",UserRole.User);
             Gift gift = new Gift(member,"https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
             testCandidate.AddGift(gift);
-            Assert.IsTrue(testCandidate.Gifts.Any(x => (x.ID == 0 && x.Name.ToLower() == "Farming Simulator 22")));
+            Assert.IsTrue(testCandidate.Gifts.Any(x => (x.ID == 0 && x.Name == "Farming Simulator 22")));
         }
         [Test]
         public void AddGift_SameGift_DuplicateKeyExceptionThrown()
@@ -97,7 +97,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
         }
         //AddParticipant()
         //RemoveParticipant()
-        //GetParticipants() returns all current Participants with Info how many Gifts someone won already
+        //GetParticipants() returns all current Participants
         [Test]
         public void AddParticipant_NewParticipant_CorrectlyAdded()
         {
@@ -163,12 +163,11 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
+            gift2.ID = 2;
             testCandidate.AddGift(gift2);
-
-            testCandidate.RemoveGift(gift);
+            
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(1);
+            rng.SetResult(0);
             Assert.IsTrue(testCandidate.NextGift(rng).ID == 1);
         }
 
@@ -181,7 +180,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
+            gift2.ID = 2;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
@@ -204,14 +203,40 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(1);
+            rng.SetResult(0);
             List<Member> result = testCandidate.Raffle(rng);
             Assert.IsTrue(result.First().UserName == member2.UserName);
+        }
+        [Test]
+        public void Raffle_ParticipantsAllDifferentWonItemCount_ReturnsWinner()
+        {
+            GiveAway testCandidate = new GiveAway();
+            Member member = new Member("test", "test", UserRole.User);
+            member.TestWonGiftsCount = 1;
+            Member member2 = new Member("test2", "test", UserRole.User);
+            member2.TestWonGiftsCount = 2;
+            Member member3 = new Member("test3", "test", UserRole.User);
+            member3.TestWonGiftsCount = 3;
+            testCandidate.AddParticipant(member);
+            testCandidate.AddParticipant(member2);
+            testCandidate.AddParticipant(member3);
+            Gift gift = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
+            gift.ID = 1;
+            testCandidate.AddGift(gift);
+            Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
+            testCandidate.AddGift(gift2);
+
+            TestableRandomGenerator rng = new TestableRandomGenerator();
+            rng.SetResult(0);
+            List<Member> result = testCandidate.Raffle(rng);
+            Assert.IsTrue(result.First().UserName == member.UserName);
         }
 
         [Test]
@@ -231,12 +256,12 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(2);
+            rng.SetResult(1);
             List<Member> result = testCandidate.RaffleFFA(rng);
             Assert.IsTrue(result.First().UserName == member2.UserName);
         }
@@ -258,12 +283,12 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(2);
+            rng.SetResult(0);
             List<Member> result = testCandidate.RaffleWeightedFFA(rng);
             //Because it being weighted member should have the second slot as well (in the "random table")
             Assert.IsTrue(result.First().UserName == member.UserName);
@@ -285,12 +310,12 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(1);
+            rng.SetResult(0);
             List<Member> result = testCandidate.Raffle(rng);
             Assert.IsTrue(result.First().UserName == member2.UserName);
             Assert.IsTrue(result[1].UserName == member3.UserName);
@@ -313,12 +338,13 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(2);
+            rng.AddResult(1);
+            rng.AddResult(1);
             List<Member> result = testCandidate.RaffleFFA(rng);
             Assert.IsTrue(result.First().UserName == member2.UserName);
             Assert.IsTrue(result[1].UserName == member3.UserName);
@@ -341,8 +367,8 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
@@ -370,12 +396,13 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(1);
+            rng.AddResult(1);
+            rng.AddResult(0);
             List<Member> result = testCandidate.Raffle(rng);
             Assert.IsTrue(testCandidate.GetParticipants().Count == 0);
         }
@@ -397,12 +424,12 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();
-            rng.SetResult(2);
+            rng.SetResult(0);
             List<Member> result = testCandidate.RaffleFFA(rng);
             Assert.IsTrue(testCandidate.GetParticipants().Count == 0);
         }
@@ -424,8 +451,8 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.ID = 1;
             testCandidate.AddGift(gift);
             Gift gift2 = new Gift(member, "https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
-            gift.ID = 2;
-            gift.IsCurrent = true;
+            gift2.ID = 2;
+            gift2.IsCurrent = true;
             testCandidate.AddGift(gift2);
 
             TestableRandomGenerator rng = new TestableRandomGenerator();

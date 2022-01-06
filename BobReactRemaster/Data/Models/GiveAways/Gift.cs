@@ -38,5 +38,12 @@ namespace BobReactRemaster.Data.Models.GiveAways
             this.Name = Name;
             this.Link = Link;    
         }
+
+        public string CleanedLink()
+        {
+            string link = Link;
+            //Todo write algortithm to clean Link
+            return link;
+        }
     }
 }

@@ -30,11 +30,11 @@ namespace BobReactRemaster.Data.Models.User
         public List<MeetingParticipation> MeetingSubscriptions { get; set; }
 
         //GiveAway Admin Relation
-        public List<GiveAways.GiveAway_Member> GiveAways { get; set; }
+        public List<GiveAways.GiveAway_Member> GiveAways { get; set; } = new List<GiveAway_Member>();
 
-        public List<Gift> GivenGifts { get; set; }
+        public List<Gift> GivenGifts { get; set; } = new List<Gift>();
 
-        public List<Gift> WonGifts { get; set; }
+        public List<Gift> WonGifts { get; set; } = new List<Gift>();
         public int TestWonGiftsCount { get; set; } = 0;
         public int GetWonGiftsCount()
         {
