@@ -461,13 +461,57 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             //Because it being weighted member should have the second slot as well (in the "random table")
             Assert.IsTrue(testCandidate.GetParticipants().Count == 0);
         }
+
         //Increment "Turn" on all Gifts with the same Link (trim and clean for parameters)
         // Raffle() - Randomly choose a Winner from the List of Particpants excluding all but the participants with the least amount of won gifts
         // RaffleFFA() - Randomly choose a winner from the List of Particpants
         // RaffleWeightedFFA() - Randomly Choose a winner from the List of Participants Weighting people better with less Gifts won
 
         //Clear current Participants and or just use 1 List of Participants that gets cleared on raffle/NextGift
+        [Test]
+        public void AddAdmin_NewAdmin_CorrectlyAddedToList()
+        {
+            GiveAway testCandidate = new GiveAway();
+            Member member = new Member("test", "test", UserRole.User);
+            testCandidate.AddAdmin(member);
+            Assert.IsTrue(testCandidate.Admins.Any(x => x.Member.UserName == "test"));
+        }
+        [Test]
+        public void AddAdmin_AlreadyAdmin_DuplicateKeyExceptionThrown()
+        {
+            GiveAway testCandidate = new GiveAway();
+            Member member = new Member("test", "test", UserRole.User);
+            testCandidate.AddAdmin(member);
+            Assert.Throws<DuplicateKeyException>(() => { testCandidate.AddAdmin(member); });
+        }
+        [Test]
+        public void RemoveAdmin_NewAdmin_NotFoundExceptionThrown()
+        {
+            GiveAway testCandidate = new GiveAway();
+            Member member = new Member("test", "test", UserRole.User);
+            
+            Assert.Throws<NotFoundException>(() => { testCandidate.RemoveAdmin(member); });
+        }
+        [Test]
+        public void RemoveAdmin_ExistantAdmin_AdminRemoved()
+        {
+            GiveAway testCandidate = new GiveAway();
+            Member member = new Member("test", "test", UserRole.User);
+            testCandidate.AddAdmin(member);
 
-
+            testCandidate.RemoveAdmin(member);
+            Assert.IsTrue(!testCandidate.Admins.Any());
+        }
+        [Test]
+        public void IsAdmin_CorrectAdminState()
+        {
+            GiveAway testCandidate = new GiveAway();
+            Member member = new Member("test", "test", UserRole.User);
+            Assert.IsFalse(testCandidate.IsAdmin(member));
+            testCandidate.AddAdmin(member);
+            Assert.IsTrue(testCandidate.IsAdmin(member));
+            testCandidate.RemoveAdmin(member);
+            Assert.IsFalse(testCandidate.IsAdmin(member));
+        }
     }
 }

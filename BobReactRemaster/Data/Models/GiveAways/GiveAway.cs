@@ -235,5 +235,34 @@ namespace BobReactRemaster.Data.Models.GiveAways
             clearParticipants();
             return Winners;
         }
+
+        public GiveAway_Member AddAdmin(Member member)
+        {
+            if (Admins.Any(x => x.Member.UserName == member.UserName))
+            {
+                throw new DuplicateKeyException("This user is already an admin for this giveaway");
+            }
+
+            GiveAway_Member connection = new GiveAway_Member();
+            connection.Member = member;
+            connection.GiveAway = this;
+            Admins.Add(connection);
+            return connection;
+        }
+
+        public void RemoveAdmin(Member member)
+        {
+            if (Admins.All(x => x.Member.UserName != member.UserName))
+            {
+                throw new NotFoundException("This user is not an admin for this giveaway");
+            }
+
+            Admins.RemoveAll(x => x.Member.UserName == member.UserName);
+        }
+
+        public bool IsAdmin(Member member)
+        {
+            return Admins.Any(x => x.Member.UserName == member.UserName);
+        }
     }
 }

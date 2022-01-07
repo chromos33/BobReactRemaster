@@ -42,7 +42,9 @@ namespace BobReactRemaster.Data.Models.GiveAways
         public string CleanedLink()
         {
             string link = Link;
-            //Todo write algortithm to clean Link
+            link = link.Trim();
+            char[] TrimCharas = { '/' };
+            link = link.TrimEnd(TrimCharas);
             return link;
         }
     }
