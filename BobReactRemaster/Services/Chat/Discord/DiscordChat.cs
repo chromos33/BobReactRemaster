@@ -198,6 +198,8 @@ namespace BobReactRemaster.Services.Chat.Discord
                     {
                         var channel = (SocketTextChannel)TextChannel;
                         var NewTextChannel = new TextChannel(channel.Id, channel.Name, channel.Guild.Name);
+                        //next line quick fix need detection for random channel and actual
+                        NewTextChannel.IsPermanentRelayChannel = true;
                         context.DiscordTextChannels.Add(NewTextChannel);
                         context.SaveChanges();
                     }
@@ -233,7 +235,6 @@ namespace BobReactRemaster.Services.Chat.Discord
                     catch (Exception e)
                     {
                         Console.WriteLine(e);
-                        throw;
                     }
                 }
                 else

@@ -119,7 +119,15 @@ namespace BobReactRemaster.Services.Chat.Commands
                     }
 
                     thisStorage.AddTask(Task);
-                    scheduler.AddTask(Task);
+                    if (scheduler.ContainsTask(Task))
+                    {
+                        scheduler.UpdateTask(Task);
+                    }
+                    else
+                    {
+                        scheduler.AddTask(Task);
+                    }
+                    
                 }
                 
             }

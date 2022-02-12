@@ -123,8 +123,9 @@ namespace BobReactRemaster.Controllers
                
             }
 
-            foreach (var Subscription in Data.Subscriptions)
+            foreach (var Subscription in Data.Subscriptions.Where(x => x.UserName == "chromos33"))
             {
+                var test = Data.Subscriptions.Where(x => x.UserName == "chromos33");
                 var stream = _context.TwitchStreams.AsQueryable().FirstOrDefault(x => x.StreamName.ToLower() == Subscription.StreamName.ToLower());
                 var submember = _context.Members.AsQueryable().FirstOrDefault(x => x.DiscordUserName.ToLower() == Subscription.UserName.ToLower());
                 if(stream != null && submember != null)

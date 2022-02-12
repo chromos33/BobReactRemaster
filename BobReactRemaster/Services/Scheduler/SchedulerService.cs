@@ -43,6 +43,8 @@ namespace BobReactRemaster.Services.Scheduler
             {
                 Tasks.Add(new TwitchOAuthRefreshTask(cred.ExpireDate.Subtract(TimeSpan.FromMinutes(5)),cred.id,_scopeFactory));
             }
+            #endregion
+            #region MeetingTasks
             foreach (MeetingTemplate template in context.MeetingTemplates.AsQueryable().Include(x => x.Dates).Include(y => y.LiveMeetings).Where(x => x.Dates.Count > 0))
             {
                 Tasks.Add(new EventCreationTask(template.ID, _scopeFactory, template.NextCreateDateTime()));
@@ -66,8 +68,16 @@ namespace BobReactRemaster.Services.Scheduler
             {
                 Task.Execute();
             }
-
             Tasks.RemoveAll(x => x.Removeable());
+        }
+
+        public bool ContainsTask(IScheduledTask Task)
+        {
+            if (Tasks.IsNullOrEmpty())
+            {
+                return false;
+            }
+            return Tasks.Any(x => x.isThisTask(Task));
         }
 
         public void AddTask(IScheduledTask Task)
@@ -77,6 +87,11 @@ namespace BobReactRemaster.Services.Scheduler
                 Task.setScopeFactory(_scopeFactory);
                 Tasks.Add(Task);
             }
+        }
+
+        public void UpdateTask(IScheduledTask Task)
+        {
+            Tasks.FirstOrDefault(x => x.isThisTask(Task))?.Update(Task);
         }
     }
 }

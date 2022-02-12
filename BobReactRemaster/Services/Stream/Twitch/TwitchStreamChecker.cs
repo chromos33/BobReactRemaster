@@ -66,13 +66,14 @@ namespace BobReactRemaster.Services.Stream.Twitch
                 catch (Exception e)
 #pragma warning restore 168
                 {
+                    var test = "";
                 }
 
                 inProgress = false;
             }
         }
 
-        private void HandleStreamStateChange(TwitchLib.Api.Helix.Models.Streams.Stream[] requestDataStreams)
+        private void HandleStreamStateChange(TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream[] requestDataStreams)
         {
             var scope = scopefactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

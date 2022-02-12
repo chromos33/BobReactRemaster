@@ -60,6 +60,11 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             return false;
         }
 
+        public void Update(IScheduledTask task)
+        {
+            //ignore nothing to update
+        }
+
         public bool isThisTask(IScheduledTask Task)
         {
             return Task == this;

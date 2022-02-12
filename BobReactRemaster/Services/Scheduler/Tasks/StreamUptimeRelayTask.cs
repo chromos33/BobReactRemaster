@@ -15,7 +15,7 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private int? IntervalID;
         private DateTime NextExecutionDate;
         private bool removalQueued;
-        private readonly int interval;
+        private int interval;
         private DateTime StreamStart;
         private LiveStream stream;
         public StreamUptimeRelayTask(LiveStream stream, DateTime streamStart, int Interval)
@@ -56,7 +56,12 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
 
         public bool isRefreshableTask()
         {
-            return false;
+            return true;
+        }
+
+        public void Update(IScheduledTask task)
+        {
+            interval = ((StreamUptimeRelayTask)task).interval;
         }
 
         public void setScopeFactory(IServiceScopeFactory Factory)

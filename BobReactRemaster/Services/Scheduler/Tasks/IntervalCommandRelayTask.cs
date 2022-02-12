@@ -37,6 +37,7 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             if (bus != null)
             {
                 bus.Publish(stream.getRelayMessageData(Message));
+                NextExecutionDate = NextExecutionDate.Add(TimeSpan.FromMinutes(interval));
             }
 
         }
@@ -54,6 +55,14 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         public bool isRefreshableTask()
         {
             return true;
+        }
+
+        public void Update(IScheduledTask task)
+        {
+            IntervalCommandRelayTask _task = (IntervalCommandRelayTask)task;
+            interval = _task.interval;
+            Message = _task.Message;
+
         }
 
         public void setScopeFactory(IServiceScopeFactory Factory)

@@ -80,6 +80,11 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             return false;
         }
 
+        public void Update(IScheduledTask task)
+        {
+            //ignore nothing to update
+        }
+
         public bool isThisTask(int ID)
         {
             return ID == IntervalID;

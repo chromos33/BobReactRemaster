@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
+using TwitchLib.Communication.Events;
 using Timer = System.Timers.Timer;
 
 namespace BobReactRemaster.Services.Chat.Twitch
@@ -53,7 +54,22 @@ namespace BobReactRemaster.Services.Chat.Twitch
             client.OnLeftChannel += ChannelLeft;
             client.OnConnectionError += NotConnected;
             client.OnIncorrectLogin += LoginAuthFailed;
+            client.OnDisconnected += Disconnected;
+            client.OnUnaccountedFor += Unaccounted;
         }
+
+        private void Unaccounted(object? sender, OnUnaccountedForArgs e)
+        {
+            //if can't connect scopes empty
+        }
+        
+        private void Disconnected(object? sender, OnDisconnectedEventArgs e)
+        {
+            //throw new NotImplementedException();
+            ConnectionChangeInProgress = false;
+            IsAuthed = false;
+        }
+
 
         private void OnWhisperReceived(object? sender, OnWhisperReceivedArgs e)
         {

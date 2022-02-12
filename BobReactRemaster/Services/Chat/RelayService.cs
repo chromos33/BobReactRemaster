@@ -30,7 +30,7 @@ namespace BobReactRemaster.Services.Chat
             {
                 if (Message != null)
                 {
-                    _messageBus.Publish(Message);
+                    //_messageBus.Publish(Message);
                 }
             }
         }
