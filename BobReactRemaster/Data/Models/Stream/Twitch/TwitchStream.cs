@@ -112,7 +112,7 @@ namespace BobReactRemaster.Data.Models.Stream
 
             if (RelayChannel != null)
             {
-                message += $"Relay befindet sich in Channel {RelayChannel.Name}";
+                message += $" Relay befindet sich in Channel {RelayChannel.Name}";
             }
 
             return message;

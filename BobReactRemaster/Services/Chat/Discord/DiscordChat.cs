@@ -84,8 +84,8 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var stream = context.TwitchStreams.FirstOrDefault(x => x.StreamName.ToLower() == obj.Streamname.ToLower());
-            string message = stream?.GetStreamStartedMessage();
+            var stream = context.TwitchStreams.Include(x => x.RelayChannel).FirstOrDefault(x => x.StreamName.ToLower() == obj.Streamname.ToLower());
+            string message = stream?.GetStreamStartedMessage(obj.Title);
             if (message != null)
             {
                 foreach (Member member in context.Members.Include(x => x.StreamSubscriptions).ThenInclude(x => x.LiveStream).AsEnumerable().Where(x => x.canBeFoundOnDiscord() && x.HasSubscription(stream)))
