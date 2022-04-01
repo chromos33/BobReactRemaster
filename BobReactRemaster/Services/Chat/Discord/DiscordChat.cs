@@ -55,7 +55,7 @@ namespace BobReactRemaster.Services.Chat.Discord
             if(member != null && obj.Message != "")
             {
                 var chatmember = _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator);
-                chatmember.SendMessageAsync(obj.Message);
+                await chatmember.SendMessageAsync(obj.Message);
             }
         }
 
@@ -70,7 +70,7 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
         }
 
-        internal SocketGuildUser GetMemberByName(string userName)
+        internal SocketGuildUser? GetMemberByName(string userName)
         {
             var users = _client.Guilds.Where(x => x.Name == "Deathmic").FirstOrDefault()?.Users.Where(x => x.Username.ToLower() == userName.ToLower());
             if(users != null && users.Count() == 1)
@@ -84,13 +84,16 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var stream = context.TwitchStreams.Include(x => x.RelayChannel).FirstOrDefault(x => x.StreamName.ToLower() == obj.Streamname.ToLower());
-            string message = stream?.GetStreamStartedMessage(obj.Title);
-            if (message != null)
+            TwitchStream? stream = context.TwitchStreams.Include(x => x.RelayChannel).FirstOrDefault(x => String.Equals(x.StreamName, obj.Streamname, StringComparison.CurrentCultureIgnoreCase));
+            if (stream != null)
             {
-                foreach (Member member in context.Members.Include(x => x.StreamSubscriptions).ThenInclude(x => x.LiveStream).AsEnumerable().Where(x => x.canBeFoundOnDiscord() && x.HasSubscription(stream)))
+                string? message = stream.GetStreamStartedMessage(obj.Title);
+                if (message != null)
                 {
-                    _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                    foreach (Member member in context.Members.Include(x => x.StreamSubscriptions).ThenInclude(x => x.LiveStream).AsEnumerable().Where(x => x.canBeFoundOnDiscord() && x.HasSubscription(stream)))
+                    {
+                        _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                    }
                 }
             }
         }

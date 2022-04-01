@@ -55,14 +55,18 @@ namespace BobReactRemaster.Controllers
                 stream.StreamName = data.StreamName;
                 if (stream.StreamID.IsNullOrEmpty())
                 {
+#pragma warning disable CS8601 // Possible null reference assignment.
                     stream.StreamID = await RequestTwitchClientID(stream.StreamName);
+#pragma warning restore CS8601 // Possible null reference assignment.
                 }
                 _context.SaveChanges();
             }
 
             if (stream.StreamID.IsNullOrEmpty())
             {
+#pragma warning disable CS8601 // Possible null reference assignment.
                 stream.StreamID = await RequestTwitchClientID(stream.StreamName);
+#pragma warning restore CS8601 // Possible null reference assignment.
                 _context.SaveChanges();
             }
             return Ok();
@@ -76,7 +80,9 @@ namespace BobReactRemaster.Controllers
             if (stream == null)
             {
                 stream = new TwitchStream(data.StreamName);
+#pragma warning disable CS8601 // Possible null reference assignment.
                 stream.StreamID = await RequestTwitchClientID(stream.StreamName);
+#pragma warning restore CS8601 // Possible null reference assignment.
                 _context.TwitchStreams.Add(stream);
                 _context.SaveChanges();
                 _MessageBus.Publish(new StreamCreatedMessageData(stream));
@@ -86,7 +92,7 @@ namespace BobReactRemaster.Controllers
             return Ok(new { StreamID = stream.Id});
         }
 
-        private async Task<string> RequestTwitchClientID(string StreamName)
+        private async Task<string?> RequestTwitchClientID(string StreamName)
         {
             var api = new TwitchAPI();
             var cred = _context.TwitchCredentials.FirstOrDefault(x => x.isMainAccount);

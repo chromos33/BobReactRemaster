@@ -25,7 +25,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             var Stream = LiveStreams.FirstOrDefault(x =>
                 String.Equals(x.StreamName, StreamName, StringComparison.CurrentCultureIgnoreCase) && 
                 x.RelayChannel != null);
-            if (Stream != null)
+            if (Stream is { RelayChannel: { } })
             {
                 DiscordRelayMessageData data = new DiscordRelayMessageData();
                 data.Message = Message;

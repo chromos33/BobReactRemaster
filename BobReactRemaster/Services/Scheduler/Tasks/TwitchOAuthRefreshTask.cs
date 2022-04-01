@@ -20,12 +20,12 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private IServiceScopeFactory _scopeFactory;
         private int CredentialID;
         private int? ID;
-        private readonly WebServerSettingsOptions _options;
+        //private readonly WebServerSettingsOptions _options;
         private bool isRemoveable = false;
-        public TwitchOAuthRefreshTask(DateTime nextExecutionDate,int credentialID, IServiceScopeFactory scopeFactory = null)
+        public TwitchOAuthRefreshTask(DateTime nextExecutionDate,int credentialID, IServiceScopeFactory? scopeFactory = null)
         {
             NextExecutionDate = nextExecutionDate;
-            _scopeFactory = scopeFactory;
+            if (scopeFactory != null) _scopeFactory = scopeFactory;
             CredentialID = credentialID;
         }
 
@@ -95,13 +95,13 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
                 string url = $"https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token={credential.RefreshToken}&client_id={credential.ClientID}&client_secret={credential.Secret}";
                 var response = await httpclient.PostAsync(url, new StringContent("", System.Text.Encoding.UTF8, "text/plain"));
                 var responsestring = await response.Content.ReadAsStringAsync();
-                TwitchOAuthRefreshData refresh = JsonConvert.DeserializeObject<TwitchOAuthRefreshData>(responsestring);
-                if (refresh.error == null)
+                TwitchOAuthRefreshData? refresh = JsonConvert.DeserializeObject<TwitchOAuthRefreshData>(responsestring);
+                if (refresh is { error: null })
                 {
                     credential.Token = refresh.access_token;
                     credential.RefreshToken = refresh.refresh_token;
                     credential.ExpireDate = DateTime.Now.AddSeconds(refresh.expires_in).Subtract(TimeSpan.FromMinutes(5));
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     NextExecutionDate = credential.ExpireDate;
                 }
                 

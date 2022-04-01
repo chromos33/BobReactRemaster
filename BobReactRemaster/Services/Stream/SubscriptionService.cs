@@ -30,7 +30,7 @@ namespace BobReactRemaster.Services.Stream
             {
                 member.AddStreamSubscription(obj.Stream,false);
             }
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Commands;
@@ -10,6 +7,7 @@ using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Stream;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BobReactRemaster.Controllers
@@ -39,13 +37,13 @@ namespace BobReactRemaster.Controllers
                 List<dynamic> ManualCommands = new List<dynamic>();
                 foreach (var command in stream.RelayIntervalCommands)
                 {
-                    IntervalCommands.Add(new  {ID= command.ID, Name= command.Name, Response= command.Response, Interval= command.AutoInverval, Open = false});
+                    IntervalCommands.Add(new  { command.ID, command.Name, command.Response, Interval= command.AutoInverval, Open = false});
                 }
                 foreach (var command in stream.RelayManualCommands)
                 {
-                    ManualCommands.Add(new { ID = command.ID, Name = command.Name, Response = command.Response, Trigger= command.Trigger, Open = false });
+                    ManualCommands.Add(new { command.ID, command.Name, command.Response, command.Trigger, Open = false });
                 }
-                return Ok(new {IntervalCommands = IntervalCommands, ManualCommands = ManualCommands});
+                return Ok(new { IntervalCommands, ManualCommands});
             }
 
             return NotFound();
@@ -78,7 +76,7 @@ namespace BobReactRemaster.Controllers
                 _context.ManualCommands.Add(command);
                 _context.SaveChanges();
                 bus.Publish(new RefreshManualRelayCommands());
-                return Ok(new {ID= command.ID});
+                return Ok(new { command.ID});
             }
             return NotFound();
         }
@@ -125,7 +123,7 @@ namespace BobReactRemaster.Controllers
                 _context.IntervalCommands.Add(command);
                 _context.SaveChanges();
                 bus.Publish(new RefreshIntervalRelayCommands());
-                return Ok(new { ID = command.ID });
+                return Ok(new { command.ID });
             }
             return NotFound();
         }

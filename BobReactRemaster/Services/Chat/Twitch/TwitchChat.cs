@@ -45,17 +45,21 @@ namespace BobReactRemaster.Services.Chat.Twitch
         private void InitTwitchClient()
         {
             client = new TwitchClient();
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             client.OnMessageReceived += OnMessageReceived;
             client.OnChatCommandReceived += OnChatCommandReceived;
             client.OnWhisperReceived += OnWhisperReceived;
             client.OnConnected += OnConnected;
             client.OnConnected += Connected;
+
             client.OnJoinedChannel += ChannelJoined;
+
             client.OnLeftChannel += ChannelLeft;
             client.OnConnectionError += NotConnected;
             client.OnIncorrectLogin += LoginAuthFailed;
             client.OnDisconnected += Disconnected;
             client.OnUnaccountedFor += Unaccounted;
+#pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
         }
 
         private void Unaccounted(object? sender, OnUnaccountedForArgs e)
@@ -100,7 +104,7 @@ namespace BobReactRemaster.Services.Chat.Twitch
             ConnectionChangeInProgress = false;
         }
 
-        private ConnectionCredentials GetTwitchCredentials()
+        private ConnectionCredentials? GetTwitchCredentials()
         {
             var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

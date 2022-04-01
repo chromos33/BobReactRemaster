@@ -79,9 +79,9 @@ namespace BobReactRemaster
             services.AddSingleton<IHostedService,DiscordChat>();
             services.AddSingleton<IHostedService,TwitchChat>();
             services.AddSingleton<IHostedService,StreamCheckerService>();
-            services.AddSingleton<IRelayService, RelayService>();
-            services.AddSingleton<IHostedService, CommandCenter>();
-            services.AddSingleton<SubscriptionService, SubscriptionService>();
+            //services.AddSingleton<IRelayService, RelayService>();
+            //services.AddSingleton<IHostedService, CommandCenter>();
+            //services.AddSingleton<SubscriptionService, SubscriptionService>();
 
 
             //services.AddControllersWithViews();

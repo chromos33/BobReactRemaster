@@ -20,7 +20,7 @@ namespace BobReactRemaster.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;
-        private IMessageBus MessageBus;
+        private readonly IMessageBus MessageBus;
         private readonly ApplicationDbContext _context;
         public LoginController(IConfiguration config, ApplicationDbContext context, IMessageBus messageBus)
         {
@@ -52,11 +52,14 @@ namespace BobReactRemaster.Controllers
         {
             IActionResult response = Unauthorized();
 
-            Member user = AuthenticateUser(authData);
-            if(user != null)
+            if (authData != null)
             {
-                string tokenString = GenerateJWTToken(user);
-                response = Ok(new{token = tokenString,userName = user.UserName});
+                Member? user = AuthenticateUser(authData);
+                if(user != null)
+                {
+                    string tokenString = GenerateJWTToken(user);
+                    response = Ok(new{token = tokenString,userName = user.UserName});
+                }
             }
 
             return response;
@@ -91,7 +94,7 @@ namespace BobReactRemaster.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private Member AuthenticateUser(AuthData authData)
+        private Member? AuthenticateUser(AuthData authData)
         {
              Member user = _context.Members.SingleOrDefault(x => x.UserName == authData.UserName);
              if (user != null && user.checkPassword(authData.Password))

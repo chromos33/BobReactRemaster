@@ -17,9 +17,9 @@ namespace BobReactRemaster.EventBus
         {
             try
             {
-                _action.Invoke(content as TBaseMessageData);
+                _action.Invoke((TBaseMessageData)content);
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 //Empty Receiver List did not find a way to prevent this or find out if this is the case
             }

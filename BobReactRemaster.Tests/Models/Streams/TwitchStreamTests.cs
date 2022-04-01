@@ -82,7 +82,6 @@ namespace BobRemastered.Tests.Models.Streams
         public void GetStreamListData_ValidTwitchStream_ValidReturn()
         {
             var streamname = "Stream";
-            var id = 5;
             var stream = new TwitchStream(streamname);
             stream.Id = 5;
             var result = stream.GetStreamListData();

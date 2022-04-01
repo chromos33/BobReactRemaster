@@ -39,7 +39,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
         public void TriggerCommand(CommandMessage msg)
         {
             var parameters = msg.Message.Replace(Trigger, "");
-            Quote tmpquote = null;
+            Quote tmpquote;
             if (parameters != "")
             {
                 Int32.TryParse(parameters, out int idparam);

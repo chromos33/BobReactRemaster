@@ -77,7 +77,7 @@ namespace BobReactRemaster.Controllers
                     stream.SetRelayChannel(channel);
                 }
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok();
             }
             return NotFound();

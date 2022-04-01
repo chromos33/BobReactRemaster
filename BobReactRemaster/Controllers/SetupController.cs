@@ -68,7 +68,7 @@ namespace BobReactRemaster.Controllers
             //Member
             var scope = _scopeFactory.CreateScope();
             var Services = scope.ServiceProvider.GetServices<IHostedService>();
-            DiscordChat Discord = null;
+            DiscordChat? Discord = null;
             foreach(var service in Services)
             {
                 if(service.GetType() == typeof(DiscordChat))
@@ -76,68 +76,87 @@ namespace BobReactRemaster.Controllers
                     Discord = (DiscordChat) service;
                 }
             }
-            foreach (var Member in Data.Members)
-            {
-                if(_context.Members.AsEnumerable().Where(x => x.DiscordUserName?.ToLower() == Member.UserName.ToLower()).Count() > 0)
-                {
-                    continue;
-                }
-                var DiscordMember = Discord.GetMemberByName(Member.UserName);
-                if(DiscordMember != null)
-                {
-                    BobReactRemaster.Data.Models.User.Member tmp = new Data.Models.User.Member(DiscordMember.Username, DiscordMember.Discriminator);
-                    tmp.ResetPassword();
-                    _context.Members.Add(tmp);
-                }
-                else
-                {
-                    Console.WriteLine(Member.UserName);
-                }
-            }
 
-            foreach(var Stream in Data.Streams)
+            if (Data != null)
             {
-                if (_context.TwitchStreams.AsEnumerable().Where(x => x.StreamName.ToLower() == Stream.StreamName.ToLower()).Count() > 0)
+                foreach (var Member in Data.Members)
                 {
-                    continue;
-                }
-                TwitchStream tmp = new TwitchStream(Stream.StreamName);
-                _context.TwitchStreams.Add(tmp);
-            }
-            foreach (var Quote in Data.Quotes)
-            {
-                if (_context.Quotes.AsEnumerable().Where(x => x.Text.ToLower() == Quote.Text.ToLower()).Count() > 0)
-                {
-                    continue;
-                }
-                var stream = _context.TwitchStreams.AsQueryable().FirstOrDefault(x => x.StreamName.ToLower() == Quote.StreamName.ToLower());
-                if (stream != null)
-                {
-                    Data.Models.Stream.Quote tmp = new Data.Models.Stream.Quote();
-                    tmp.Text = Quote.Text;
-                    tmp.Created = Quote.dateTime;
-                    tmp.stream = stream;
-
-                    _context.Quotes.Add(tmp);
-                }
-               
-            }
-
-            foreach (var Subscription in Data.Subscriptions.Where(x => x.UserName == "chromos33"))
-            {
-                var test = Data.Subscriptions.Where(x => x.UserName == "chromos33");
-                var stream = _context.TwitchStreams.AsQueryable().FirstOrDefault(x => x.StreamName.ToLower() == Subscription.StreamName.ToLower());
-                var submember = _context.Members.AsQueryable().FirstOrDefault(x => x.DiscordUserName.ToLower() == Subscription.UserName.ToLower());
-                if(stream != null && submember != null)
-                {
-                    if(_context.StreamSubscriptions.AsEnumerable().Where(x => x.LiveStream == stream && x.Member == submember).Count() > 0)
+                    if (_context.Members.AsEnumerable()
+                            .Where(x => x.DiscordUserName?.ToLower() == Member.UserName.ToLower()).Count() > 0)
                     {
                         continue;
                     }
-                    var tmp = new StreamSubscription(stream, submember, Subscription.isSubscribed);
-                    _context.StreamSubscriptions.Add(tmp);
-                }     
+
+                    if (Discord != null)
+                    {
+                        var DiscordMember = Discord.GetMemberByName(Member.UserName);
+                        if (DiscordMember != null)
+                        {
+                            BobReactRemaster.Data.Models.User.Member tmp =
+                                new Data.Models.User.Member(DiscordMember.Username, DiscordMember.Discriminator);
+                            tmp.ResetPassword();
+                            _context.Members.Add(tmp);
+                        }
+                        else
+                        {
+                            Console.WriteLine(Member.UserName);
+                        }
+                    }
+                }
+
+                foreach (var Stream in Data.Streams)
+                {
+                    if (_context.TwitchStreams.AsEnumerable()
+                            .Where(x => x.StreamName.ToLower() == Stream.StreamName.ToLower()).Count() > 0)
+                    {
+                        continue;
+                    }
+
+                    TwitchStream tmp = new TwitchStream(Stream.StreamName);
+                    _context.TwitchStreams.Add(tmp);
+                }
+
+                foreach (var Quote in Data.Quotes)
+                {
+                    if (_context.Quotes.AsEnumerable().Where(x => x.Text.ToLower() == Quote.Text.ToLower()).Count() > 0)
+                    {
+                        continue;
+                    }
+
+                    var stream = _context.TwitchStreams.AsQueryable()
+                        .FirstOrDefault(x => x.StreamName.ToLower() == Quote.StreamName.ToLower());
+                    if (stream != null)
+                    {
+                        Data.Models.Stream.Quote tmp = new Data.Models.Stream.Quote();
+                        tmp.Text = Quote.Text;
+                        tmp.Created = Quote.dateTime;
+                        tmp.stream = stream;
+
+                        _context.Quotes.Add(tmp);
+                    }
+                }
+
+                foreach (var Subscription in Data.Subscriptions.Where(x => x.UserName == "chromos33"))
+                {
+                    var test = Data.Subscriptions.Where(x => x.UserName == "chromos33");
+                    var stream = _context.TwitchStreams.AsQueryable()
+                        .FirstOrDefault(x => x.StreamName.ToLower() == Subscription.StreamName.ToLower());
+                    var submember = _context.Members.AsQueryable().FirstOrDefault(x =>
+                        x.DiscordUserName.ToLower() == Subscription.UserName.ToLower());
+                    if (stream != null && submember != null)
+                    {
+                        if (_context.StreamSubscriptions.AsEnumerable()
+                                .Where(x => x.LiveStream == stream && x.Member == submember).Count() > 0)
+                        {
+                            continue;
+                        }
+
+                        var tmp = new StreamSubscription(stream, submember, Subscription.isSubscribed);
+                        _context.StreamSubscriptions.Add(tmp);
+                    }
+                }
             }
+
             _context.SaveChanges();
             return Ok();
         }

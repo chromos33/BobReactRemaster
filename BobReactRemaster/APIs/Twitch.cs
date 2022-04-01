@@ -19,12 +19,14 @@ namespace BobReactRemaster.APIs
             {
                 string result = await response.Content.ReadAsStringAsync();
                 var resultdata = JsonConvert.DeserializeObject<TwitchGameResponse>(result);
-                if (resultdata.data.Any())
+                if (resultdata != null && resultdata.data.Any())
                 {
                     return resultdata.data.First().id;
                 }
             }
+#pragma warning disable CS8603 // Possible null reference return.
             return null;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public static async Task<bool> TryToSetTwitchGame(string StreamID,string GameID, HttpClient Client)

@@ -119,10 +119,12 @@ namespace BobReactRemaster.Data.Models.Stream
         }
         public override IEnumerable<ICommand> GetStaticCommands(IMessageBus bus)
         {
-            List<ICommand> Commands = new List<ICommand>();
+            List<ICommand> Commands = new List<ICommand>
+            {
+                new TwitchStreamTitleChangeCommand(bus, this),
+                new TwitchGameChangeCommand(bus, this)
+            };
 
-            Commands.Add(new TwitchStreamTitleChangeCommand(bus, this));
-            Commands.Add(new TwitchGameChangeCommand(bus, this));
             return Commands;
         }
     }

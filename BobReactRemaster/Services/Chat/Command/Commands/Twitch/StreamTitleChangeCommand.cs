@@ -38,7 +38,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
             get { return "Kein Titel gefunden. Command: '!title [Titel]"; }
         }
 
-        public TwitchStreamTitleChangeCommand(IMessageBus bus, TwitchStream livestream, HttpClient client = null)
+        public TwitchStreamTitleChangeCommand(IMessageBus bus, TwitchStream livestream, HttpClient? client = null)
         {
             Bus = bus;
             _livestream = livestream;
@@ -70,7 +70,9 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
             string Parameter = msg.Message.Replace(Trigger, "");
             if (Parameter.Length > 0)
             {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 ChangeStreamTitle(Parameter);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             else
             {
@@ -82,7 +84,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
 
         private async Task ChangeStreamTitle(string newTitle)
         {
-            BaseMessageData busMessage = null;
+            BaseMessageData busMessage;
             if (await TwitchCustomAPI.TryToSetTwitchTitle(_livestream.StreamID,newTitle,Client))
             {
                 busMessage = _livestream.getRelayMessageData(UpdatedMessage);

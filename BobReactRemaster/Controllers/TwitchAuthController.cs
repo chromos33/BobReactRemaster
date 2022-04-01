@@ -124,10 +124,14 @@ namespace BobReactRemaster.Controllers
                 string url = $"https://id.twitch.tv/oauth2/token?client_id={Credential.ClientID}&client_secret={Credential.Secret}&code={code}&grant_type=authorization_code&redirect_uri={returnurl}";
                 var response = await client.PostAsync(url, new StringContent("", System.Text.Encoding.UTF8, "text/plain"));
                 var responsestring = await response.Content.ReadAsStringAsync();
-                TwitchAuthToken authtoken = JsonConvert.DeserializeObject<TwitchAuthToken>(responsestring);
-                Credential.Token = authtoken.access_token;
-                Credential.ExpireDate = DateTime.Now.AddSeconds(authtoken.expires_in);
-                Credential.RefreshToken = authtoken.refresh_token;
+                TwitchAuthToken? authtoken = JsonConvert.DeserializeObject<TwitchAuthToken>(responsestring);
+                if (authtoken != null)
+                {
+                    Credential.Token = authtoken.access_token;
+                    Credential.ExpireDate = DateTime.Now.AddSeconds(authtoken.expires_in);
+                    Credential.RefreshToken = authtoken.refresh_token;
+                }
+
                 await _context.SaveChangesAsync();
                 //Add Task to Scheduler for Refresh;
                 var schedulerservice = internalScope.ServiceProvider.GetServices<IHostedService>()
@@ -139,7 +143,7 @@ namespace BobReactRemaster.Controllers
                         var scheduler = (SchedulerService)schedulerservice;
                         scheduler.AddTask(new TwitchOAuthRefreshTask(Credential.ExpireDate,Credential.id));
                     }
-                    catch (InvalidCastException e)
+                    catch (InvalidCastException)
                     {
                         Console.WriteLine("test");
                     }

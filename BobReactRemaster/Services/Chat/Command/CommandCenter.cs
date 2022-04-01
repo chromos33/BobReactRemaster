@@ -100,13 +100,13 @@ namespace BobReactRemaster.Services.Chat.Commands
             
         }
 
-        private void RefreshIntervalCommands(RefreshIntervalRelayCommands obj = null)
+        private void RefreshIntervalCommands(RefreshIntervalRelayCommands? obj = null)
         {
             StreamTasksStorage.ForEach(x => x.ClearRefreshableTasks());
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             int index = 0;
-            foreach (var IntervalCommand in context.IntervalCommands.Include(x => x.LiveStream).Where(x => x.LiveStream.State == StreamState.Running))
+            foreach (var IntervalCommand in context.IntervalCommands.Include(x => x.LiveStream).Where(x => x.LiveStream != null && x.LiveStream.State == StreamState.Running))
             {
                 if (IntervalCommand.LiveStream != null)
                 {
@@ -133,20 +133,24 @@ namespace BobReactRemaster.Services.Chat.Commands
             }
         }
 
-        private void RefreshManualCommands(RefreshManualRelayCommands obj = null)
+        private void RefreshManualCommands(RefreshManualRelayCommands? obj = null)
         {
             ManualCommands = new List<ICommand>();
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             foreach (var ManualCommand in context.ManualCommands.Include(x => x.LiveStream))
             {
-                ManualCommands.Add(new ManualRelayCommand(ManualCommand.Trigger,ManualCommand.Response,bus,ManualCommand.LiveStream));
+                if (ManualCommand is { LiveStream: { } })
+                    ManualCommands.Add(new ManualRelayCommand(ManualCommand.Trigger, ManualCommand.Response, bus,
+                        ManualCommand.LiveStream));
             }
         }
 
         
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task HandleCommandMessageAsync(CommandMessage msg)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             HandleCommandList(ManualCommands,msg);
             HandleCommandList(StaticStreamCommands,msg);

@@ -62,11 +62,8 @@ namespace BobReactRemaster.Services.Stream.Twitch
                     var requestData = await api.Helix.Streams.GetStreamsAsync(userIds: StreamIDs);
                     HandleStreamStateChange(requestData.Streams);
                 }
-#pragma warning disable 168
-                catch (Exception e)
-#pragma warning restore 168
+                catch (Exception)
                 {
-                    var test = "";
                 }
 
                 inProgress = false;

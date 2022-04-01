@@ -21,7 +21,7 @@ namespace BobReactRemaster.Data.Models.Stream
         public DateTime Started { get; protected set; }
         public DateTime Stopped { get; protected set; }
         public StreamState State { get; protected set; }
-        public TextChannel RelayChannel { get; protected set; }
+        public TextChannel? RelayChannel { get; protected set; }
 
         public bool RelayEnabled { get; set; }
         public int UpTimeInterval { get; set; }
