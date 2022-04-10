@@ -16,7 +16,7 @@ namespace BobReactRemaster.Data.Models.Meetings
 
         public bool IsAuthor { get; set; }
 
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         public MeetingParticipationState State { get; set; }
 

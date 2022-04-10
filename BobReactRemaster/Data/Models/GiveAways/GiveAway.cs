@@ -17,7 +17,7 @@ namespace BobReactRemaster.Data.Models.GiveAways
         [Key]
         public int ID { get; private set; }
 
-        public string Name { get; private set; }
+        public string? Name { get; private set; }
         public TextChannel TextChannel { get; private set; }
 
         public List<GiveAway_Member> Admins { get; private set; } = new List<GiveAway_Member>();
@@ -26,6 +26,10 @@ namespace BobReactRemaster.Data.Models.GiveAways
 
         private List<User.Member> Participants { get; set; } = new List<User.Member>();
 
+        public GiveAway()
+        {
+
+        }
         public void AddGift(Gift gift)
         {
             if (gift.ID > 0 && Gifts.Any(x => x.ID == gift.ID))

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Stream;
-using BobReactRemaster.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 

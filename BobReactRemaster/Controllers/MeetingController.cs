@@ -221,6 +221,10 @@ namespace BobReactRemaster.Controllers
             var Meeting = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).First(x => x.ID == data.MeetingID);
             if(Meeting != null)
             {
+                if (data.Name != null)
+                {
+                    Meeting.Name = data.Name;
+                }
                 foreach(MeetingGeneralMember member in data.Members)
                 {
                     if(member.registered == false && Meeting.Members.Any(x => x.RegisteredMember.UserName.ToLower() == member.userName.ToLower()))

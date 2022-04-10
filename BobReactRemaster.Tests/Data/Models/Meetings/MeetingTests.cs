@@ -22,11 +22,13 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
             list.Add(template1);
 
             int MeetingTemplateID = 5;
+            MeetingTemplate template = new MeetingTemplate();
+            template.ID = MeetingTemplateID;
 
             DateTime MeetingDate = DateTime.Now;
             DateTime ReminderDate = DateTime.Now.Subtract(TimeSpan.FromHours(1));
 
-            Meeting testcase = new Meeting(list, MeetingTemplateID, MeetingDate, MeetingDate, ReminderDate);
+            Meeting testcase = new Meeting(list, template, MeetingDate, MeetingDate, ReminderDate);
 
 
 
@@ -43,11 +45,12 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
             List<MeetingTemplate_Member> list = new List<MeetingTemplate_Member>();
 
             int MeetingTemplateID = 5;
-
+            MeetingTemplate template = new MeetingTemplate();
+            template.ID = MeetingTemplateID;
             DateTime MeetingDate = DateTime.Now;
             DateTime ReminderDate = DateTime.Now.Subtract(TimeSpan.FromHours(1));
 
-            Meeting meeting = new Meeting(list, MeetingTemplateID, MeetingDate, MeetingDate, ReminderDate);
+            Meeting meeting = new Meeting(list, template, MeetingDate, MeetingDate, ReminderDate);
             Member member1 = new Member("test1", "password", UserRole.Admin);
             MeetingParticipation testcase = new MeetingParticipation(meeting, member1, true);
 

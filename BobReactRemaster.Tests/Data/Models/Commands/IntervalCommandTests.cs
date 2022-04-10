@@ -10,15 +10,15 @@ namespace BobReactRemaster.Tests.Data.Models.Commands
     class ManualCommandTests
     {
         [Test]
-        public void InitData_ValidInput_CorrectState()
+        public void Constructor_ValidInput_CorrectState()
         {
-            ManualCommand command = new ManualCommand();
+            
             int commandID = 5;
             string name = "test";
             string response = "Hier Test";
             string trigger = "!test";
             int streamid = 10;
-            command.InitData(new ManualCommandSaveData()
+            var data = new ManualCommandSaveData()
             {
                 CommandID = commandID,
                 Name = name,
@@ -26,7 +26,8 @@ namespace BobReactRemaster.Tests.Data.Models.Commands
                 Trigger = trigger,
                 StreamID = streamid
 
-            });
+            };
+            ManualCommand command = new ManualCommand(data);
             Assert.AreEqual(trigger,command.Trigger);
             Assert.AreEqual(name,command.Name);
             Assert.AreEqual(response,command.Response);

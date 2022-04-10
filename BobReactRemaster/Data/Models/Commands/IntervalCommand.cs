@@ -10,7 +10,11 @@ namespace BobReactRemaster.Data.Models.Commands
     {
         public int AutoInverval { get; set; }
 
-        public void InitData(IntervalCommandSaveData data)
+        private IntervalCommand()
+        {
+
+        }
+        public IntervalCommand(IntervalCommandSaveData data)
         {
             LiveStreamId = data.StreamID;
             UpdateData(data);

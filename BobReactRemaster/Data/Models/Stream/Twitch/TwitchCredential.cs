@@ -11,13 +11,13 @@ namespace BobReactRemaster.Data.Models.Stream.Twitch
     public class TwitchCredential
     {
         [Key] public int id { get; set; }
-        public string ClientID { get; set; }
-        public string ChatUserName { get; set; }
-        public string Token { get; set; }
-        public string Code { get; set; }
-        public string Secret { get; set; }
-        public string validationKey { get; set; }
-        public string RefreshToken { get; set; }
+        public string? ClientID { get; set; }
+        public string? ChatUserName { get; set; }
+        public string? Token { get; set; }
+        public string? Code { get; set; }
+        public string? Secret { get; set; }
+        public string? validationKey { get; set; }
+        public string? RefreshToken { get; set; }
         public DateTime ExpireDate { get; set; }
         public TwitchStream Stream { get; set; }
 

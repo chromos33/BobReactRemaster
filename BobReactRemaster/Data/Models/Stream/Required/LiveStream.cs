@@ -17,7 +17,7 @@ namespace BobReactRemaster.Data.Models.Stream
     {
         [Key] public int Id { get; set; }
         public List<StreamSubscription> Subscriptions { get; protected set; }
-        public string URL { get; protected set; }
+        public string? URL { get; protected set; }
         public DateTime Started { get; protected set; }
         public DateTime Stopped { get; protected set; }
         public StreamState State { get; protected set; }

@@ -19,13 +19,14 @@ namespace BobReactRemaster.Data.Models.Meetings
         public int MeetingTemplateID { get; set; }
         public MeetingTemplate MeetingTemplate { get; set; }
 
-        public Meeting()
+        private Meeting()
         {
 
         }
-        public Meeting(List<MeetingTemplate_Member> Members,int MeetingTemplateID, DateTime MeetingDateStart, DateTime MeetingDateEnd, DateTime ReminderDate)
+        public Meeting(List<MeetingTemplate_Member> Members,MeetingTemplate MeetingTemplate, DateTime MeetingDateStart, DateTime MeetingDateEnd, DateTime ReminderDate)
         {
-            this.MeetingTemplateID = MeetingTemplateID;
+            this.MeetingTemplate = MeetingTemplate;
+            this.MeetingTemplateID = MeetingTemplate.ID;
             this.MeetingDateStart = MeetingDateStart;
             this.MeetingDateEnd = MeetingDateEnd;
             this.ReminderDate = ReminderDate;

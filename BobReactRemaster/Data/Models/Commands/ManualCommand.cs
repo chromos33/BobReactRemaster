@@ -10,6 +10,16 @@ namespace BobReactRemaster.Data.Models.Commands
     {
         public string Trigger { get; set; }
 
+        private ManualCommand()
+        {
+
+        }
+
+        public ManualCommand(ManualCommandSaveData data)
+        {
+            LiveStreamId = data.StreamID;
+            UpdateData(data);
+        }
         public void UpdateData(ManualCommandSaveData data)
         {
             Trigger = data.Trigger;
@@ -17,12 +27,6 @@ namespace BobReactRemaster.Data.Models.Commands
             Response = data.Response;
             //Dunno might actually remove this
             Active = true;
-        }
-
-        public void InitData(ManualCommandSaveData data)
-        {
-            LiveStreamId = data.StreamID;
-            UpdateData(data);
         }
     }
 }

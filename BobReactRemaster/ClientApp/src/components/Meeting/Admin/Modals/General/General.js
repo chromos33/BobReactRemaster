@@ -108,7 +108,8 @@ export function General(props){
             },
             body: JSON.stringify({
                 Members: Members,
-                MeetingID: props.MeetingID
+                MeetingID: props.MeetingID,
+                Name: Name
             })
         }).then(response => {
         });

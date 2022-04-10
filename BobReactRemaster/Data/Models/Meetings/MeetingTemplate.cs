@@ -23,6 +23,7 @@ namespace BobReactRemaster.Data.Models.Meetings
 
         public MeetingTemplate()
         {
+            Name = "Neues Meeting";
             this.Dates = new List<MeetingDateTemplate>();
             Members = new List<MeetingTemplate_Member>();
             LiveMeetings = new List<Meeting>();
@@ -73,7 +74,7 @@ namespace BobReactRemaster.Data.Models.Meetings
                 DateTime nextMeetingStart = Today.GetNextDateTimeWithDayAndTime(template.Start, template.DayOfWeek);
                 DateTime nextMeetingEnd = Today.GetNextDateTimeWithDayAndTime(template.End, template.DayOfWeek);
                 DateTime nextReminder = Today.GetNextDateTimeWithDayAndTime(ReminderTemplate.ReminderTime, ReminderTemplate.ReminderDay);
-                Meeting tmp = new Meeting(Members,ID, nextMeetingStart, nextMeetingEnd, nextReminder);
+                Meeting tmp = new Meeting(Members,this, nextMeetingStart, nextMeetingEnd, nextReminder);
                 Meetings.Add(tmp);
             }
             return Meetings;

@@ -4,6 +4,7 @@
     {
         public MeetingGeneralMember[] Members { get; set; }
         public int MeetingID { get; set; }
+        public string? Name { get; set; }
     }
     public class MeetingGeneralMember
     {

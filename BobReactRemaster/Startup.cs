@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using BobReactRemaster.Helper;
+using Microsoft.Extensions.Logging;
 
 namespace BobReactRemaster
 {
@@ -39,11 +40,19 @@ namespace BobReactRemaster
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            var serverVersion = new MySqlServerVersion(new Version(10, 3, 8));
             services.AddDbContext<ApplicationDbContext>(options =>
-                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"), mysqlOptions =>
-                 {
-                     mysqlOptions.ServerVersion(new Version(10, 3, 8), ServerType.MariaDb);
-                 })
+                {
+                    options
+                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mysqloptions =>
+                        {
+                            mysqloptions.EnableStringComparisonTranslations();
+                        })
+                        .LogTo(Console.WriteLine, LogLevel.Information)
+                        .EnableSensitiveDataLogging()
+                        .EnableDetailedErrors();
+                }  
              );
             //services.AddResponseCompression();
             //services.AddResponseCaching();
@@ -78,10 +87,10 @@ namespace BobReactRemaster
             services.AddSingleton<IUserRegistrationService, UserRegistrationService>();
             services.AddSingleton<IHostedService,DiscordChat>();
             services.AddSingleton<IHostedService,TwitchChat>();
-            services.AddSingleton<IHostedService,StreamCheckerService>();
-            //services.AddSingleton<IRelayService, RelayService>();
-            //services.AddSingleton<IHostedService, CommandCenter>();
-            //services.AddSingleton<SubscriptionService, SubscriptionService>();
+            services.AddSingleton<IHostedService,StreamCheckerService>(); 
+            services.AddSingleton<IRelayService, RelayService>();
+            services.AddSingleton<IHostedService, CommandCenter>();
+            services.AddSingleton<SubscriptionService, SubscriptionService>();
 
 
             //services.AddControllersWithViews();
@@ -102,7 +111,6 @@ namespace BobReactRemaster
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
                 app.UseStaticFiles();
                 app.UseSpaStaticFiles();
             }

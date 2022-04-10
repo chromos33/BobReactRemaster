@@ -13,13 +13,13 @@ namespace BobReactRemaster.Tests.Data.Models.Commands
         [Test]
         public void InitData_ValidInput_CorrectState()
         {
-            IntervalCommand command = new IntervalCommand();
+            
             int commandID = 5;
             string name = "test";
             string response = "Hier Test";
             int streamid = 10;
             int interval = 5;
-            command.InitData(new IntervalCommandSaveData()
+            var data = new IntervalCommandSaveData()
             {
                 CommandID = commandID,
                 Name = name,
@@ -27,7 +27,8 @@ namespace BobReactRemaster.Tests.Data.Models.Commands
                 StreamID = streamid,
                 Interval = interval
 
-            });
+            };
+            IntervalCommand command = new IntervalCommand(data);
             Assert.AreEqual(interval,command.AutoInverval);
             Assert.AreEqual(name,command.Name);
             Assert.AreEqual(response,command.Response);

@@ -92,7 +92,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                 {
                     foreach (Member member in context.Members.Include(x => x.StreamSubscriptions).ThenInclude(x => x.LiveStream).AsEnumerable().Where(x => x.canBeFoundOnDiscord() && x.HasSubscription(stream)))
                     {
-                        _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                        //_client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
                     }
                 }
             }

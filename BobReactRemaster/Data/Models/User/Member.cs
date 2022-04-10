@@ -20,9 +20,9 @@ namespace BobReactRemaster.Data.Models.User
 
         [Key]
         public string UserName { get; private set; }
-        public string DiscordUserName { get; set; }
-        public string DiscordDiscriminator { get; set; }
-        public string PasswordHash { get; private set; }
+        public string? DiscordUserName { get; set; }
+        public string? DiscordDiscriminator { get; set; }
+        public string? PasswordHash { get; private set; }
         public string UserRole { get; set; }
 
         public List<MeetingTemplate_Member> RegisteredToMeetingTemplates { get; set; }

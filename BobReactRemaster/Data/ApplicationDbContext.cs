@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.Data.Models.Discord;
@@ -52,6 +53,7 @@ namespace BobReactRemaster.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            //builder.HasCharSet("utf8mb4");
             builder.Entity<Member>()
                 .HasMany(u => u.StreamSubscriptions)
                 .WithOne(ss => ss.Member)
@@ -60,6 +62,10 @@ namespace BobReactRemaster.Data
                 .HasMany(u => u.GiveAways)
                 .WithOne(ga => ga.Member)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<GiveAway>()
+                .HasOne(x => x.TextChannel)
+                .WithMany(x => x.GiveAways)
+                .OnDelete(DeleteBehavior.ClientCascade);
             //TODO check if ClientCascade only deletes member -> giveaway and not giveaway -> member
             builder.Entity<GiveAway>()
                 .HasMany(ga => ga.Admins)

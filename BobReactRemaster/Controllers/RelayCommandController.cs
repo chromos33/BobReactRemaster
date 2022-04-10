@@ -71,8 +71,7 @@ namespace BobReactRemaster.Controllers
             var command = _context.ManualCommands.FirstOrDefault(x => x.Trigger == data.Trigger);
             if (command == null)
             {
-                command = new ManualCommand();
-                command.InitData(data);
+                command = new ManualCommand(data);
                 _context.ManualCommands.Add(command);
                 _context.SaveChanges();
                 bus.Publish(new RefreshManualRelayCommands());
@@ -118,8 +117,7 @@ namespace BobReactRemaster.Controllers
             var command = _context.IntervalCommands.FirstOrDefault(x => x.Name == data.Name);
             if (command == null)
             {
-                command = new IntervalCommand();
-                command.InitData(data);
+                command = new IntervalCommand(data);
                 _context.IntervalCommands.Add(command);
                 _context.SaveChanges();
                 bus.Publish(new RefreshIntervalRelayCommands());
