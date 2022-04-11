@@ -14,6 +14,7 @@ using Discord;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TokenType = Discord.TokenType;
 
 namespace BobReactRemaster.Services.Chat.Discord
 {
@@ -26,12 +27,12 @@ namespace BobReactRemaster.Services.Chat.Discord
         private readonly IConfiguration _configuration;
         public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, IRelayService relayService, IConfiguration configuration)
         {
-            InitClient();
-            InitEvents();
             MessageBus = messageBus;
             _scopeFactory = scopeFactory;
             _relayService = relayService;
             _configuration = configuration;
+            InitClient();
+            InitEvents();
             SubscribeToBusEvents();
         }
 
@@ -70,8 +71,9 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
         }
 
-        internal SocketGuildUser? GetMemberByName(string userName)
+        internal async Task<SocketGuildUser?> GetMemberByName(string userName)
         {
+
             var users = _client.Guilds.Where(x => x.Name == "Deathmic").FirstOrDefault()?.Users.Where(x => x.Username.ToLower() == userName.ToLower());
             if(users != null && users.Count() == 1)
             {
@@ -105,10 +107,13 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private void InitClient()
         {
+            
             var discordConfig = new DiscordSocketConfig { MessageCacheSize = 100 };
             discordConfig.AlwaysDownloadUsers = true;
             discordConfig.LargeThreshold = 250;
+            discordConfig.GatewayIntents = GatewayIntents.All;
             _client = new DiscordSocketClient(discordConfig);
+            
         }
         private void InitEvents()
         {
@@ -118,11 +123,21 @@ namespace BobReactRemaster.Services.Chat.Discord
             _client.ChannelUpdated += ChannelUpdated;
             _client.GuildAvailable += GuildJoined;
             _client.Connected += Connected;
+            _client.Ready += Ready;
+            
         }
+
+        private Task Ready()
+        {
+            _client.DownloadUsersAsync(_client.Guilds.Where(x => x.Name == "Deathmic"));
+            return Task.CompletedTask;
+        }
+
 
         private Task Connected()
         {
             Console.WriteLine("Discord Connected");
+            
             return Task.CompletedTask;
         }
 
@@ -277,6 +292,7 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private async Task<bool> Connect()
         {
+            
             var Credential = GetCredentials();
             if (Credential != null)
             {
@@ -287,6 +303,10 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
 
             return false;
+            
+            //await dsharpclient.ConnectAsync();
+            return true;
+
         }
 
         private DiscordCredentials GetCredentials()

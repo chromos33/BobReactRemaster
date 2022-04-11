@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BobReactRemaster.Auth;
 using BobReactRemaster.Data;
 using BobReactRemaster.Data.Models.Discord;
@@ -61,7 +62,7 @@ namespace BobReactRemaster.Controllers
         [Route("ImportFile")]
         [Authorize(Policy = Policies.User)]
         [Consumes("text/plain")]
-        public IActionResult ImportFile([FromBody] string data)
+        public async Task<IActionResult> ImportFile([FromBody] string data)
         {
             //DiscordChat
             var Data = JsonConvert.DeserializeObject<LegacyImportData>(data);
@@ -89,7 +90,7 @@ namespace BobReactRemaster.Controllers
 
                     if (Discord != null)
                     {
-                        var DiscordMember = Discord.GetMemberByName(Member.UserName);
+                        var DiscordMember = await Discord.GetMemberByName(Member.UserName);
                         if (DiscordMember != null)
                         {
                             BobReactRemaster.Data.Models.User.Member tmp =
