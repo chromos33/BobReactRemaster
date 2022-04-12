@@ -52,6 +52,27 @@ namespace BobReactRemaster.Controllers
 
         }
         [HttpGet]
+        [Route("DeleteMeeting")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult DeleteMeeting(int ID)
+        {
+            var UserName = User.FindFirst("fullName")?.Value;
+            if (UserName != null)
+            {
+                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).First(q => q.UserName.ToLower() == UserName);
+                MeetingTemplate? tmp = _context.MeetingTemplates.FirstOrDefault(x => x.ID == ID);
+                if (tmp != null)
+                {
+                    _context.MeetingTemplates.Remove(tmp);
+                    _context.SaveChanges();
+                }
+                return Ok();
+            }
+
+            return NotFound();
+
+        }
+        [HttpGet]
         [Route("LoadGeneralMeetingData")]
         [Authorize(Policy = Policies.User)]
         public IActionResult LoadGeneralMeetingData(int ID)

@@ -67,7 +67,7 @@ namespace BobReactRemaster.Services.Chat.Discord
             foreach (Member member in context.Members.AsEnumerable().Where(x => x.canBeFoundOnDiscord() ))
             {
                 string message = obj.Stream.GetSubscriptionCreatedMessage();
-                _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                //_client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
             }
         }
 

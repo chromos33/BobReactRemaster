@@ -32,6 +32,7 @@ export function Meeting(props){
         if(DeleteConfirm)
         {
             //requires parent functionprop that deletes this meeting from datalist
+            props.deleteMeeting(props.data.id);
         }
         else
         {

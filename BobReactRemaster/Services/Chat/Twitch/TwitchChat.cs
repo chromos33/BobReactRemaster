@@ -224,7 +224,8 @@ namespace BobReactRemaster.Services.Chat.Twitch
         {
             try
             {
-                client.SendMessage(client.JoinedChannels.Where(x => x.Channel.ToLower() == channelName.ToLower()).First(), message);
+                var channel = client.JoinedChannels.First(x => x.Channel.ToLower() == channelName.ToLower());
+                client.SendMessage(channel, message);
                 return true;
             }
             catch (ArgumentNullException)

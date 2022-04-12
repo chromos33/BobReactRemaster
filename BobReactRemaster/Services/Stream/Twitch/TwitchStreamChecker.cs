@@ -55,18 +55,24 @@ namespace BobReactRemaster.Services.Stream.Twitch
                         InitTwitchAPI();
                         Inited = true;
                     }
-                    
+
                     var scope = scopefactory.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    var StreamIDs = context.TwitchStreams.AsQueryable().Where(x => x.StreamID != null && x.StreamID != "").Select(x => x.StreamID).ToList();
+                    var StreamIDs = context.TwitchStreams.AsQueryable()
+                        .Where(x => x.StreamID != null && x.StreamID != "").Select(x => x.StreamID).ToList();
                     var requestData = await api.Helix.Streams.GetStreamsAsync(userIds: StreamIDs);
                     HandleStreamStateChange(requestData.Streams);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine("Test");
+                }
+                finally
+                {
+                    inProgress = false;
                 }
 
-                inProgress = false;
+                
             }
         }
 

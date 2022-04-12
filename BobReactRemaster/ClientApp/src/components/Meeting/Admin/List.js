@@ -32,7 +32,7 @@ export function List(){
                 tmp = [];
             }
             
-            tmp.push({id:json.meetingID,name:"Neues Meeting",members:[],editopen: true});
+            tmp.push({id:json.meetingID,name:"Neues Meeting",members:[],editopen: true,isAuthor: true});
             var savearray = tmp.map(x => x);
             setMeetings(savearray);
         });
@@ -50,6 +50,31 @@ export function List(){
             setMeetings(json.meetingTemplates);
         })
     }
+    const deleteMeeting = (id) => {
+        fetch("/Meeting/DeleteMeeting?ID="+id,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie("Token"),
+            }
+        })
+        .then(response => {
+            if(response.ok)
+            {
+                var tmp = Meetings;
+                var tmpIndex = null;
+                tmp.forEach((meetingtemplate,index) => {
+                    if(meetingtemplate.id === id)
+                    {
+                        tmpIndex = index;
+                    }
+                });
+                tmp.splice(tmpIndex,1);
+                var savearray = tmp.map(x => x);
+                setMeetings(savearray);
+            }
+        })
+    }
     if(!Init)
     {
         loadMeetings();
@@ -59,7 +84,8 @@ export function List(){
     if(Meetings != null)
     {
         Body = Meetings.map((meeting,key) => {
-            return <Meeting key={key} data={meeting} />
+            console.log(meeting);
+            return <Meeting deleteMeeting={deleteMeeting} key={key} data={meeting} />
         });
     }
 
