@@ -18,4 +18,12 @@ namespace BobReactRemaster.JSONModels.Meeting
         public DateTime start { get; set; }
         public DateTime end { get; set; }
     }
+
+    public class StaticMeetingData
+    {
+        public int MeetingID { get; set; }
+        public DateTime date { get; set; }
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+    }
 }

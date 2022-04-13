@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Extensions;
+using BobReactRemaster.JSONModels.Meeting;
 
 namespace BobReactRemaster.Data.Models.Meetings
 {
@@ -80,5 +81,22 @@ namespace BobReactRemaster.Data.Models.Meetings
             return Meetings;
         }
 
+        public void AddStaticMeeting(StaticMeetingData data)
+        {
+            DateTime nextMeetingStart = data.date.SetTime(data.start.Hour, data.start.Minute, data.start.Second);
+            DateTime nextMeetingEnd = data.date.SetTime(data.end.Hour, data.end.Minute, data.end.Second);
+            DateTime nextReminder;
+            if (ReminderTemplate != null)
+            {
+                nextReminder = data.start.Subtract(TimeSpan.FromDays(1)).SetTime(ReminderTemplate.ReminderTime.Hour, ReminderTemplate.ReminderTime.Minute, ReminderTemplate.ReminderTime.Second);
+            }
+            else
+            {
+                nextReminder = data.start.Subtract(TimeSpan.FromDays(1)).SetTime(18, 0, 0);
+            }
+            
+            Meeting tmp = new Meeting(Members, this, nextMeetingStart, nextMeetingEnd, nextReminder);
+            LiveMeetings.Add(tmp);
+        }
     }
 }

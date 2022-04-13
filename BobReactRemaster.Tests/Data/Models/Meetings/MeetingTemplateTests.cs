@@ -3,7 +3,10 @@ using BobReactRemaster.Data.Models.User;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using BobReactRemaster.Extensions;
+using BobReactRemaster.JSONModels.Meeting;
 
 namespace BobReactRemaster.Tests.Data.Models.Meetings
 {
@@ -56,6 +59,99 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
                 Assert.AreEqual(new DateTime(2020, 1, 6, 0, 0, 0), meeting.MeetingDateStart);
             }
 
+        }
+        [Test]
+        public void AddStaticMeeting_ValidState_CorrectMeetingDates()
+        {
+            MeetingTemplate testcase = new MeetingTemplate();
+            testcase.ID = 5;
+            
+
+            Member member1 = new Member("test1", "password", UserRole.Admin);
+            MeetingTemplate_Member templatemember1 = new MeetingTemplate_Member(member1, null);
+
+            Member member2 = new Member("test2", "password", UserRole.User);
+            MeetingTemplate_Member templatemember2 = new MeetingTemplate_Member(member2, null);
+
+            testcase.Members.Add(templatemember1);
+            testcase.Members.Add(templatemember2);
+            var date = DateTime.Now.Add(TimeSpan.FromHours(1));
+            var start = DateTime.Now.Add(TimeSpan.FromHours(1));
+            var end = DateTime.Now.Add(TimeSpan.FromHours(1));
+            StaticMeetingData data = new StaticMeetingData()
+            {
+                date = date,
+                MeetingID = 5,
+                start = start,
+                end = end
+            };
+
+            testcase.AddStaticMeeting(data);
+
+            Assert.IsTrue(testcase.LiveMeetings.Any(x => x.MeetingDateStart == date.SetTime(start.Hour,start.Minute,start.Second)));
+            Assert.IsTrue(testcase.LiveMeetings.Any(x => x.MeetingDateEnd == date.SetTime(end.Hour, end.Minute, end.Second)));
+        }
+        [Test]
+        public void AddStaticMeeting_ValidState_CorrectMeetingReminderDate()
+        {
+            MeetingTemplate testcase = new MeetingTemplate();
+            testcase.ID = 5;
+
+
+            Member member1 = new Member("test1", "password", UserRole.Admin);
+            MeetingTemplate_Member templatemember1 = new MeetingTemplate_Member(member1, null);
+
+            Member member2 = new Member("test2", "password", UserRole.User);
+            MeetingTemplate_Member templatemember2 = new MeetingTemplate_Member(member2, null);
+
+            testcase.Members.Add(templatemember1);
+            testcase.Members.Add(templatemember2);
+            var date = DateTime.Now.Add(TimeSpan.FromHours(1));
+            var start = DateTime.Now.Add(TimeSpan.FromHours(1));
+            var end = DateTime.Now.Add(TimeSpan.FromHours(1));
+            StaticMeetingData data = new StaticMeetingData()
+            {
+                date = date,
+                MeetingID = 5,
+                start = start,
+                end = end
+            };
+
+            testcase.AddStaticMeeting(data);
+
+            Assert.IsTrue(testcase.LiveMeetings.Any(x => x.ReminderDate == date.Subtract(TimeSpan.FromDays(1)).SetTime(18, 0, 0)));
+        }
+        [Test]
+        public void AddStaticMeeting_ValidState_AllMembersAddedAsParticipationRecords()
+        {
+            MeetingTemplate template = new MeetingTemplate();
+            template.ID = 5;
+
+
+            Member member1 = new Member("test1", "password", UserRole.Admin);
+            MeetingTemplate_Member templatemember1 = new MeetingTemplate_Member(member1, null);
+
+            Member member2 = new Member("test2", "password", UserRole.User);
+            MeetingTemplate_Member templatemember2 = new MeetingTemplate_Member(member2, null);
+
+            template.Members.Add(templatemember1);
+            template.Members.Add(templatemember2);
+            var date = DateTime.Now.Add(TimeSpan.FromHours(1));
+            var start = DateTime.Now.Add(TimeSpan.FromHours(1));
+            var end = DateTime.Now.Add(TimeSpan.FromHours(1));
+            StaticMeetingData data = new StaticMeetingData()
+            {
+                date = date,
+                MeetingID = 5,
+                start = start,
+                end = end
+            };
+
+            template.AddStaticMeeting(data);
+            Meeting testcase = template.LiveMeetings.First();
+            Assert.IsTrue(template.LiveMeetings.Count() == 1);
+            Assert.IsTrue(testcase.Subscriber.Any(x => x.Subscriber.UserName == member1.UserName));
+            Assert.IsTrue(testcase.Subscriber.Any(x => x.Subscriber.UserName == member2.UserName));
         }
     }
 }

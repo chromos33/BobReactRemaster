@@ -183,29 +183,47 @@ namespace BobReactRemaster.Controllers
         {
             //TODO Update/Remove/Add
             
-            var Meeting = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).Include(x => x.Dates).First(x => x.ID == data.MeetingID);
-            if (Meeting != null)
+            var MeetingTemplate = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).Include(x => x.Dates).First(x => x.ID == data.MeetingID);
+            if (MeetingTemplate != null)
             {
                 //Update
-                var Date = Meeting.Dates.FirstOrDefault(x => data.Templates.Any(y => { return y.id == x.ID; }));
+                var Date = MeetingTemplate.Dates.FirstOrDefault(x => data.Templates.Any(y => { return y.id == x.ID; }));
                 if(Date != null)
                 {
                     Date.Update(data.Templates.First(x => x.id == Date.ID));
                 }
                 //Remove
-                Date = Meeting.Dates.FirstOrDefault(x => data.Templates.All(y => { return y.id != x.ID; }));
+                Date = MeetingTemplate.Dates.FirstOrDefault(x => data.Templates.All(y => { return y.id != x.ID; }));
                 if (Date != null)
                 {
-                    Meeting.Dates.Remove(Date);
+                    MeetingTemplate.Dates.Remove(Date);
                 }
                 //Add
-                foreach(var newDate in data.Templates.Where(x => Meeting.Dates.All(y => { return y.ID != x.id; })))
+                foreach(var newDate in data.Templates.Where(x => MeetingTemplate.Dates.All(y => { return y.ID != x.id; })))
                 {
                     MeetingDateTemplate newTemplate = new MeetingDateTemplate();
                     newTemplate.Update(newDate);
-                    Meeting.Dates.Add(newTemplate);
+                    MeetingTemplate.Dates.Add(newTemplate);
                 }
 
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            return NotFound();
+
+        }
+        [HttpPost]
+        [Route("AddStaticMeeting")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult AddStaticMeeting([FromBody] StaticMeetingData data)
+        {
+            //TODO Update/Remove/Add
+
+            var MeetingTemplate = _context.MeetingTemplates.AsQueryable().Include(x => x.Members).ThenInclude(y => y.RegisteredMember).Include(x => x.Dates).First(x => x.ID == data.MeetingID);
+            if (MeetingTemplate != null)
+            {
+                MeetingTemplate.AddStaticMeeting(data);
                 _context.SaveChanges();
 
                 return Ok();
@@ -315,7 +333,7 @@ namespace BobReactRemaster.Controllers
                         LiveMeetings.Add(new
                         {
                             MeetingParticipations = MeetingParticipations,
-                            MeetingDate = liveMeeting.MeetingDateStart.ToString("MM.dd.yyyy"),
+                            MeetingDate = liveMeeting.MeetingDateStart.ToString("dd.MM.yyyy"),
                             MeetingStart = liveMeeting.MeetingDateStart.ToString("HH:mm"),
                             MeetingEnd = liveMeeting.MeetingDateEnd.ToString("HH:mm")
                         });
