@@ -12,11 +12,13 @@ import General from "./Modals/General/General";
 import Dates from "./Modals/Dates/Dates";
 import Reminder from "./Modals/Reminder/Reminder";
 import VotingView from "./Modals/Voting/VotingView";
+import AddMeetingForm from "./Modals/AddMeetingForm/AddMeetingForm"
 const Tabs = {
     VOTING: "Voting",
     GENERAL: "General",
     DATES: "Dates",
-    REMINDER: "Reminder"
+    REMINDER: "Reminder",
+    ADDMEETINGFORM: "AddMeetingForm"
 }
 export function Meeting(props){
     const [Name,setName] = useState(props.data.name);
@@ -72,6 +74,9 @@ export function Meeting(props){
         case Tabs.REMINDER:
             Body = <Reminder MeetingID={props.data.id} />
             break;
+        case Tabs.ADDMEETINGFORM:
+            Body = <AddMeetingForm MeetingID={props.data.id} />
+            break;
         default:
             Body = null;
             break;
@@ -96,6 +101,11 @@ export function Meeting(props){
     {
         ReminderTabCSSClass = "active";
     }
+    var ADDMEETINGFORMTabCSSClass = "";
+    if(tab === Tabs.ADDMEETINGFORM)
+    {
+        ADDMEETINGFORMTabCSSClass = "active";
+    }
     return (
         <div className="Meeting">
             <div className="MeetingHeader">
@@ -117,6 +127,10 @@ export function Meeting(props){
             {
                 props.data.isAuthor &&
                 <span className={ReminderTabCSSClass} onClick={() => setTab(Tabs.REMINDER)}>Errinnerung <Tooltip text="Hier stellt man den Tag ein an dem die Spieler erinnert werden abzustimmen." /></span>
+            }
+            {
+                props.data.isAuthor &&
+                <span className={ADDMEETINGFORMTabCSSClass} onClick={() => setTab(Tabs.ADDMEETINGFORM)}>Extra Termine <Tooltip text="Hier kann man einzelne nicht Routine Termine eintragen." /></span>
             }
             </div>
             <div className="ModalBody">
