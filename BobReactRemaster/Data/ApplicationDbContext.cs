@@ -101,7 +101,7 @@ namespace BobReactRemaster.Data
                 .HasMany(m => m.Subscriber)
                 .WithOne(s => s.Meeting)
                 .OnDelete(DeleteBehavior.Cascade);
-
+            
 
             builder.Entity<TwitchStream>()
                 .HasMany(s => s.Subscriptions)

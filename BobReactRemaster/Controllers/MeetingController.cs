@@ -52,9 +52,9 @@ namespace BobReactRemaster.Controllers
 
         }
         [HttpGet]
-        [Route("DeleteMeeting")]
+        [Route("DeleteMeetingTemplate")]
         [Authorize(Policy = Policies.User)]
-        public IActionResult DeleteMeeting(int ID)
+        public IActionResult DeleteMeetingTemplate(int ID)
         {
             var UserName = User.FindFirst("fullName")?.Value;
             if (UserName != null)
@@ -67,6 +67,28 @@ namespace BobReactRemaster.Controllers
                     _context.SaveChanges();
                 }
                 return Ok();
+            }
+
+            return NotFound();
+
+        }
+        [HttpGet]
+        [Route("DeleteSingleMeeting")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult DeleteSingleMeeting(int ID)
+        {
+            var UserName = User.FindFirst("fullName")?.Value;
+            if (UserName != null)
+            {
+                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).First(q => q.UserName.ToLower() == UserName);
+                Meeting? tmp = _context.Meetings.Include(x => x.MeetingTemplate).Include(x => x.Subscriber).ThenInclude(x => x.Subscriber).FirstOrDefault(x => x.ID == ID && x.Subscriber.Any(x => x.IsAuthor && x.Subscriber == user));
+                if (tmp != null)
+                {
+                    _context.Meetings.Remove(tmp);
+                    _context.SaveChanges();
+                    return Ok();
+                }
+                
             }
 
             return NotFound();
@@ -123,7 +145,7 @@ namespace BobReactRemaster.Controllers
             List<dynamic> Dates = new List<dynamic>();
             foreach (MeetingDateTemplate date in meetingTemplate.Dates)
             {
-                Dates.Add(new { ID= date.ID, Day = date.DayOfWeek, Start = date.Start.ToString("HH:mm"), End = date.End.ToString("HH:mm") });
+                Dates.Add(new { ID= date.ID, Day = date.DayOfWeek, Start = date.Start.ToString("HH:mm"), End = date.End.ToString("HH:mm")});
             }
             return Ok(Dates);
         }
@@ -332,10 +354,12 @@ namespace BobReactRemaster.Controllers
                         }
                         LiveMeetings.Add(new
                         {
+                            MeetingID = liveMeeting.ID,
                             MeetingParticipations = MeetingParticipations,
                             MeetingDate = liveMeeting.MeetingDateStart.ToString("dd.MM.yyyy"),
                             MeetingStart = liveMeeting.MeetingDateStart.ToString("HH:mm"),
-                            MeetingEnd = liveMeeting.MeetingDateEnd.ToString("HH:mm")
+                            MeetingEnd = liveMeeting.MeetingDateEnd.ToString("HH:mm"),
+                            IsSingle = liveMeeting.IsSingleEvent
                         });
                     }
                     return Ok(LiveMeetings);

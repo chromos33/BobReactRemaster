@@ -51,7 +51,7 @@ export function List(){
         })
     }
     const deleteMeeting = (id) => {
-        fetch("/Meeting/DeleteMeeting?ID="+id,{
+        fetch("/Meeting/DeleteMeetingTemplate?ID="+id,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -84,7 +84,6 @@ export function List(){
     if(Meetings != null)
     {
         Body = Meetings.map((meeting,key) => {
-            console.log(meeting);
             return <Meeting deleteMeeting={deleteMeeting} key={key} data={meeting} />
         });
     }

@@ -96,6 +96,7 @@ namespace BobReactRemaster.Data.Models.Meetings
             }
             
             Meeting tmp = new Meeting(Members, this, nextMeetingStart, nextMeetingEnd, nextReminder);
+            tmp.IsSingleEvent = true;
             LiveMeetings.Add(tmp);
         }
     }

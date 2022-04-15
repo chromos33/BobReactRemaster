@@ -17,7 +17,8 @@ namespace BobReactRemaster.Data.Models.Meetings
 
         public DateTime ReminderDate { get; set; }
         public int MeetingTemplateID { get; set; }
-        public MeetingTemplate MeetingTemplate { get; set; }
+        public MeetingTemplate MeetingTemplate { get; set; }    
+        public bool IsSingleEvent { get; set; }
 
         private Meeting()
         {
@@ -25,6 +26,7 @@ namespace BobReactRemaster.Data.Models.Meetings
         }
         public Meeting(List<MeetingTemplate_Member> Members,MeetingTemplate MeetingTemplate, DateTime MeetingDateStart, DateTime MeetingDateEnd, DateTime ReminderDate)
         {
+            IsSingleEvent = false;
             this.MeetingTemplate = MeetingTemplate;
             this.MeetingTemplateID = MeetingTemplate.ID;
             this.MeetingDateStart = MeetingDateStart;

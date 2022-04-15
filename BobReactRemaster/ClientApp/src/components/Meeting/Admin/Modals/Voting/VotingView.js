@@ -13,7 +13,6 @@ export function VotingView(props){
     const [LoadInProgress, setLoadInProgress] = useState(false);
     if(!Init && !LoadInProgress)
     {
-        console.log(props);
         setLoadInProgress(true);
         fetch("/Meeting/GetMeetings?MeetingID="+props.MeetingID,{
             method: 'GET',
@@ -39,9 +38,15 @@ export function VotingView(props){
     {
         return null;
     }
+    const removeMeeting = (deleteindex) => {
+        var tmp = Meetings;
+        tmp.splice(deleteindex,1);
+        var savearray = tmp.map(x => x);
+        setMeetings(savearray);
+    }
     const renderMeetings = () => {
-        return Meetings.map(x => {
-            return <Meeting Data={x}/>
+        return Meetings.map((x,index) => {
+            return <Meeting delete={removeMeeting} key={index} index={index} isAuthor={props.isAuthor} Data={x}/>
         });
     };
     //TODO List of Members Either already registered or invited ones

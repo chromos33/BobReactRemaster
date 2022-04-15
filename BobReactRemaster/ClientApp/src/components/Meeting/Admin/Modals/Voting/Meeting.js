@@ -5,11 +5,47 @@ import '../../../../../css/Meeting/Voting.css';
 import { Tooltip } from "../../../../Tooltip";
 import { getCookie } from "../../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestion,faTimes,faCheck  } from '@fortawesome/free-solid-svg-icons';
+import { faQuestion,faTimes,faCheck, faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function Meeting(props){
     console.log(props);
     const [LoadInProgress, setLoadInProgress] = useState(false);
     const [Participations,setParticipations] = useState(props.Data.meetingParticipations);
+    const [DeleteConfirm,setDeleteConfirm] = useState(false);
+    var deleteTimeout = null;
+    const Delete = ()  => {
+        clearTimeout(deleteTimeout);
+        if(DeleteConfirm)
+        {
+            //fetch request to delete afterwards instruct parent to remove this meeting
+            fetch("/Meeting/DeleteSingleMeeting?ID="+props.Data.meetingID,{
+                method: "GET",
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getCookie("Token"),
+                }
+            }).then(response => {
+                if(response.ok)
+                {
+                    props.delete(props.index);
+                }
+            });
+        }
+        else
+        {
+            setDeleteConfirm(true);
+            deleteTimeout = setTimeout(() => {
+                setDeleteConfirm(false);
+            }, 5000);
+        }
+        
+    }
+    const DeleteCSSClasses = () => {
+        if(DeleteConfirm)
+        {
+            return "deleteMeeting confirm";
+        }
+        return "deleteMeeting"
+    }
     const getDefaultCSSClass = (participation) => {
         console.log(participation);
         if(participation.state === 0)
@@ -104,7 +140,8 @@ export function Meeting(props){
     return (
         
         <div className="MeetingVote">
-            <span className="MeetingVoteHeader">{props.Data.meetingDate} {props.Data.meetingStart} - {props.Data.meetingEnd}</span>
+            <span className="MeetingVoteHeader">{props.Data.meetingDate} {props.Data.meetingStart} - {props.Data.meetingEnd} {props.isAuthor && props.Data.isSingle && <FontAwesomeIcon className={DeleteCSSClasses()} icon={faTrash} onClick={Delete}/>}</span>
+            
             {renderMyParticipation()}
             <div className="otherVotes">
                 {renderOthersParticipations()}

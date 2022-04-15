@@ -66,7 +66,7 @@ export function Meeting(props){
             Body = <General MeetingID={props.data.id} />
             break;
         case Tabs.VOTING:
-            Body = <VotingView MeetingID={props.data.id} />
+            Body = <VotingView isAuthor={props.data.isAuthor} MeetingID={props.data.id} />
             break;
         case Tabs.DATES:
             Body = <Dates MeetingID={props.data.id} />
