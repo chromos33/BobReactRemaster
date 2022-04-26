@@ -10,7 +10,6 @@ using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.DLive;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using BobReactRemaster.Data.Models.User;
-using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

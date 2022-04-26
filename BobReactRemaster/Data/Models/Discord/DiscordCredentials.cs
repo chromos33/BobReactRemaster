@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.JSONModels.Setup;
-using IdentityServer4.EntityFramework.Entities;
 
 namespace BobReactRemaster.Data.Models.Discord
 {

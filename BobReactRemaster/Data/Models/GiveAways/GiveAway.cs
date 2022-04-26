@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using BobReactRemaster.Exceptions;
-using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore.Internal;
 using Member = BobReactRemaster.Data.Models.User.Member;
 
@@ -66,7 +65,7 @@ namespace BobReactRemaster.Data.Models.GiveAways
 
         public void AddParticipant(User.Member member)
         {
-            if (!member.UserName.IsNullOrEmpty() && Participants.Any(x => x.UserName == member.UserName))
+            if (!String.IsNullOrEmpty(member.UserName) && Participants.Any(x => x.UserName == member.UserName))
             {
                 throw new DuplicateKeyException("There Member is already in the List");
             }
@@ -80,7 +79,7 @@ namespace BobReactRemaster.Data.Models.GiveAways
 
         public void RemoveParticipant(User.Member member)
         {
-            if (member.UserName.IsNullOrEmpty() || Participants.All(x => x.UserName != member.UserName))
+            if (String.IsNullOrEmpty(member.UserName) || Participants.All(x => x.UserName != member.UserName))
             {
                 throw new NotFoundException("This user is not in the List thus cannot be removed");
             }

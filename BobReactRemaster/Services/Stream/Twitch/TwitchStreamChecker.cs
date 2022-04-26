@@ -6,7 +6,6 @@ using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
-using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchLib.Api;

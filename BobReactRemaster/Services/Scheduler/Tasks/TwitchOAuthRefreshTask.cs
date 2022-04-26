@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BobReactRemaster.Data;
 using BobReactRemaster.JSONModels.Twitch;
 using BobReactRemaster.SettingsOptions;
-using IdentityServer4.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

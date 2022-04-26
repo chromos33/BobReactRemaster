@@ -9,7 +9,6 @@ using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.JSONModels.Twitch;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -53,7 +52,7 @@ namespace BobReactRemaster.Controllers
             if (!String.Equals(stream.StreamName, data.StreamName, StringComparison.CurrentCultureIgnoreCase))
             {
                 stream.StreamName = data.StreamName;
-                if (stream.StreamID.IsNullOrEmpty())
+                if (String.IsNullOrEmpty(stream.StreamID))
                 {
 #pragma warning disable CS8601 // Possible null reference assignment.
                     stream.StreamID = await RequestTwitchClientID(stream.StreamName);
@@ -62,7 +61,7 @@ namespace BobReactRemaster.Controllers
                 _context.SaveChanges();
             }
 
-            if (stream.StreamID.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(stream.StreamID))
             {
 #pragma warning disable CS8601 // Possible null reference assignment.
                 stream.StreamID = await RequestTwitchClientID(stream.StreamName);

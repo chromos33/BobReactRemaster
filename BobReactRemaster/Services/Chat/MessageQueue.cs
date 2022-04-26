@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IdentityServer4.Extensions;
+using Duende.IdentityServer.Extensions;
 
 namespace BobReactRemaster.Services.Chat.Twitch
 {

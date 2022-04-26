@@ -8,7 +8,6 @@ using BobReactRemaster.EventBus.Interfaces;
 using BobReactRemaster.EventBus.MessageDataTypes.Relay;
 using BobReactRemaster.Services.Chat.Commands.Base;
 using BobReactRemaster.Services.Chat.Commands.Interfaces;
-using IdentityServer4.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BobReactRemaster.Services.Chat.Command.Commands
@@ -34,7 +33,7 @@ namespace BobReactRemaster.Services.Chat.Command.Commands
         public void TriggerCommand(CommandMessage msg)
         {
             var quotetext = msg.Message.Replace(Trigger,"");
-            if (!quotetext.IsNullOrEmpty())
+            if (!String.IsNullOrEmpty(quotetext))
             {
                 using var scope = _scopeFactory.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

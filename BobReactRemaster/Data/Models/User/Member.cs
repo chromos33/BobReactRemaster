@@ -7,7 +7,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using BobReactRemaster.Data.Models.Meetings;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using TwitchLib.Client.Models;
 using BobReactRemaster.Data.Models.GiveAways;
@@ -51,7 +50,7 @@ namespace BobReactRemaster.Data.Models.User
 
         public bool canBeFoundOnDiscord()
         {
-            return !DiscordDiscriminator.IsNullOrEmpty() && !DiscordUserName.IsNullOrEmpty();
+            return !String.IsNullOrEmpty(DiscordDiscriminator) && !String.IsNullOrEmpty(DiscordUserName);
         }
         public Member(string username,string password, UserRole userRole)
         {
