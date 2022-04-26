@@ -40,12 +40,6 @@ export function Navi(props)
             FirstLevel: true,
             SubLinks: [
                 {
-                    ID : "SubscriptionLink",
-                    Title: "Subscriptions",
-                    Icon: ["fas","user"],
-                    Link: "/StreamSubscriptions"
-                },
-                {
                     ID : "ProfileLink",
                     Title: "Profil",
                     Icon: ["fas","user"],
