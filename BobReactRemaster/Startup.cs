@@ -49,9 +49,9 @@ namespace BobReactRemaster
                         {
                             mysqloptions.EnableStringComparisonTranslations();
                         })
-                        .LogTo(Console.WriteLine, LogLevel.Information)
-                        .EnableSensitiveDataLogging()
-                        .EnableDetailedErrors();
+                        .LogTo(Console.WriteLine, LogLevel.Error);
+                    //.EnableSensitiveDataLogging()
+                    //.EnableDetailedErrors();
                 }  
              );
             //services.AddResponseCompression();
