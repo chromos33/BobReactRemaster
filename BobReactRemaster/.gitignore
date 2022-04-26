@@ -232,4 +232,4 @@ _Pvt_Extensions
 .fake/
 
 #Migrations
-Migrations/*
+#Migrations/*
