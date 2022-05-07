@@ -38,6 +38,7 @@
   <ItemGroup>
     <Folder Include="Data\Models\Stream\Youtube\" />
     <Folder Include="EventBus\MessageDataTypes\Discord\" />
+    <Folder Include="MobileApp\" />
   </ItemGroup>
 
   <ItemGroup>
