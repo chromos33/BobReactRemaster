@@ -1,14 +1,30 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
 //import 'react-native-gesture-handler';
-import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity,StyleSheet, Dimensions } from 'react-native';
-
+import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 export function Login(props) {
+
+
   const [login, setLogin] = useState("");
   const [loginempty, setLoginEmpty] = useState(false);
   const [passwd, setPassword] = useState("");
   const [passwdempty, setPasswordEmpty] = useState(false);
-  const [forgotpwopen, setForgotPWOpen] = useState(false);
+
+  const loadUserData = async (e) => {
+    try {
+      const userdata = await EncryptedStorage.getItem("UserData");
+      if (userdata != undefined) {
+        let data = JSON.parse(userdata);
+        
+        setLogin(data.username);
+        setPassword(data.passwd);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  loadUserData();
   const checkFakeForm = async (e) => {
     if (login === "") {
       setLoginEmpty(true);
@@ -24,13 +40,12 @@ export function Login(props) {
   }
   const handleLogin = async (evt) => {
 
+    console.log("test");
     var loginResult = await fetch("http://192.168.50.243:5000/User/Login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      //Add auth to Headers not Body
-      //https://stackoverflow.com/questions/50275723/react-js-how-to-authenticate-credentials-via-a-fetch-statement
       body: JSON.stringify({
         username: login,
         password: passwd,
@@ -47,6 +62,18 @@ export function Login(props) {
     })
     console.log(loginResult);
     if (loginResult !== false) {
+      try {
+        await EncryptedStorage.setItem("UserData", JSON.stringify({
+          username: login,
+          passwd: passwd,
+          token: loginResult
+        }));
+        props.navigation.navigate('main');
+      } catch (error) {
+        console.log(error);
+        //TODO Error Message
+      }
+
       //setCookie("Token", loginResult, 30);
       //history.push("/Subscriptions");
     }
@@ -55,54 +82,6 @@ export function Login(props) {
       setTimeout(() => { setLoginEmpty(false) }, 200);
       setPasswordEmpty(true);
       setTimeout(() => { setPasswordEmpty(false) }, 200);
-    }
-  }
-  const handleKeyDown = e => {
-    if (e.key === "Enter") {
-      checkFakeForm();
-    }
-  }
-  const loginCSSClasses = () => {
-    if (loginempty) {
-      return "erroranimation";
-    }
-    return "";
-  }
-  const passwdCSSClasses = () => {
-    if (passwdempty) {
-      return "erroranimation";
-    }
-    return "";
-  }
-  const forgotpwbuttondesc = () => {
-    if (forgotpwopen) {
-      return "Passwort anfordern";
-    }
-    return "Passwort vergessen?";
-  }
-  const handleForgotPWBtn = (e) => {
-    if (forgotpwopen) {
-      if (login === "") {
-        setLoginEmpty(true);
-        setTimeout(() => { setLoginEmpty(false) }, 200);
-      }
-      else {
-        fetch("/User/RequestPassword", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: login
-          }),
-        }).then(x => {
-          setForgotPWOpen(false);
-        });
-      }
-
-    }
-    else {
-      setForgotPWOpen(true);
     }
   }
   let ScreenHeight = Dimensions.get("window").height;
@@ -128,15 +107,15 @@ export function Login(props) {
       marginBottom: 20,
       textAlign: 'center'
     },
-    Button:{
+    Button: {
       backgroundColor: "#334E68",
       width: ScreenWidth * 0.8,
       textAlign: 'center',
       paddingBottom: 10,
       paddingTop: 10
     },
-    ButtonText: { 
-      color:'#9FB3C8',
+    ButtonText: {
+      color: '#9FB3C8',
       textAlign: 'center'
     }
   });
@@ -144,27 +123,13 @@ export function Login(props) {
     <KeyboardAvoidingView behavior='padding' style={styles.MainView}>
       <View style={styles.CenteredView}>
         <Image style={styles.Logo} source={require("../Images/BobDeathmicLogo.png")} />
-        <TextInput style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Login" onChangeText={e => {setLogin(e)}} />
-        <TextInput secureTextEntry={true} style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Passwort" onChangeText={e => {setPassword(e)}} />
+        <TextInput style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Login" onChangeText={e => { setLogin(e) }} />
+        <TextInput secureTextEntry={true} style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Passwort" onChangeText={e => { setPassword(e) }} />
         <TouchableOpacity onPress={checkFakeForm} style={styles.Button}>
           <Text style={styles.ButtonText}>Login</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
-  );
-  return (
-    <div className="screen-center">
-      <img src={logo} alt="Logo" />
-      <input className={loginCSSClasses()} required placeholder="Username" name="login" onChange={(e) => setLogin(e.target.value)} type="text" />
-      {!forgotpwopen &&
-        <>
-          <input className={passwdCSSClasses()} required placeholder="Password" onKeyDown={handleKeyDown} onChange={(e) => setPassword(e.target.value)} name="password" type="password" />
-          <span className="loginbutton" onClick={checkFakeForm}>Login</span>
-        </>
-      }
-
-      <span className="forgotpwbutton" onClick={handleForgotPWBtn}>{forgotpwbuttondesc()}</span>
-    </div>
   );
 }
 export default Login;

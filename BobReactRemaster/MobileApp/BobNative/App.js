@@ -29,6 +29,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Main from './Screens/Main';
 const Stack = createNativeStackNavigator();
 
 const App: () => Node = () => {
@@ -42,6 +43,7 @@ const App: () => Node = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="login" component={Login} options={{title: "BobNative"}} />
+          <Stack.Screen name="main" component={Main} options={{title: "BobNative"}} />
         </Stack.Navigator>
     </NavigationContainer>
   );
