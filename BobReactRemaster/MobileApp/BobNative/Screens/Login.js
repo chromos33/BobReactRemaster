@@ -1,15 +1,21 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 //import 'react-native-gesture-handler';
-import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 export function Login(props) {
+  
+  useEffect(() => {
+    Animated.sequence({
 
-
-  const [login, setLogin] = useState("");
+    })
+  })
+  const [user, setLogin] = useState("");
   const [loginempty, setLoginEmpty] = useState(false);
   const [passwd, setPassword] = useState("");
   const [passwdempty, setPasswordEmpty] = useState(false);
+  const [init,setInit] = useState(false);
+  const [position] = useState(new Animated.Value(0));
 
   const loadUserData = async (e) => {
     try {
@@ -21,12 +27,17 @@ export function Login(props) {
         setPassword(data.passwd);
       }
     } catch (error) {
-      console.log(error);
     }
   }
-  loadUserData();
+  if(!init)
+  {
+    setInit(true);
+    loadUserData();
+  }
+  
   const checkFakeForm = async (e) => {
-    if (login === "") {
+    console.log("check");
+    if (user === "") {
       setLoginEmpty(true);
       setTimeout(() => { setLoginEmpty(false) }, 200);
     }
@@ -34,55 +45,66 @@ export function Login(props) {
       setPasswordEmpty(true);
       setTimeout(() => { setPasswordEmpty(false) }, 200);
     }
-    if (login !== "" && passwd !== "") {
+    if (user !== "" && passwd !== "") {
       handleLogin();
     }
   }
-  const handleLogin = async (evt) => {
-
-    console.log("test");
-    var loginResult = await fetch("http://192.168.50.243:5000/User/Login", {
+  
+  const translation = useRef(new Animated.Value(0)).current;
+  const LoginError = () => {
+    Animated.sequence([
+      Animated.timing(translation,{
+        toValue: 10,
+        useNativeDriver: true,
+        duration:20
+      }),
+      Animated.timing(translation,{
+        toValue: 0,
+        useNativeDriver: true,
+        duration:10
+      }),
+      Animated.timing(translation,{
+        toValue: -10,
+        useNativeDriver: true,
+        duration:10
+      }),
+      Animated.timing(translation,{
+        toValue: 0,
+        useNativeDriver: true,
+        duration:10
+      }),
+    ]).start();
+  }
+  const handleLogin = async (e) => {
+    fetch("http://192.168.50.243:5000/User/Login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: login,
+        username: user,
         password: passwd,
       }),
     }).then(response => {
-      return response.json();
+        return response.json();
     }).then(json => {
       if (json.token !== undefined) {
-        return json.token;
+        try {
+          EncryptedStorage.setItem("UserData", JSON.stringify({
+            username: user,
+            passwd: passwd,
+            token: json.token
+          }));
+          props.navigation.navigate('main');
+        } catch (error) {
+        }
+        return true;
       }
+      LoginError();
       return false;
     }).catch((error) => {
-      console.log(error);
+      LoginError();
     })
-    console.log(loginResult);
-    if (loginResult !== false) {
-      try {
-        await EncryptedStorage.setItem("UserData", JSON.stringify({
-          username: login,
-          passwd: passwd,
-          token: loginResult
-        }));
-        props.navigation.navigate('main');
-      } catch (error) {
-        console.log(error);
-        //TODO Error Message
-      }
-
-      //setCookie("Token", loginResult, 30);
-      //history.push("/Subscriptions");
-    }
-    else {
-      setLoginEmpty(true);
-      setTimeout(() => { setLoginEmpty(false) }, 200);
-      setPasswordEmpty(true);
-      setTimeout(() => { setPasswordEmpty(false) }, 200);
-    }
   }
   let ScreenHeight = Dimensions.get("window").height;
   let ScreenWidth = Dimensions.get("window").width;
@@ -105,7 +127,10 @@ export function Login(props) {
       backgroundColor: "#9FB3C8",
       width: ScreenWidth * 0.8,
       marginBottom: 20,
-      textAlign: 'center'
+      textAlign: 'center',
+    },
+    AnimatedView: {
+      transform: [{translateX: translation}]
     },
     Button: {
       backgroundColor: "#334E68",
@@ -123,9 +148,11 @@ export function Login(props) {
     <KeyboardAvoidingView behavior='padding' style={styles.MainView}>
       <View style={styles.CenteredView}>
         <Image style={styles.Logo} source={require("../Images/BobDeathmicLogo.png")} />
-        <TextInput style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Login" onChangeText={e => { setLogin(e) }} />
-        <TextInput secureTextEntry={true} style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Passwort" onChangeText={e => { setPassword(e) }} />
-        <TouchableOpacity onPress={checkFakeForm} style={styles.Button}>
+        <Animated.View style={styles.AnimatedView}>
+        <TextInput style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Login" value={user} onChangeText={e => { setLogin(e) }} />
+        <TextInput secureTextEntry={true} style={styles.TextInput} placeholderTextColor={"#5e6d7d"} placeholder="Passwort" value={passwd} onChangeText={e => { setPassword(e) }} />
+        </Animated.View>
+        <TouchableOpacity onPress={e => {checkFakeForm();}} style={styles.Button}>
           <Text style={styles.ButtonText}>Login</Text>
         </TouchableOpacity>
       </View>
