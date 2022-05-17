@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 //import 'react-native-gesture-handler';
 import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import Navi from '../Components/Navi'
 export function Main(props) {
   let ScreenHeight = Dimensions.get("window").height;
   let ScreenWidth = Dimensions.get("window").width;
@@ -22,11 +23,8 @@ export function Main(props) {
     }
   });
   return (
-      <View style={styles.MainView}>
-        <View style={styles.CenteredView}>
-            <Text style={styles.ButtonText}>Test</Text>
-        </View>
-      </View>
+      <Navi>
+      </Navi>
   );
 }
 export default Main;
