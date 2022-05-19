@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity, S
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { NavigationContainer } from '@react-navigation/native';
+import {MeetingsView} from './Meetings/View';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -15,50 +16,14 @@ const Drawer = createDrawerNavigator();
 export function Navi(props) {
   
   return (
-    <Drawer.Navigator drawerContent={props => CustomDrawerContent(props)}>
+    <Drawer.Navigator>
       <Drawer.Screen
-        name="Feed"
-        component={Feed}
-        options={{ drawerLabel: 'Home' }}
-      />
-      <Drawer.Screen
-        name="Profile"
-        component={Article}
-        options={{ drawerLabel: 'Profile' }}
+        name="Meetings"
+        component={MeetingsView}
+        options={{ drawerLabel: 'Meetings' }}
       />
     </Drawer.Navigator>
   );
 }
-function Feed() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Feed Screen</Text>
-    </View>
-  );
-}
-
-function Article() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Article Screen</Text>
-    </View>
-  );
-}
-function CustomDrawerContent(props) {
-  return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem
-        label="Close drawer"
-        onPress={() => props.navigation.closeDrawer()}
-      />
-      <DrawerItem
-        label="Toggle drawer"
-        onPress={() => props.navigation.toggleDrawer()}
-      />
-    </DrawerContentScrollView>
-  );
-}
-
 export default Navi;
 
