@@ -42,8 +42,8 @@ const App: () => Node = () => {
   return (
     <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="main" component={Main} options={{title: "BobNative"}} />
           <Stack.Screen name="login" component={Login} options={{title: "BobNative"}} />
+          <Stack.Screen name="main" component={Main} options={{title: "BobNative"}} />
         </Stack.Navigator>
     </NavigationContainer>
   );
