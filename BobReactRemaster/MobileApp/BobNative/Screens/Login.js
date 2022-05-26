@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 //import 'react-native-gesture-handler';
 import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import configData from "../settings.json";
 export function Login(props) {
   
   useEffect(() => {
@@ -76,7 +77,7 @@ export function Login(props) {
     ]).start();
   }
   const handleLogin = async (e) => {
-    fetch("http://192.168.50.243:5000/User/Login", {
+    fetch(configData.SERVER_URL+"/User/Login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +111,7 @@ export function Login(props) {
   let ScreenWidth = Dimensions.get("window").width;
   const styles = StyleSheet.create({
     MainView: {
-      backgroundColor: "#243B53",
+      backgroundColor: configData.DARK_COLOR,
       height: ScreenHeight
     },
     CenteredView: {
@@ -122,9 +123,9 @@ export function Login(props) {
       marginBottom: 20
     },
     TextInput: {
-      borderColor: "#486581",
-      color: "#000",
-      backgroundColor: "#9FB3C8",
+      borderColor: configData.LIGHTER_COLOR,
+      color: configData.FONT_COLOR,
+      backgroundColor: configData.LIGHT_COLOR,
       width: ScreenWidth * 0.8,
       marginBottom: 20,
       textAlign: 'center',
@@ -133,14 +134,14 @@ export function Login(props) {
       transform: [{translateX: translation}]
     },
     Button: {
-      backgroundColor: "#334E68",
+      backgroundColor: configData.LIGHT_COLOR,
       width: ScreenWidth * 0.8,
       textAlign: 'center',
       paddingBottom: 10,
       paddingTop: 10
     },
     ButtonText: {
-      color: '#9FB3C8',
+      color: configData.FONT_COLOR,
       textAlign: 'center'
     }
   });

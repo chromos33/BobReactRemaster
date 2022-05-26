@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 //import 'react-native-gesture-handler';
 import { KeyboardAvoidingView, Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { NavigationContainer } from '@react-navigation/native';
 import Navi from '../Components/Navi'
 export function Main(props) {
   let ScreenHeight = Dimensions.get("window").height;
@@ -22,9 +23,12 @@ export function Main(props) {
       textAlign: 'center'
     }
   });
+  
   return (
-      <Navi>
+    <NavigationContainer independent={true} >
+      <Navi {...props}>
       </Navi>
+    </NavigationContainer>
   );
 }
 export default Main;

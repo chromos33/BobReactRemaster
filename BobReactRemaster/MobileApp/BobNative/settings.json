@@ -1,0 +1,7 @@
+{
+    "SERVER_URL" : "http://192.168.50.243:5000",
+    "DARK_COLOR" : "#243B53",
+    "FONT_COLOR" : "#BAC6D1",
+    "LIGHT_COLOR": "#334E68",
+    "LIGHTER_COLOR": "#486581"
+}
