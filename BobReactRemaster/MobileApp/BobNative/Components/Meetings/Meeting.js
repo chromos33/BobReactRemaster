@@ -18,7 +18,6 @@ export function Meeting(props) {
         {
             try
             {
-                console.log(props.data.id);
                 const token = JSON.parse(userdata).token;
                 fetch(configData.SERVER_URL+"/Meeting/GetMeetings?MeetingID="+ props.data.id,{
                     method: 'GET',
@@ -31,8 +30,16 @@ export function Meeting(props) {
                     return response.json();
                 })
                 .then(json => {
+                    console.log("json");
                     console.log(json);
-                    setData(json[0])
+                    if(json[0] != undefined)
+                    {
+                        setData(json);
+                    }
+                    else
+                    {
+                        setData(false);
+                    }
                 }).catch(error => {
                     
                 });
@@ -90,6 +97,11 @@ export function Meeting(props) {
             <ActivityIndicator size="large" />
         </View>
     }
+    if(Data == false)
+    {
+        return null;
+    }
+    
     const handleStateChange = (e) => {
         /*
         let my = Participations.find( e => e.isMe);
@@ -126,41 +138,48 @@ export function Meeting(props) {
         });
         */
     }
-    console.log(Data);
     //TODO loop meetings and render body below
+    //Add Meeting Component and rename THIS to MeetingsList or something
+    const renderMeetings = () => {
+        return Data.map((x,index) => {
+            return (<View key={index}>
+                <View style={styles.MeetingHeader}><Text style={styles.MeetingHeaderText}>{x.meetingDate} {x.meetingStart} - {x.meetingEnd}</Text></View>
+                <View style={styles.MeetingVoteBody}>
+                        <Pressable style={({pressed}) => [{
+                            backgroundColor: pressed ? 'rgba(76,96,116,0.5)' : 'rgba(76,96,116,1)'
+                        },
+                        styles.VoteButton
+                        ]} onPress={e => {handleStateChange(0)}}>
+                            <Text>-</Text>
+                        </Pressable>
+                        <Pressable style={({pressed}) => [{
+                            backgroundColor: pressed ? 'rgba(44,155,22,0.5)' : 'rgba(44,155,22,1)'
+                        },
+                        styles.VoteButton
+                        ]} onPress={e => {handleStateChange(1)}}>
+                            <FontAwesomeIcon icon={faCheck}/>
+                        </Pressable>
+                        <Pressable style={({pressed}) => [{
+                            backgroundColor: pressed ? 'rgba(255,52,52,0.5)' : 'rgba(255,52,52,1)'
+                        },
+                        styles.VoteButton
+                        ]} onPress={e => {handleStateChange(2)}}>
+                            <FontAwesomeIcon icon={faTimes}/>
+                        </Pressable>
+                        <Pressable style={({pressed}) => [{
+                            backgroundColor: pressed ? 'rgba(216,241,22,0.5)' : 'rgba(216,241,22,1)'
+                        },
+                        styles.VoteButton
+                        ]} onPress={e => {handleStateChange(3)}}>
+                            <FontAwesomeIcon icon={faQuestion}/>
+                        </Pressable>
+                </View>
+            </View>);
+        });
+    }
   return (
     <SafeAreaView style={styles.View}>
-       <View style={styles.MeetingHeader}><Text style={styles.MeetingHeaderText}>{Data.meetingDate} {Data.meetingStart} - {Data.meetingEnd}</Text></View>
-       <View style={styles.MeetingVoteBody}>
-            <Pressable style={({pressed}) => [{
-                backgroundColor: pressed ? 'rgba(76,96,116,0.5)' : 'rgba(76,96,116,1)'
-            },
-            styles.VoteButton
-            ]} onPress={e => {handleStateChange(0)}}>
-                <Text>-</Text>
-            </Pressable>
-            <Pressable style={({pressed}) => [{
-                backgroundColor: pressed ? 'rgba(44,155,22,0.5)' : 'rgba(44,155,22,1)'
-            },
-            styles.VoteButton
-            ]} onPress={e => {handleStateChange(1)}}>
-                <FontAwesomeIcon icon={faCheck}/>
-            </Pressable>
-            <Pressable style={({pressed}) => [{
-                backgroundColor: pressed ? 'rgba(255,52,52,0.5)' : 'rgba(255,52,52,1)'
-            },
-            styles.VoteButton
-            ]} onPress={e => {handleStateChange(2)}}>
-                <FontAwesomeIcon icon={faTimes}/>
-            </Pressable>
-            <Pressable style={({pressed}) => [{
-                backgroundColor: pressed ? 'rgba(216,241,22,0.5)' : 'rgba(216,241,22,1)'
-            },
-            styles.VoteButton
-            ]} onPress={e => {handleStateChange(3)}}>
-                <FontAwesomeIcon icon={faQuestion}/>
-            </Pressable>
-       </View>
+       {renderMeetings()}
     </SafeAreaView>
   );
 }

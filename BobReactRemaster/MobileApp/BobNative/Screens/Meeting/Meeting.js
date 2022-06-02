@@ -46,7 +46,6 @@ export function Meeting(props){
         return "deleteMeeting"
     }
     const getDefaultCSSClass = (participation) => {
-        console.log(participation);
         if(participation.state === 0)
         {
             return "active";

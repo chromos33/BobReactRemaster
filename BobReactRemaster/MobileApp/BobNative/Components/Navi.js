@@ -16,8 +16,6 @@ import {
 const Drawer = createDrawerNavigator();
 
 const CustomDrawer = props => {
-  console.log("props");
-  console.log(props);
   return (<DrawerContentScrollView style={{
     backgroundColor:configData.DARK_COLOR,
     }} {...props}>
@@ -27,8 +25,6 @@ const CustomDrawer = props => {
 };
 
 export function Navi(props) {
-  console.log("main");
-  console.log(props);
   return (
     <Drawer.Navigator screenOptions={{
        headerShown: true,

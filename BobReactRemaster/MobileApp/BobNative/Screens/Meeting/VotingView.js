@@ -25,7 +25,6 @@ export function VotingView(props){
             return response.json();
         })
         .then(json => {
-            console.log(json);
             setMeetings(json);
             setInit(true);
         });
@@ -53,7 +52,7 @@ export function VotingView(props){
     return (
         
         <div className="MeetingContainer">
-            {renderMeetings()} asdf
+            {renderMeetings()}
         </div>
     );
 

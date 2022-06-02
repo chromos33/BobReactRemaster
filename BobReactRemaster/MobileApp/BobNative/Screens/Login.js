@@ -37,7 +37,6 @@ export function Login(props) {
   }
   
   const checkFakeForm = async (e) => {
-    console.log("check");
     if (user === "") {
       setLoginEmpty(true);
       setTimeout(() => { setLoginEmpty(false) }, 200);
