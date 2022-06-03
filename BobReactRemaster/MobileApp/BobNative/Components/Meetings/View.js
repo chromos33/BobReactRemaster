@@ -5,7 +5,7 @@ import { KeyboardAvoidingView,ActivityIndicator,Button,FlatList, Text, View,Safe
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-import {Meeting} from './Meeting';
+import MeetingsList, {Meeting} from './MeetingsList';
 import configData from "../../settings.json";
 export function MeetingsView(props) {
     
@@ -71,7 +71,7 @@ export function MeetingsView(props) {
     }
   return (
     <SafeAreaView style={styles.MainView}>
-        <FlatList onRefresh={() => onRefresh()} refreshing={Fetching} data={Meetings.meetingTemplates} renderItem={({item}) => <Meeting data={item}/>} keyExtractor={item => item.id}/>
+        <FlatList onRefresh={() => onRefresh()} refreshing={Fetching} data={Meetings.meetingTemplates} renderItem={({item}) => <MeetingsList data={item}/>} keyExtractor={item => item.id}/>
     </SafeAreaView>
   );
 }
