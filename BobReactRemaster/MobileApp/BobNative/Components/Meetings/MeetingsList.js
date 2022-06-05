@@ -1,10 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
 //import 'react-native-gesture-handler';
-import { Pressable,ActivityIndicator,Button,FlatList, Text, View,SafeAreaView, TextInput, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Pressable,ActivityIndicator, Text, View,SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { ScrollView } from 'react-native-gesture-handler';
-import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck, faTimes,faQuestion } from '@fortawesome/free-solid-svg-icons'
 import configData from "../../settings.json";
@@ -13,6 +11,7 @@ export function MeetingsList(props) {
 
     const [Data,setData] = useState(null);
     const [Init,setInit] = useState(false);
+    const [token,setToken]  = useState(null);
     const loadUserData = async (e) => {
         const userdata = await EncryptedStorage.getItem("UserData");
         if(userdata != false)
@@ -20,6 +19,7 @@ export function MeetingsList(props) {
             try
             {
                 const token = JSON.parse(userdata).token;
+                setToken(token);
                 fetch(configData.SERVER_URL+"/Meeting/GetMeetings?MeetingID="+ props.data.id,{
                     method: 'GET',
                     headers: {
@@ -102,31 +102,39 @@ export function MeetingsList(props) {
     {
         return null;
     }
-    
-    const handleStateChange = (e) => {
-        /*
-        let my = Participations.find( e => e.isMe);
-        let comment = "";
-        if(e === 3)
-        {
-            comment = prompt("Kommentar eingeben", "");
-        }
+    console.log(Data);
+    const handleStateChange = (state,meetingId,participationID,comment = "") => {
         var data = {
-            ParticipationID: parseInt(my.id),
-            State: parseInt(e),
+            ParticipationID: parseInt(participationID),
+            State: parseInt(state),
             Info: comment
         };
         
-        fetch("/Meeting/UpdateParticipation",{
+        fetch(configData.SERVER_URL+"/Meeting/UpdateParticipation",{
             method: "POST",
             headers:{
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie("Token"),
+                'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify(data)
         }).then(response => {
             if(response.ok)
             {
+                let save = Data.map(meeting => {
+                    if(meeting.meetingID == meetingId)
+                    {
+                        meeting.meetingParticipations = meeting.meetingParticipations.map(part => {
+                            if(part.isMe)
+                            {
+                                part.state = state;
+                            }
+                            return part;
+                        });
+                    }
+                    return meeting;
+                })
+                setData(save);
+                /*
                 let save = Participations.map(x => {
                     if(x.isMe)
                     {
@@ -135,15 +143,17 @@ export function MeetingsList(props) {
                     return x;
                 })
                 setParticipations(save);
+                */
             }
+        }).catch(e => {
+            console.log(e);
         });
-        */
     }
     //TODO loop meetings and render body below
     //Add Meeting Component and rename THIS to MeetingsList or something
     const renderMeetings = () => {
         return Data.map((x,index) => {
-            return <Meeting Data={x} key={index} />
+            return <Meeting handleStateChange={handleStateChange} Data={x} key={index} />
             return (<View key={index}>
                 <View style={styles.MeetingHeader}><Text style={styles.MeetingHeaderText}>{x.meetingDate} {x.meetingStart} - {x.meetingEnd}</Text></View>
                 <View style={styles.MeetingVoteBody}>

@@ -8,9 +8,12 @@ import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck, faTimes, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import configData from "../../settings.json";
+import DialogInput from 'react-native-dialog-input';
 export function Meeting(props) {
 
     const [Data, setData] = useState(props.Data);
+    const [isDialogVisible, setisDialogVisible] = useState(false);
+    const [tmpState,settmpState] = useState(0);
 
     let ScreenHeight = Dimensions.get("window").height;
     let ScreenWidth = Dimensions.get("window").width;
@@ -45,7 +48,7 @@ export function Meeting(props) {
             flexWrap: "wrap"
         }
     })
-    if (Data == null) {
+    if (props.Data == null) {
         //other view only while loading cause it would show loading when in fact nothing was loading
         return <View style={styles.View}>
             <ActivityIndicator size="large" />
@@ -54,62 +57,52 @@ export function Meeting(props) {
     if (Data == false) {
         return null;
     }
-
-    const handleStateChange = (e) => {
-        /*
-        let my = Participations.find( e => e.isMe);
-        let comment = "";
-        if(e === 3)
-        {
-            comment = prompt("Kommentar eingeben", "");
-        }
-        var data = {
-            ParticipationID: parseInt(my.id),
-            State: parseInt(e),
-            Info: comment
-        };
-        
-        fetch("/Meeting/UpdateParticipation",{
-            method: "POST",
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie("Token"),
-            },
-            body: JSON.stringify(data)
-        }).then(response => {
-            if(response.ok)
-            {
-                let save = Participations.map(x => {
-                    if(x.isMe)
-                    {
-                        x.state = e;   
-                    }
-                    return x;
-                })
-                setParticipations(save);
-            }
-        });
-        */
-    }
-    //TODO loop meetings and render body below
-    //Add Meeting Component and rename THIS to MeetingsList or something
     var pressed = false;
+    const getMyParticipation = () => {
+        return props.Data.meetingParticipations.filter(x => x.isMe)[0];
+    }
+    const isCurrentState = (e) => {
+        let myparticipation = getMyParticipation();
+        return e == myparticipation.state;
+
+    };
+    const handleCommentState = (state) => {
+        settmpState(state);
+        setisDialogVisible(true);
+    }
+    let state0 = isCurrentState(0);
+    let state1 = isCurrentState(1);
+    let state2 = isCurrentState(2);
+    let state3 = isCurrentState(3);
     return (
         <View>
+            <DialogInput
+                isDialogVisible={isDialogVisible}
+                title={'Hinweis'}
+                message={'Hinweis eingeben'}
+                hintInput={'Hinweis'}
+                submitInput={inputText => {
+                    props.handleStateChange(tmpState,props.Data.meetingID,getMyParticipation().id,inputText);
+                    setisDialogVisible(false);
+                }}
+                closeDialog={() => {
+                    setisDialogVisible(false);
+                }}
+            />
             <View style={styles.MeetingHeader}>
-                <Text style={styles.MeetingHeaderText}>{Data.meetingDate} {Data.meetingStart} - {Data.meetingEnd}</Text>
+                <Text style={styles.MeetingHeaderText}>{props.Data.meetingDate} {props.Data.meetingStart} - {props.Data.meetingEnd}</Text>
             </View>
             <View style={styles.MeetingVoteBody}>
-                <Pressable style={(pressed) => [{ backgroundColor: pressed ? 'rgba(76,96,116,0.5)' : 'rgba(76,96,116,1)' }, styles.VoteButton]} onPress={e => { handleStateChange(0) }}>
+                <Pressable style={[{ backgroundColor: state0 ? 'rgba(76,96,116,1)' : 'rgba(76,96,116,0.1)' }, styles.VoteButton]} onPress={e => { props.handleStateChange(0,props.Data.meetingID,getMyParticipation().id); }}>
                     <Text>-</Text>
                 </Pressable>
-                <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? 'rgba(44,155,22,0.5)' : 'rgba(44,155,22,1)' }, styles.VoteButton]} onPress={e => { handleStateChange(1) }}>
+                <Pressable style={[{ backgroundColor: state1 ? 'rgba(44,155,22,1)' : 'rgba(44,155,22,0.1)' }, styles.VoteButton]} onPress={e => { props.handleStateChange(1,props.Data.meetingID,getMyParticipation().id) }}>
                     <FontAwesomeIcon icon={faCheck} />
                 </Pressable>
-                <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? 'rgba(255,52,52,0.5)' : 'rgba(255,52,52,1)' }, styles.VoteButton]} onPress={e => { handleStateChange(2) }}>
+                <Pressable style={[{ backgroundColor: state2 ? 'rgba(255,52,52,1)' : 'rgba(255,52,52,0.1)' }, styles.VoteButton]} onPress={e => { props.handleStateChange(2,props.Data.meetingID,getMyParticipation().id) }}>
                     <FontAwesomeIcon icon={faTimes} />
                 </Pressable>
-                <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? 'rgba(216,241,22,0.5)' : 'rgba(216,241,22,1)' }, styles.VoteButton]} onPress={e => { handleStateChange(3) }}>
+                <Pressable style={[{ backgroundColor: state3 ? 'rgba(216,241,22,1)' : 'rgba(216,241,22,0.1)' }, styles.VoteButton]} onPress={e => { handleCommentState(3) }}>
                     <FontAwesomeIcon icon={faQuestion} />
                 </Pressable>
             </View>
