@@ -27,3 +27,11 @@ body {
 .mt-20 {
   margin-top: 20px;
 }
+.error
+{
+  color:red;
+}
+.d-block
+{
+  display:block;
+}
