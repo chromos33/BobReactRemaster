@@ -29,6 +29,27 @@ export function PasswordChange()
         }
         else
         {
+            fetch("/User/PasswordChange",{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getCookie("Token"),
+                },
+                body: JSON.stringify({
+                    OldPassword: OldPassword,
+                    NewPassword: NewPassword,
+                    NewPasswordRepeat: NewPasswordRepeat
+                })
+            }).then(response => {
+                if(response.ok)
+                {
+                    console.log("OK");
+                }
+                else
+                {
+                    console.log("Not OK");
+                }
+            })
             //handle server interaction
         }
     }
@@ -48,7 +69,7 @@ export function PasswordChange()
                 </div>
                 <div className='container container_col_two'>
                     <label>Neues Password wiederholen</label>
-                    <input type="text" name="Name" value={NewPasswordRepeat} onChange={e => setNewPasswordRepeat(e.target.value)}/>
+                    <input type="password" name="Name" value={NewPasswordRepeat} onChange={e => setNewPasswordRepeat(e.target.value)}/>
                 </div>
                 {Error !== "" && <span className='error'>{Error}</span>}
                 <span onClick={handleSave} className='button card_button'>Ändern</span>

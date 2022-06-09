@@ -29,6 +29,26 @@ namespace BobReactRemaster.Controllers
             MessageBus = messageBus;
         }
         [HttpPost]
+        [Route("PasswordChange")]
+        [AllowAnonymous]
+        public IActionResult PasswordChange([FromBody] PasswordChangeData changeData)
+        {
+            var UserName = User.FindFirst("fullName")?.Value;
+            if (UserName != null)
+            {
+                Member user = _context.Members.SingleOrDefault(x => x.UserName == UserName);
+                if (user != null && user.checkPassword(changeData.OldPassword) && changeData.NewPasswordsMatch())
+                {
+                    user.SetPassword(changeData.NewPassword);
+                    _context.SaveChanges();
+                    return Ok();
+                }
+            }
+            
+
+            return Unauthorized();
+        }
+        [HttpPost]
         [Route("RequestPassword")]
         [AllowAnonymous]
         public IActionResult RequestPassword([FromBody] PasswordRequestData authData)
