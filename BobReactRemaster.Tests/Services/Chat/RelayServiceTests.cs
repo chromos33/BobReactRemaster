@@ -8,6 +8,7 @@ using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.Services.Chat;
 using BobReactRemaster.Services.Chat.Discord;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Services.Chat
 {
@@ -23,7 +24,7 @@ namespace BobReactRemaster.Tests.Services.Chat
             var StreamName = "TestStream";
             bus.RegisterToEvent<TwitchRelayMessageData>((x) =>
             {
-                Assert.AreEqual(StreamName.ToLower(),x.StreamName.ToLower());
+                ClassicAssert.AreEqual(StreamName.ToLower(),x.StreamName.ToLower());
             });
             
 

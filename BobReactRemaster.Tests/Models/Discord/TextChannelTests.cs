@@ -6,6 +6,7 @@ using BobReactRemaster.Data.Models.Discord;
 using Discord.WebSocket;
 using NSubstitute;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobRemastered.Tests.Models.Discord
 {
@@ -21,8 +22,8 @@ namespace BobRemastered.Tests.Models.Discord
 
            
             textchat.Update(ChannelName,GuildName);
-            Assert.AreEqual(ChannelName,textchat.Name);
-            Assert.AreEqual(GuildName,textchat.Guild);
+            ClassicAssert.AreEqual(ChannelName,textchat.Name);
+            ClassicAssert.AreEqual(GuildName,textchat.Guild);
         }
         [Test]
         public void Constructor_ValidData_CorrectInitialState()
@@ -34,8 +35,8 @@ namespace BobRemastered.Tests.Models.Discord
 
 
             textchat.Update(ChannelName, GuildName);
-            Assert.AreEqual(ChannelName, textchat.Name);
-            Assert.AreEqual(GuildName, textchat.Guild);
+            ClassicAssert.AreEqual(ChannelName, textchat.Name);
+            ClassicAssert.AreEqual(GuildName, textchat.Guild);
         }
     }
 }

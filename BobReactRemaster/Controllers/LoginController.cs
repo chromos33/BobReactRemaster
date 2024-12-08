@@ -95,6 +95,7 @@ namespace BobReactRemaster.Controllers
 
         private string GenerateJWTToken(Member user)
         {
+            var test = _config["Jwt:SecretKey"];
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]

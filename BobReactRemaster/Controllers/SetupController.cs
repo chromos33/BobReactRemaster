@@ -60,7 +60,7 @@ namespace BobReactRemaster.Controllers
         }
         [HttpPost]
         [Route("ImportFile")]
-        [Authorize(Policy = Policies.User)]
+        [Authorize(Policy = Policies.Admin)]
         [Consumes("text/plain")]
         public async Task<IActionResult> ImportFile([FromBody] string data)
         {
@@ -116,21 +116,22 @@ namespace BobReactRemaster.Controllers
                     TwitchStream tmp = new TwitchStream(Stream.StreamName);
                     _context.TwitchStreams.Add(tmp);
                 }
+                _context.SaveChanges();
 
                 foreach (var Quote in Data.Quotes)
                 {
-                    if (_context.Quotes.AsEnumerable().Where(x => x.Text.ToLower() == Quote.Text.ToLower()).Count() > 0)
+                    if (_context.Quotes.AsEnumerable().Count(x => x.Text.Equals(Quote.Text, StringComparison.CurrentCultureIgnoreCase)) > 0)
                     {
                         continue;
                     }
 
                     var stream = _context.TwitchStreams.AsQueryable()
-                        .FirstOrDefault(x => x.StreamName.ToLower() == Quote.StreamName.ToLower());
+                        .FirstOrDefault(x => x.StreamName.Equals(Quote.Streamer, StringComparison.CurrentCultureIgnoreCase));
                     if (stream != null)
                     {
                         Data.Models.Stream.Quote tmp = new Data.Models.Stream.Quote();
                         tmp.Text = Quote.Text;
-                        tmp.Created = Quote.dateTime;
+                        tmp.Created = Quote.Created;
                         tmp.stream = stream;
 
                         _context.Quotes.Add(tmp);
@@ -155,9 +156,11 @@ namespace BobReactRemaster.Controllers
                         _context.StreamSubscriptions.Add(tmp);
                     }
                 }
+
+                _context.SaveChanges();
             }
 
-            _context.SaveChanges();
+            
             return Ok();
         }
     }

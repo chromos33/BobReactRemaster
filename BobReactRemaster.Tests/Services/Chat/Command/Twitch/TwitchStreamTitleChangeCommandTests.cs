@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Services.Chat.Command.Twitch
 {
@@ -26,7 +27,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command.Twitch
             var Stream = new TwitchStream("test");
             Stream.SetTwitchCredential(new TwitchCredential(){  Token = "adsf", ClientID = "test", isMainAccount = false});
             var Command = new TwitchStreamTitleChangeCommand(null,Stream);
-            Assert.IsTrue(Command.IsTriggerable(new TwitchCommandMessage("!title test","","",false)));
+            ClassicAssert.IsTrue(Command.IsTriggerable(new TwitchCommandMessage("!title test","","",false)));
         }
         [Test]
         public void IsTriggerable_invalidMessage_ReturnsTrue()
@@ -34,7 +35,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command.Twitch
             var Stream = new TwitchStream("test");
             Stream.SetTwitchCredential(new TwitchCredential() { Token = "adsf", ClientID = "test", isMainAccount = false });
             var Command = new TwitchStreamTitleChangeCommand(null, Stream);
-            Assert.IsFalse(Command.IsTriggerable(new TwitchCommandMessage("!game test", "", "",false)));
+            ClassicAssert.IsFalse(Command.IsTriggerable(new TwitchCommandMessage("!game test", "", "",false)));
         }
 
         [Test]
@@ -55,7 +56,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command.Twitch
             var Command = new TwitchStreamTitleChangeCommand(bus, Stream, new HttpClient(handlerMock.Object));
             bus.RegisterToEvent<TwitchRelayMessageData>((x) =>
             {
-                Assert.AreEqual(x.Message,Command.UpdatedMessage);
+                ClassicAssert.AreEqual(x.Message,Command.UpdatedMessage);
             });
             Command.TriggerCommand(new TwitchCommandMessage("!title test","","",false));  
         }
@@ -77,7 +78,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command.Twitch
             var Command = new TwitchStreamTitleChangeCommand(bus, Stream, new HttpClient(handlerMock.Object));
             bus.RegisterToEvent<TwitchRelayMessageData>((x) =>
             {
-                Assert.AreEqual(x.Message, Command.HelpMessage);
+                ClassicAssert.AreEqual(x.Message, Command.HelpMessage);
             });
             Command.TriggerCommand(new TwitchCommandMessage("!title", "", "",false));
         }

@@ -3,6 +3,7 @@ using System;
 using BobReactRemaster.Data.Models.Discord;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.Twitch;
+using NUnit.Framework.Legacy;
 
 namespace BobRemastered.Tests.Models.Streams
 {
@@ -17,7 +18,7 @@ namespace BobRemastered.Tests.Models.Streams
         {
             TwitchStream stream = new TwitchStream("SomeStream");
 
-            Assert.AreEqual(stream.StreamName, "SomeStream");
+            ClassicAssert.AreEqual(stream.StreamName, "SomeStream");
 
         }
         [Test]
@@ -25,7 +26,7 @@ namespace BobRemastered.Tests.Models.Streams
         {
             TwitchStream stream = new TwitchStream("SomeStream");
 
-            Assert.NotNull(stream.Subscriptions);
+            ClassicAssert.NotNull(stream.Subscriptions);
 
         }
         [Test]
@@ -35,7 +36,7 @@ namespace BobRemastered.Tests.Models.Streams
             string streamurl = "http://twitch.tv/somestream";
             stream.SetURL(streamurl);
 
-            Assert.AreEqual(stream.URL, streamurl);
+            ClassicAssert.AreEqual(stream.URL, streamurl);
 
         }
         [Test]
@@ -44,7 +45,7 @@ namespace BobRemastered.Tests.Models.Streams
             TwitchStream stream = new TwitchStream("SomeStream");
             stream.StartStream();
 
-            Assert.AreEqual(stream.State, StreamState.Running);
+            ClassicAssert.AreEqual(stream.State, StreamState.Running);
 
         }
         [Test]
@@ -54,18 +55,18 @@ namespace BobRemastered.Tests.Models.Streams
             DateTime time = new DateTime(2020, 8, 17, 15, 30, 15);
             stream.SetStreamStarted(time);
 
-            Assert.IsTrue(stream.Started.Equals(time));
+            ClassicAssert.IsTrue(stream.Started.Equals(time));
 
         }
         [Test]
         public void StopStream_Nothing_ValidStreamState()
         {
             TwitchStream stream = new TwitchStream("SomeStream");
-            Assert.AreEqual(stream.State, StreamState.Stopped);
+            ClassicAssert.AreEqual(stream.State, StreamState.Stopped);
             stream.StartStream();
-            Assert.AreEqual(stream.State, StreamState.Running);
+            ClassicAssert.AreEqual(stream.State, StreamState.Running);
             stream.StopStream();
-            Assert.AreEqual(stream.State, StreamState.Stopped);
+            ClassicAssert.AreEqual(stream.State, StreamState.Stopped);
 
         }
         [Test]
@@ -74,7 +75,7 @@ namespace BobRemastered.Tests.Models.Streams
             TwitchStream stream = new TwitchStream("SomeStream");
             TextChannel test = new TextChannel(56,"Test","");
             stream.SetRelayChannel(test);
-            Assert.AreEqual(stream.RelayChannel, test);
+            ClassicAssert.AreEqual(stream.RelayChannel, test);
 
         }
 
@@ -85,9 +86,9 @@ namespace BobRemastered.Tests.Models.Streams
             var stream = new TwitchStream(streamname);
             stream.Id = 5;
             var result = stream.GetStreamListData();
-            Assert.AreEqual(5,result.ID);
-            Assert.AreEqual(streamname,result.Name);
-            Assert.AreEqual(StreamState.Stopped,result.StreamState);
+            ClassicAssert.AreEqual(5,result.ID);
+            ClassicAssert.AreEqual(streamname,result.Name);
+            ClassicAssert.AreEqual(StreamState.Stopped,result.StreamState);
         }
 
         [Test]
@@ -100,7 +101,7 @@ namespace BobRemastered.Tests.Models.Streams
             stream.UpTimeInterval = 15;
             var Started = stream.Started;
             var Task = stream.GetUpTimeTask();
-            Assert.IsFalse(Task.Executable());
+            ClassicAssert.IsFalse(Task.Executable());
 
         }
 
@@ -109,9 +110,9 @@ namespace BobRemastered.Tests.Models.Streams
         {
             var streamname = "Stream";
             var stream = new TwitchStream(streamname);
-            Assert.IsFalse(stream.HasStaticCommands());
+            ClassicAssert.IsFalse(stream.HasStaticCommands());
             stream.SetTwitchCredential(new TwitchCredential());
-            Assert.IsTrue(stream.HasStaticCommands());
+            ClassicAssert.IsTrue(stream.HasStaticCommands());
         }
 
         [Test]
@@ -120,9 +121,9 @@ namespace BobRemastered.Tests.Models.Streams
             var streamname = "Stream";
             var stream = new TwitchStream(streamname);
             stream.SetRelayChannel(new TextChannel(UInt64.MinValue,"test","test" ));
-            Assert.IsNotNull(stream.RelayChannel);
+            ClassicAssert.IsNotNull(stream.RelayChannel);
             stream.UnsetRelayChannel();
-            Assert.IsNull(stream.RelayChannel);
+            ClassicAssert.IsNull(stream.RelayChannel);
         }
 
         [Test]
@@ -133,7 +134,7 @@ namespace BobRemastered.Tests.Models.Streams
             var titel = "test";
             var result = stream.GetStreamStartedMessage(titel);
             var expected = $"{streamname} hat angefangen {titel} zu streamen.";
-            Assert.AreEqual(expected,expected);
+            ClassicAssert.AreEqual(expected,expected);
 
         }
 

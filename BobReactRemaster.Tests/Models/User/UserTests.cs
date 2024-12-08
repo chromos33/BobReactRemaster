@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.User;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Models.User
 {
@@ -18,10 +19,10 @@ namespace BobReactRemaster.Tests.Models.User
         [Test]
         public void PasswordFunctions_ValidInputs_SucceedAssertions()
         {
-            Assert.IsTrue(user.checkPassword("password"));
+            ClassicAssert.IsTrue(user.checkPassword("password"));
             user.SetPassword("otherpassword");
-            Assert.IsFalse(user.checkPassword("password"));
-            Assert.IsTrue(user.checkPassword("otherpassword"));
+            ClassicAssert.IsFalse(user.checkPassword("password"));
+            ClassicAssert.IsTrue(user.checkPassword("otherpassword"));
         }
 
         [Test]
@@ -29,20 +30,20 @@ namespace BobReactRemaster.Tests.Models.User
         {
             
 
-            Assert.AreEqual(user.UserName,"chromos33");
+            ClassicAssert.AreEqual(user.UserName,"chromos33");
         }
 
         [Test]
         public void Constructor_TwoArguments_ValidObject()
         {
             Member _user = new Member("username","discriminator");
-            Assert.AreEqual("username",_user.UserName);
-            Assert.AreEqual("discriminator",_user.DiscordDiscriminator);
+            ClassicAssert.AreEqual("username",_user.UserName);
+            ClassicAssert.AreEqual("discriminator",_user.DiscordDiscriminator);
         }
         [Test]
         public void Constructor_ValidUserName_EmptySubscriptionList()
         {
-            Assert.AreEqual(0,user.SubscriptionCount());
+            ClassicAssert.AreEqual(0,user.SubscriptionCount());
 
         }
         [Test]
@@ -50,19 +51,19 @@ namespace BobReactRemaster.Tests.Models.User
         {
             LiveStream stream = new TwitchStream("Stream1");
             user.AddStreamSubscription(stream);
-            Assert.AreEqual(1, user.SubscriptionCount());
+            ClassicAssert.AreEqual(1, user.SubscriptionCount());
         }
         [Test]
         public void HasSubscriptions_EmptyList_ReturnsFalse()
         {
-            Assert.IsFalse(user.HasSubscriptions());
+            ClassicAssert.IsFalse(user.HasSubscriptions());
         }
         [Test]
         public void HasSubscriptions_FilledList_ReturnsFalse()
         {
             LiveStream stream = new TwitchStream("Stream1");
             user.AddStreamSubscription(stream);
-            Assert.IsTrue(user.HasSubscriptions());
+            ClassicAssert.IsTrue(user.HasSubscriptions());
         }
         [Test]
         public void HasSubscription_NullGiven_ThrowsException()
@@ -74,7 +75,7 @@ namespace BobReactRemaster.Tests.Models.User
         {
             LiveStream stream = new TwitchStream("Stream1");
 
-            Assert.IsFalse(user.HasSubscription(stream));
+            ClassicAssert.IsFalse(user.HasSubscription(stream));
         }
         [Test]
         public void HasSubscription_LiveStreamInListGiven_ReturnsTrue()
@@ -82,7 +83,7 @@ namespace BobReactRemaster.Tests.Models.User
             LiveStream stream = new TwitchStream("Stream1");
             user.AddStreamSubscription(stream);
 
-            Assert.IsTrue(user.HasSubscription(stream));
+            ClassicAssert.IsTrue(user.HasSubscription(stream));
         }
         [Test]
         public void IsSubscribed_LiveStreamInListGiven_ReturnsTrue()
@@ -90,14 +91,14 @@ namespace BobReactRemaster.Tests.Models.User
             LiveStream stream = new TwitchStream("Stream1");
             user.AddStreamSubscription(stream);
 
-            Assert.IsTrue(user.IsSubscribed(stream));
+            ClassicAssert.IsTrue(user.IsSubscribed(stream));
         }
         [Test]
         public void IsSubscribed_LiveStreamNotInListGiven_ReturnsFalse()
         {
             LiveStream stream = new TwitchStream("Stream1");
 
-            Assert.IsFalse(user.IsSubscribed(stream));
+            ClassicAssert.IsFalse(user.IsSubscribed(stream));
         }
         [Test]
         public void IsSubscribed_NullGiven_ThrowsException()
@@ -123,7 +124,7 @@ namespace BobReactRemaster.Tests.Models.User
             user.AddStreamSubscription(stream);
 
             user.UnSubscribeStream(stream);
-            Assert.IsFalse(user.IsSubscribed(stream));
+            ClassicAssert.IsFalse(user.IsSubscribed(stream));
         }
         [Test]
         public void SubscribeStream_NullGiven_ThrowsException()
@@ -143,11 +144,11 @@ namespace BobReactRemaster.Tests.Models.User
             user.AddStreamSubscription(stream);
 
             user.SubscribeStream(stream);
-            Assert.IsTrue(user.IsSubscribed(stream));
+            ClassicAssert.IsTrue(user.IsSubscribed(stream));
             user.UnSubscribeStream(stream);
-            Assert.IsFalse(user.IsSubscribed(stream));
+            ClassicAssert.IsFalse(user.IsSubscribed(stream));
             user.SubscribeStream(stream);
-            Assert.IsTrue(user.IsSubscribed(stream));
+            ClassicAssert.IsTrue(user.IsSubscribed(stream));
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BobReactRemaster.EventBus;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.EventBus
 {
@@ -12,7 +13,7 @@ namespace BobReactRemaster.Tests.EventBus
         public void EventConstructor_ValidPayload_CorrectState()
         {
             var Event = new Event<string>("test");
-            Assert.AreEqual("test",Event.PayLoad);
+            ClassicAssert.AreEqual("test",Event.PayLoad);
         }
     }
 }

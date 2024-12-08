@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NUnit.Framework.Legacy;
 
 
 namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
@@ -22,7 +23,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             Member member = new Member("test","test",UserRole.User);
             Gift gift = new Gift(member,"https://store.steampowered.com/app/1248130/Farming_Simulator_22/", "Farming Simulator 22");
             testCandidate.AddGift(gift);
-            Assert.IsTrue(testCandidate.Gifts.Any(x => (x.ID == 0 && x.Name == "Farming Simulator 22")));
+            ClassicAssert.IsTrue(testCandidate.Gifts.Any(x => (x.ID == 0 && x.Name == "Farming Simulator 22")));
         }
         [Test]
         public void AddGift_SameGift_DuplicateKeyExceptionThrown()
@@ -55,7 +56,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             gift.Key = "test";
             gift.Name = "Farming Simulator 23";
             testCandidate.UpdateGift(gift);
-            Assert.IsTrue(testCandidate.Gifts.First().Name == "Farming Simulator 23" && testCandidate.Gifts.First().Key == "test");
+            ClassicAssert.IsTrue(testCandidate.Gifts.First().Name == "Farming Simulator 23" && testCandidate.Gifts.First().Key == "test");
 
         }
         //RemoveGift(Gift)
@@ -78,7 +79,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             testCandidate.AddGift(gift);
            
             testCandidate.RemoveGift(gift);
-            Assert.IsTrue(testCandidate.Gifts.Count() == 0);
+            ClassicAssert.IsTrue(testCandidate.Gifts.Count() == 0);
         }
         [Test]
         public void RemoveGift_ExistantGift_CorrectGiftRemoved()
@@ -93,7 +94,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             testCandidate.AddGift(gift2);
 
             testCandidate.RemoveGift(gift);
-            Assert.IsTrue(!testCandidate.Gifts.Any(x => x.ID == 1));
+            ClassicAssert.IsTrue(!testCandidate.Gifts.Any(x => x.ID == 1));
         }
         //AddParticipant()
         //RemoveParticipant()
@@ -104,7 +105,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             GiveAway testCandidate = new GiveAway();
             Member member = new Member("test", "test", UserRole.User);
             testCandidate.AddParticipant(member);
-            Assert.IsTrue(testCandidate.GetParticipants().Any(x => x.UserName == member.UserName));
+            ClassicAssert.IsTrue(testCandidate.GetParticipants().Any(x => x.UserName == member.UserName));
         }
         [Test]
         public void AddParticipant_ExistantParticipant_ThrowsDuplicateKeyException()
@@ -131,7 +132,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             testCandidate.AddParticipant(member);
 
             testCandidate.RemoveParticipant(member);
-            Assert.IsTrue(testCandidate.GetParticipants().Count() == 0);
+            ClassicAssert.IsTrue(testCandidate.GetParticipants().Count() == 0);
         }
         [Test]
         public void RemoveParticipant_ExistantParticipant_CorrectParticipantRemoved()
@@ -143,7 +144,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             testCandidate.AddParticipant(member2);
 
             testCandidate.RemoveParticipant(member);
-            Assert.IsTrue(!testCandidate.GetParticipants().Any(x => x.UserName == member.UserName));
+            ClassicAssert.IsTrue(!testCandidate.GetParticipants().Any(x => x.UserName == member.UserName));
         }
         //NextGift() - Randomly gets the next Gift in line for Raffling considering current "turn"
         [Test]
@@ -168,7 +169,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             
             TestableRandomGenerator rng = new TestableRandomGenerator();
             rng.SetResult(0);
-            Assert.IsTrue(testCandidate.NextGift(rng).ID == 1);
+            ClassicAssert.IsTrue(testCandidate.NextGift(rng).ID == 1);
         }
 
         [Test]
@@ -210,7 +211,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             TestableRandomGenerator rng = new TestableRandomGenerator();
             rng.SetResult(0);
             List<Member> result = testCandidate.Raffle(rng);
-            Assert.IsTrue(result.First().UserName == member2.UserName);
+            ClassicAssert.IsTrue(result.First().UserName == member2.UserName);
         }
         [Test]
         public void Raffle_ParticipantsAllDifferentWonItemCount_ReturnsWinner()
@@ -236,7 +237,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             TestableRandomGenerator rng = new TestableRandomGenerator();
             rng.SetResult(0);
             List<Member> result = testCandidate.Raffle(rng);
-            Assert.IsTrue(result.First().UserName == member.UserName);
+            ClassicAssert.IsTrue(result.First().UserName == member.UserName);
         }
 
         [Test]
@@ -263,7 +264,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             TestableRandomGenerator rng = new TestableRandomGenerator();
             rng.SetResult(1);
             List<Member> result = testCandidate.RaffleFFA(rng);
-            Assert.IsTrue(result.First().UserName == member2.UserName);
+            ClassicAssert.IsTrue(result.First().UserName == member2.UserName);
         }
 
         [Test]
@@ -291,7 +292,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             rng.SetResult(0);
             List<Member> result = testCandidate.RaffleWeightedFFA(rng);
             //Because it being weighted member should have the second slot as well (in the "random table")
-            Assert.IsTrue(result.First().UserName == member.UserName);
+            ClassicAssert.IsTrue(result.First().UserName == member.UserName);
         }
         //***
 
@@ -317,8 +318,8 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             TestableRandomGenerator rng = new TestableRandomGenerator();
             rng.SetResult(0);
             List<Member> result = testCandidate.Raffle(rng);
-            Assert.IsTrue(result.First().UserName == member2.UserName);
-            Assert.IsTrue(result[1].UserName == member3.UserName);
+            ClassicAssert.IsTrue(result.First().UserName == member2.UserName);
+            ClassicAssert.IsTrue(result[1].UserName == member3.UserName);
         }
 
         [Test]
@@ -346,8 +347,8 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             rng.AddResult(1);
             rng.AddResult(1);
             List<Member> result = testCandidate.RaffleFFA(rng);
-            Assert.IsTrue(result.First().UserName == member2.UserName);
-            Assert.IsTrue(result[1].UserName == member3.UserName);
+            ClassicAssert.IsTrue(result.First().UserName == member2.UserName);
+            ClassicAssert.IsTrue(result[1].UserName == member3.UserName);
         }
 
         [Test]
@@ -375,8 +376,8 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             rng.SetResult(2);
             List<Member> result = testCandidate.RaffleWeightedFFA(rng);
             //Because it being weighted member should have the second slot as well (in the "random table")
-            Assert.IsTrue(result.First().UserName == member.UserName);
-            Assert.IsTrue(result[1].UserName == member2.UserName);
+            ClassicAssert.IsTrue(result.First().UserName == member.UserName);
+            ClassicAssert.IsTrue(result[1].UserName == member2.UserName);
         }
 
         //***
@@ -404,7 +405,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             rng.AddResult(1);
             rng.AddResult(0);
             List<Member> result = testCandidate.Raffle(rng);
-            Assert.IsTrue(testCandidate.GetParticipants().Count == 0);
+            ClassicAssert.IsTrue(testCandidate.GetParticipants().Count == 0);
         }
 
         [Test]
@@ -431,7 +432,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             TestableRandomGenerator rng = new TestableRandomGenerator();
             rng.SetResult(0);
             List<Member> result = testCandidate.RaffleFFA(rng);
-            Assert.IsTrue(testCandidate.GetParticipants().Count == 0);
+            ClassicAssert.IsTrue(testCandidate.GetParticipants().Count == 0);
         }
 
         [Test]
@@ -459,7 +460,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             rng.SetResult(2);
             List<Member> result = testCandidate.RaffleWeightedFFA(rng);
             //Because it being weighted member should have the second slot as well (in the "random table")
-            Assert.IsTrue(testCandidate.GetParticipants().Count == 0);
+            ClassicAssert.IsTrue(testCandidate.GetParticipants().Count == 0);
         }
 
         //Increment "Turn" on all Gifts with the same Link (trim and clean for parameters)
@@ -474,7 +475,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             GiveAway testCandidate = new GiveAway();
             Member member = new Member("test", "test", UserRole.User);
             testCandidate.AddAdmin(member);
-            Assert.IsTrue(testCandidate.Admins.Any(x => x.Member.UserName == "test"));
+            ClassicAssert.IsTrue(testCandidate.Admins.Any(x => x.Member.UserName == "test"));
         }
         [Test]
         public void AddAdmin_AlreadyAdmin_DuplicateKeyExceptionThrown()
@@ -500,18 +501,18 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
             testCandidate.AddAdmin(member);
 
             testCandidate.RemoveAdmin(member);
-            Assert.IsTrue(!testCandidate.Admins.Any());
+            ClassicAssert.IsTrue(!testCandidate.Admins.Any());
         }
         [Test]
         public void IsAdmin_CorrectAdminState()
         {
             GiveAway testCandidate = new GiveAway();
             Member member = new Member("test", "test", UserRole.User);
-            Assert.IsFalse(testCandidate.IsAdmin(member));
+            ClassicAssert.IsFalse(testCandidate.IsAdmin(member));
             testCandidate.AddAdmin(member);
-            Assert.IsTrue(testCandidate.IsAdmin(member));
+            ClassicAssert.IsTrue(testCandidate.IsAdmin(member));
             testCandidate.RemoveAdmin(member);
-            Assert.IsFalse(testCandidate.IsAdmin(member));
+            ClassicAssert.IsFalse(testCandidate.IsAdmin(member));
         }
     }
 }

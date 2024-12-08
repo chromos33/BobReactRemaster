@@ -8,6 +8,7 @@ using BobReactRemaster.Services.Scheduler.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Services.Scheduler.Tasks
 {
@@ -17,13 +18,13 @@ namespace BobReactRemaster.Tests.Services.Scheduler.Tasks
         public void Executable_ValidTaskWithDateInPast_TaskIsExecutable()
         {
             TwitchOAuthRefreshTask task = new TwitchOAuthRefreshTask(DateTime.Now.Subtract(TimeSpan.FromSeconds(1)),5);
-            Assert.IsTrue(task.Executable());
+            ClassicAssert.IsTrue(task.Executable());
         }
         [Test]
         public void Executable_ValidTaskWithDateInFuture_TaskIsNotExecutable()
         {
             TwitchOAuthRefreshTask task = new TwitchOAuthRefreshTask(DateTime.Now.Add(TimeSpan.FromMinutes(5)),5);
-            Assert.IsFalse(task.Executable());
+            ClassicAssert.IsFalse(task.Executable());
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using BobReactRemaster.EventBus;
 using BobReactRemaster.EventBus.BaseClasses;
+using NUnit.Framework.Legacy;
 
 namespace BobRemastered.Tests.Models.EventBus
 {
@@ -16,7 +17,7 @@ namespace BobRemastered.Tests.Models.EventBus
             string payload = "Test";
             bus.RegisterToEvent<TestMessageData>((x) =>
             {
-                Assert.AreEqual(x.Payload, payload);
+                ClassicAssert.AreEqual(x.Payload, payload);
             });
             bus.Publish(new TestMessageData(payload));
             

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using BobReactRemaster.Extensions;
 using BobReactRemaster.JSONModels.Meeting;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Data.Models.Meetings
 {
@@ -49,14 +50,14 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
 
             testcase.ReminderTemplate = reminder;
 
-            //Assert.AreEqual(null, command.LiveStream);
+            //ClassicAssert.AreEqual(null, command.LiveStream);
             var result = testcase.CreateMeetingsForNextWeek(new DateTime(2020, 1, 2, 0, 0, 0));
 
-            Assert.AreEqual(2, result.Count);
+            ClassicAssert.AreEqual(2, result.Count);
             foreach(var meeting in result)
             {
-                Assert.AreEqual(2, meeting.Subscriber.Count);
-                Assert.AreEqual(new DateTime(2020, 1, 6, 0, 0, 0), meeting.MeetingDateStart);
+                ClassicAssert.AreEqual(2, meeting.Subscriber.Count);
+                ClassicAssert.AreEqual(new DateTime(2020, 1, 6, 0, 0, 0), meeting.MeetingDateStart);
             }
 
         }
@@ -88,8 +89,8 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
 
             testcase.AddStaticMeeting(data);
 
-            Assert.IsTrue(testcase.LiveMeetings.Any(x => x.MeetingDateStart == date.SetTime(start.Hour,start.Minute,start.Second)));
-            Assert.IsTrue(testcase.LiveMeetings.Any(x => x.MeetingDateEnd == date.SetTime(end.Hour, end.Minute, end.Second)));
+            ClassicAssert.IsTrue(testcase.LiveMeetings.Any(x => x.MeetingDateStart == date.SetTime(start.Hour,start.Minute,start.Second)));
+            ClassicAssert.IsTrue(testcase.LiveMeetings.Any(x => x.MeetingDateEnd == date.SetTime(end.Hour, end.Minute, end.Second)));
         }
         [Test]
         public void AddStaticMeeting_ValidState_CorrectMeetingReminderDate()
@@ -119,7 +120,7 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
 
             testcase.AddStaticMeeting(data);
 
-            Assert.IsTrue(testcase.LiveMeetings.Any(x => x.ReminderDate == date.Subtract(TimeSpan.FromDays(1)).SetTime(18, 0, 0)));
+            ClassicAssert.IsTrue(testcase.LiveMeetings.Any(x => x.ReminderDate == date.Subtract(TimeSpan.FromDays(1)).SetTime(18, 0, 0)));
         }
         [Test]
         public void AddStaticMeeting_ValidState_AllMembersAddedAsParticipationRecords()
@@ -149,9 +150,9 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
 
             template.AddStaticMeeting(data);
             Meeting testcase = template.LiveMeetings.First();
-            Assert.IsTrue(template.LiveMeetings.Count() == 1);
-            Assert.IsTrue(testcase.Subscriber.Any(x => x.Subscriber.UserName == member1.UserName));
-            Assert.IsTrue(testcase.Subscriber.Any(x => x.Subscriber.UserName == member2.UserName));
+            ClassicAssert.IsTrue(template.LiveMeetings.Count() == 1);
+            ClassicAssert.IsTrue(testcase.Subscriber.Any(x => x.Subscriber.UserName == member1.UserName));
+            ClassicAssert.IsTrue(testcase.Subscriber.Any(x => x.Subscriber.UserName == member2.UserName));
         }
     }
 }

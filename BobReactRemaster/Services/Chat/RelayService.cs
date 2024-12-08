@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BobReactRemaster.Data;
-using BobReactRemaster.Data.Models.Discord;
+﻿using System.Collections.Generic;
 using BobReactRemaster.Data.Models.Stream;
-using BobReactRemaster.EventBus.BaseClasses;
 using BobReactRemaster.EventBus.Interfaces;
-using BobReactRemaster.EventBus.MessageDataTypes;
 using BobReactRemaster.Services.Chat.GeneralClasses;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using TwitchLib.Api.Core.Models.Undocumented.Comments;
 
 namespace BobReactRemaster.Services.Chat
 {

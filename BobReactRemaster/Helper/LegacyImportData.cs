@@ -28,8 +28,8 @@ namespace BobReactRemaster.Helper
     }
     public class Quote
     {
-        public string StreamName { get; set; }
-        public DateTime dateTime { get; set; }
+        public string Streamer { get; set; }
+        public DateTime Created { get; set; }
         public string Text { get; set; }
     }
 }

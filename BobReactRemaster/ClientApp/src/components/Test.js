@@ -17,7 +17,6 @@ export function Test() {
             }
             return false;
         }).catch((error) => { })
-        console.log(afterAuthResult);
     }
     Test();
     return (

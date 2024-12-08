@@ -5,6 +5,7 @@ using BobReactRemaster.Controllers;
 using BobReactRemaster.Data.Models.Commands;
 using BobReactRemaster.JSONModels.Stream;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Data.Models.Commands
 {
@@ -29,13 +30,13 @@ namespace BobReactRemaster.Tests.Data.Models.Commands
 
             };
             IntervalCommand command = new IntervalCommand(data);
-            Assert.AreEqual(interval,command.AutoInverval);
-            Assert.AreEqual(name,command.Name);
-            Assert.AreEqual(response,command.Response);
-            Assert.AreEqual(true,command.Active);
-            Assert.AreEqual(streamid,command.LiveStreamId);
-            Assert.AreEqual(0,command.ID);
-            Assert.AreEqual(null,command.LiveStream);
+            ClassicAssert.AreEqual(interval,command.AutoInverval);
+            ClassicAssert.AreEqual(name,command.Name);
+            ClassicAssert.AreEqual(response,command.Response);
+            ClassicAssert.AreEqual(true,command.Active);
+            ClassicAssert.AreEqual(streamid,command.LiveStreamId);
+            ClassicAssert.AreEqual(0,command.ID);
+            ClassicAssert.AreEqual(null,command.LiveStream);
         }
     }
 }

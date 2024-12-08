@@ -5,6 +5,7 @@ using BobReactRemaster.EventBus;
 using BobReactRemaster.Services.Chat.Command.Commands;
 using BobReactRemaster.Services.Chat.Command.Messages;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Services.Chat.Command
 {
@@ -17,7 +18,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command
             var Response = "response";
             var Command = new ManualRelayCommand(Trigger,Response, new MessageBus(),null);
             var CommandMessage = new TwitchCommandMessage(Trigger,"","",false);
-            Assert.IsTrue(Command.IsTriggerable(CommandMessage));
+            ClassicAssert.IsTrue(Command.IsTriggerable(CommandMessage));
         }
         [Test]
         public void IsTriggerable_InValidCommandTrigger_ReturnsResponse()
@@ -26,7 +27,7 @@ namespace BobReactRemaster.Tests.Services.Chat.Command
             var Response = "response";
             var Command = new ManualRelayCommand(Trigger, Response, new MessageBus(),null);
             var CommandMessage = new TwitchCommandMessage("!other","","",false);
-            Assert.IsFalse(Command.IsTriggerable(CommandMessage));
+            ClassicAssert.IsFalse(Command.IsTriggerable(CommandMessage));
         }
     }
 }

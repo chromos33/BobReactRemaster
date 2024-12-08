@@ -5,6 +5,7 @@ using BobReactRemaster.Controllers;
 using BobReactRemaster.Data.Models.Stream;
 using BobReactRemaster.Data.Models.Stream.Twitch;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using TwitchLib.Client.Models;
 
 namespace BobReactRemaster.Tests.Models.Streams
@@ -18,8 +19,8 @@ namespace BobReactRemaster.Tests.Models.Streams
             cred.Token = "Test";
             cred.ChatUserName = "bobreacttest";
             ConnectionCredentials testcred = cred.GetRelayConnectionCredentials();
-            Assert.AreEqual("bobreacttest",testcred.TwitchUsername);
-            Assert.AreEqual("oauth:Test",testcred.TwitchOAuth);
+            ClassicAssert.AreEqual("bobreacttest",testcred.TwitchUsername);
+            ClassicAssert.AreEqual("oauth:Test",testcred.TwitchOAuth);
         }
         [Test]
         public void StreamClone_ValidObjectState_CorrectClonedObject()
@@ -28,7 +29,7 @@ namespace BobReactRemaster.Tests.Models.Streams
             cred.Token = "Test";
             cred.isMainAccount = true;
             var clone = cred.StreamClone();
-            Assert.AreNotSame(clone,cred);
+            ClassicAssert.AreNotSame(clone,cred);
         }
 
         [Test]
@@ -40,9 +41,9 @@ namespace BobReactRemaster.Tests.Models.Streams
             data.Secret = "Secret";
             data.ChatUserName = "ChatUserName";
             Credential.setFromTwitchOauthStoreData(data);
-            Assert.AreEqual(data.ClientID,Credential.ClientID);
-            Assert.AreEqual(data.Secret,Credential.Secret);
-            Assert.AreEqual(data.ChatUserName,Credential.ChatUserName);
+            ClassicAssert.AreEqual(data.ClientID,Credential.ClientID);
+            ClassicAssert.AreEqual(data.Secret,Credential.Secret);
+            ClassicAssert.AreEqual(data.ChatUserName,Credential.ChatUserName);
         }
 
         [Test]
@@ -51,8 +52,8 @@ namespace BobReactRemaster.Tests.Models.Streams
             var Credential = new TwitchCredential();
             string webserverAddress = "test.local";
             string expected = webserverAddress + "/Twitch/TwitchOAuthReturn";
-            Assert.AreEqual(expected,Credential.getTwitchReturnURL(webserverAddress));
-            Assert.AreEqual(expected,Credential.getTwitchReturnURL(webserverAddress+"/"));
+            ClassicAssert.AreEqual(expected,Credential.getTwitchReturnURL(webserverAddress));
+            ClassicAssert.AreEqual(expected,Credential.getTwitchReturnURL(webserverAddress+"/"));
         }
 
         [Test]
@@ -70,7 +71,7 @@ namespace BobReactRemaster.Tests.Models.Streams
             var result = Credential.getTwitchAuthLink(data, webserverAddress,guid);
             var returnurl = Credential.getTwitchReturnURL(webserverAddress);
             var expected = $"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id={data.ClientID}&redirect_uri={returnurl}&force_verify=true&scope=scope1+scope2+scope3&state={guid}";
-            Assert.AreEqual(expected,result);
+            ClassicAssert.AreEqual(expected,result);
         }
 
         [Test]
@@ -82,9 +83,9 @@ namespace BobReactRemaster.Tests.Models.Streams
             Credential.ChatUserName = ChatUsername;
             Credential.Token = Token;
             ConnectionCredentials result = Credential.GetRelayConnectionCredentials();
-            Assert.AreNotEqual(Credential.ChatUserName,result.TwitchUsername);
-            Assert.AreEqual(Credential.ChatUserName.ToLower(),result.TwitchUsername);
-            Assert.AreEqual("oauth:"+Credential.Token,result.TwitchOAuth);
+            ClassicAssert.AreNotEqual(Credential.ChatUserName,result.TwitchUsername);
+            ClassicAssert.AreEqual(Credential.ChatUserName.ToLower(),result.TwitchUsername);
+            ClassicAssert.AreEqual("oauth:"+Credential.Token,result.TwitchOAuth);
         }
 
     }

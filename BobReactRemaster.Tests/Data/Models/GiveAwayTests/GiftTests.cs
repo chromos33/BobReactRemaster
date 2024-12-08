@@ -4,6 +4,7 @@ using System.Text;
 using BobReactRemaster.Data.Models.GiveAways;
 using BobReactRemaster.Data.Models.User;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
 {
@@ -20,7 +21,7 @@ namespace BobReactRemaster.Tests.Data.Models.GiveAwayTests
         {
             Member member = new Member("Test", "test2");
             Gift gift = new Gift(member, link,"Some Name irrelevant for Test");
-            Assert.AreEqual(expectedresult,gift.CleanedLink());
+            ClassicAssert.AreEqual(expectedresult,gift.CleanedLink());
         }
     }
 }

@@ -9,15 +9,18 @@ namespace BobReactRemaster.Data
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ApplicationDBInitializer
     {
-        public static async Task<bool> SeedUsers(IServiceProvider serviceProvider)
+        public static async Task<bool> SeedUsers(IServiceScopeFactory scopeFactory)
         {
-            var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            
-            if (dbContext.Members.Count(x => x.UserName == "Master") == 0)
+            using (var scope = scopeFactory.CreateScope())
             {
-                Member user = new Member("Master","setuppw",UserRole.Admin);
-                await dbContext.Members.AddAsync(user);
-                await dbContext.SaveChangesAsync();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                if (dbContext.Members.Count(x => x.UserName == "Master") == 0)
+                {
+                    Member user = new Member("Master", "setuppw", UserRole.Admin);
+                    await dbContext.Members.AddAsync(user);
+                    await dbContext.SaveChangesAsync();
+                }
             }
             return true;
         }

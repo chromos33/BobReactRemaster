@@ -12,7 +12,6 @@ using BobReactRemaster.Services.Chat.Commands.Base;
 using BobReactRemaster.Services.Chat.Commands.Interfaces;
 using Newtonsoft.Json;
 using TwitchLib.Api;
-using TwitchLib.Api.V5.Models.Channels;
 
 namespace BobReactRemaster.Services.Chat.Command.Commands.Twitch
 {

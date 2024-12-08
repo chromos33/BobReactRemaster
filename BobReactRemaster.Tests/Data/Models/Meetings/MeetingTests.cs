@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NUnit.Framework.Legacy;
 
 namespace BobReactRemaster.Tests.Data.Models.Meetings
 {
@@ -33,10 +34,10 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
 
 
 
-            Assert.AreEqual(MeetingDate, testcase.MeetingDateStart);
-            Assert.AreEqual(ReminderDate, testcase.ReminderDate);
-            Assert.AreEqual(2, testcase.Subscriber.Count);
-            Assert.AreEqual(MeetingTemplateID,testcase.MeetingTemplateID);
+            ClassicAssert.AreEqual(MeetingDate, testcase.MeetingDateStart);
+            ClassicAssert.AreEqual(ReminderDate, testcase.ReminderDate);
+            ClassicAssert.AreEqual(2, testcase.Subscriber.Count);
+            ClassicAssert.AreEqual(MeetingTemplateID,testcase.MeetingTemplateID);
 
         }
         [Test]
@@ -54,8 +55,8 @@ namespace BobReactRemaster.Tests.Data.Models.Meetings
             Member member1 = new Member("test1", "password", UserRole.Admin);
             MeetingParticipation testcase = new MeetingParticipation(meeting, member1, true);
 
-            Assert.AreEqual(member1, testcase.Subscriber);
-            Assert.AreEqual("test1", testcase.Subscriber.UserName);
+            ClassicAssert.AreEqual(member1, testcase.Subscriber);
+            ClassicAssert.AreEqual("test1", testcase.Subscriber.UserName);
         }
     }
 }
