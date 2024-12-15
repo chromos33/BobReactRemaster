@@ -17,19 +17,21 @@ namespace BobReactRemaster.Services
         {
             _scopeFactory = scopeFactory;
         }
-        public string RegisterUser(string nickname,string discriminator)
+        public string RegisterUser(string nickname,ulong discordid,bool subscribe = true)
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             if (context.Members.FirstOrDefault(x => x.UserName.ToLower() == nickname.ToLower()) == null)
             {
-                Member newMember = new Member(nickname,discriminator);
+                Member newMember = new Member(nickname, discordid);
                 string Password = newMember.ResetPassword();
                 //cannot prevent OCP violation because other streams may be added that are in their own table
+
                 foreach (LiveStream substream in context.TwitchStreams)
                 {
-                    newMember.AddStreamSubscription(substream);
+                    newMember.AddStreamSubscription(substream, subscribe);
                 }
+                
 
                 context.Members.Add(newMember);
                 context.SaveChanges();

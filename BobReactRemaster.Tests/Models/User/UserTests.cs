@@ -36,9 +36,9 @@ namespace BobReactRemaster.Tests.Models.User
         [Test]
         public void Constructor_TwoArguments_ValidObject()
         {
-            Member _user = new Member("username","discriminator");
+            Member _user = new Member("username",(ulong) 65);
             ClassicAssert.AreEqual("username",_user.UserName);
-            ClassicAssert.AreEqual("discriminator",_user.DiscordDiscriminator);
+            ClassicAssert.AreEqual((ulong) 65,_user.DiscordID);
         }
         [Test]
         public void Constructor_ValidUserName_EmptySubscriptionList()

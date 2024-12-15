@@ -21,6 +21,7 @@ const Tabs = {
     ADDMEETINGFORM: "AddMeetingForm"
 }
 export function Meeting(props){
+    console.log(props);
     const [Name,setName] = useState(props.data.name);
     const [EditOpen,setEditOpen] = useState(props.data.editopen);
     const [DeleteConfirm,setDeleteConfirm] = useState(false);
@@ -109,7 +110,7 @@ export function Meeting(props){
     return (
         <div className="Meeting">
             <div className="MeetingHeader">
-                <span>{Name}</span>
+                <span onClick={ToggleEdit}>{Name}</span>
                 <FontAwesomeIcon className="editModeToggle" icon={faPencilRuler} onClick={ToggleEdit}/>
                 <FontAwesomeIcon className={DeleteCSSClasses()} icon={faTrash} onClick={Delete}/>
             </div>

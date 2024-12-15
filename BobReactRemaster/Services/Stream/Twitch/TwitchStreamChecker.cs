@@ -64,7 +64,6 @@ namespace BobReactRemaster.Services.Stream.Twitch
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Test");
                 }
                 finally
                 {

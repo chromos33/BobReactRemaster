@@ -84,6 +84,10 @@ export function List(){
     if(Meetings != null)
     {
         Body = Meetings.map((meeting,key) => {
+            if(key === 0)
+            {
+                meeting.editopen = true;
+            }
             return <Meeting deleteMeeting={deleteMeeting} key={key} data={meeting} />
         });
     }

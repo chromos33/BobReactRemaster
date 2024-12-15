@@ -7,7 +7,6 @@ import { getCookie } from "../../../../../helper/cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestion,faTimes,faCheck, faTrash  } from '@fortawesome/free-solid-svg-icons';
 export function Meeting(props){
-    console.log(props);
     const [LoadInProgress, setLoadInProgress] = useState(false);
     const [Participations,setParticipations] = useState(props.Data.meetingParticipations);
     const [DeleteConfirm,setDeleteConfirm] = useState(false);
@@ -130,7 +129,7 @@ export function Meeting(props){
                 case 2:
                     return <span className="bg_red">{x.userName}</span>;
                 case 3:
-                    return <span className="bg_yellow">{x.userName}</span>;
+                    return <span className="bg_yellow">{x.userName}  {x.info && <Tooltip text={x.info} />}</span>;
                 default:
                     return <span className="bg_default">{x.userName}</span>;
             }

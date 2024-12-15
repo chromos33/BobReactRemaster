@@ -8,6 +8,6 @@ namespace BobReactRemaster.Services
 {
     interface IUserRegistrationService
     {
-        public string RegisterUser(string nickname, string discriminator);
+        public string RegisterUser(string nickname, ulong discordid, bool subscribe = true);
     }
 }

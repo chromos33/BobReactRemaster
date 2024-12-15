@@ -35,7 +35,7 @@ namespace BobReactRemaster.Controllers
             var UserName = User.FindFirst("fullName")?.Value;
             if (UserName != null)
             {
-                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).First(q => q.UserName.ToLower() == UserName);
+                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).First(q => q.UserName.ToLower() == UserName);
                 MeetingTemplate tmp = new MeetingTemplate();
                 MeetingTemplate_Member tmpmanymany = new MeetingTemplate_Member(user,tmp);
                 tmpmanymany.IsAuthor = true;
@@ -59,7 +59,7 @@ namespace BobReactRemaster.Controllers
             var UserName = User.FindFirst("fullName")?.Value;
             if (UserName != null)
             {
-                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).First(q => q.UserName.ToLower() == UserName);
+                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).First(q => q.UserName.ToLower() == UserName);
                 MeetingTemplate? tmp = _context.MeetingTemplates.FirstOrDefault(x => x.ID == ID);
                 if (tmp != null)
                 {

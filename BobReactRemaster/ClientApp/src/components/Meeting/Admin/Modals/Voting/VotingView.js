@@ -46,6 +46,7 @@ export function VotingView(props){
     }
     const renderMeetings = () => {
         return Meetings.map((x,index) => {
+
             return <Meeting delete={removeMeeting} key={index} index={index} isAuthor={props.isAuthor} Data={x}/>
         });
     };

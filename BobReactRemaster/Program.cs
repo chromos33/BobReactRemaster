@@ -94,7 +94,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    app.UseHsts();
+    //app.UseHsts();
     var cachePeriod = builder.Configuration["StaticFiles:CachePeriod"];
     var staticFileOptions = new StaticFileOptions()
     {
@@ -105,9 +105,10 @@ else
     };
     app.UseStaticFiles(staticFileOptions);
     app.UseSpaStaticFiles(staticFileOptions);
+
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

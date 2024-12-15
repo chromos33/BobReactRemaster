@@ -96,7 +96,6 @@ namespace BobReactRemaster.Services.Chat.Commands
                 }
                 
             }
-            Console.WriteLine("test");
             
         }
 

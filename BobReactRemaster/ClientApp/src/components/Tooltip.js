@@ -8,7 +8,7 @@ export function Tooltip(props){
 
     return (
         <span className="position-relative tooltip">
-            <span onClick={() => {SetOpen(!Open)}} onMouseEnter={() => SetOpen(true)} onMouseLeave={() => SetOpen(false)}>
+            <span onClick={() => {SetOpen(!Open)}} onMouseEnter={() => SetOpen(true)} onMouseLeave={() => {/*SetOpen(false);*/}}>
                 <FontAwesomeIcon icon={faInfoCircle} />
             </span>
             

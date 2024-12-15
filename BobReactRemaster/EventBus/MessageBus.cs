@@ -36,7 +36,6 @@ namespace BobReactRemaster.EventBus
                     throw;
             }
 
-            Console.WriteLine("test");
         }
     }
 }

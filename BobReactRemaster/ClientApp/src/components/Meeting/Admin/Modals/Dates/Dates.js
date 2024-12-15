@@ -35,10 +35,9 @@ export function Dates(props){
                 start : "1970-01-01T"+x.start+":00",
                 end: "1970-01-01T"+x.end+":00",
                 id: x.id,
-                day: x.day
+                day: parseInt(x.day)
             }
         });
-        console.log(Dates);
         fetch("/Meeting/SaveMeetingDates",{
             method: "POST",
             headers:{

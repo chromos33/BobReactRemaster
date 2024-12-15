@@ -52,10 +52,10 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var member =  context.Members.First(x => x.DiscordUserName == obj.MemberName);
-            if(member != null && obj.Message != "")
+            var member =  context.Members.FirstOrDefault(x => x.DiscordUserName == obj.MemberName);
+            if(member != null && obj.Message != "" && member.DiscordID != null)
             {
-                var chatmember = _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator);
+                var chatmember = _client.GetUser((ulong)member.DiscordID);
                 await chatmember.SendMessageAsync(obj.Message);
             }
         }
@@ -124,12 +124,21 @@ namespace BobReactRemaster.Services.Chat.Discord
             _client.GuildAvailable += GuildJoined;
             _client.Connected += Connected;
             _client.Ready += Ready;
-            
+            _client.Disconnected += Disconnected;
+
+        }
+
+        private async Task Disconnected(Exception exception)
+        {
+            Console.WriteLine("Discord Disconnected");
+            await Task.Delay(5000);
+            await Connect();
         }
 
         private Task Ready()
         {
             _client.DownloadUsersAsync(_client.Guilds.Where(x => x.Name == "Deathmic"));
+            _client.DownloadUsersAsync(_client.Guilds.Where(x => x.Name == "Phantastische Partie"));
             return Task.CompletedTask;
         }
 
@@ -270,11 +279,29 @@ namespace BobReactRemaster.Services.Chat.Discord
                         if (user == null)
                         {
                             var userRegistrationService = scope.ServiceProvider.GetRequiredService<IUserRegistrationService>();
-                            var Password = userRegistrationService.RegisterUser(arg.Author.Username, arg.Author.Discriminator);
+                            var Password = userRegistrationService.RegisterUser(arg.Author.Username, arg.Author.Id);
                             Message += $" Password: {Password}";
                         }
                         arg.Author.SendMessageAsync(Message);
                     }
+                    if (arg.Content.Equals("!wilnsb", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        using var scope = _scopeFactory.CreateScope();
+                        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        var user = context.Members.FirstOrDefault(x =>
+                            String.Equals(x.UserName, arg.Author.Username, StringComparison.CurrentCultureIgnoreCase));
+                        string WebserverAddress = _configuration.GetValue<string>("WebServerWebAddress");
+                        var Message = $"Adresse: {WebserverAddress}";
+
+                        if (user == null)
+                        {
+                            var userRegistrationService = scope.ServiceProvider.GetRequiredService<IUserRegistrationService>();
+                            var Password = userRegistrationService.RegisterUser(arg.Author.Username, arg.Author.Id,false);
+                            Message += $" Password: {Password}";
+                        }
+                        arg.Author.SendMessageAsync(Message);
+                    }
+
                 }
             }
             return Task.CompletedTask;

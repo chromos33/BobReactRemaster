@@ -78,23 +78,32 @@
     padding-top:3px;
     margin-bottom:2px;
 }
-.VotingContainer .tooltip
+.MeetingVote .bg_yellow
+{
+    position:relative;
+}
+.VotingContainer .tooltip,
+.MeetingVote .bg_yellow .tooltip
 {
     right:5px;
     position:absolute;
-    top:3px;
+    top:50%;
+    transform: translateY(-50%);
     width:20px;
     height:20px;
+    z-index: 5;
     padding-left:0;
 }
-.VotingContainer .tooltip svg
+.VotingContainer .tooltip svg,
+.MeetingVote .bg_yellow .tooltip svg
 {
     color:black !important;
 }
-.VotingContainer .TooltipInfo
+.MeetingVote .TooltipInfo
 {
     font-size:16px;
     text-align: left;
+    z-index: 20;
 }
 .MeetingVote svg.deleteMeeting
 {

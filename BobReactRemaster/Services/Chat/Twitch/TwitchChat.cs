@@ -77,17 +77,14 @@ namespace BobReactRemaster.Services.Chat.Twitch
 
         private void OnWhisperReceived(object? sender, OnWhisperReceivedArgs e)
         {
-            Console.WriteLine("test");
         }
 
         private void OnConnected(object? sender, OnConnectedArgs e)
         {
-            Console.WriteLine("test");
         }
 
         private void OnChatCommandReceived(object? sender, OnChatCommandReceivedArgs e)
         {
-            Console.WriteLine("test");
         }
 
 

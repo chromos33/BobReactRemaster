@@ -145,7 +145,6 @@ namespace BobReactRemaster.Controllers
                     }
                     catch (InvalidCastException)
                     {
-                        Console.WriteLine("test");
                     }
                 }
                 if (Credential.isMainAccount)

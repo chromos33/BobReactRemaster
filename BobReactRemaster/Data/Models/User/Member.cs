@@ -21,6 +21,8 @@ namespace BobReactRemaster.Data.Models.User
         public string UserName { get; private set; }
         public string? DiscordUserName { get; set; }
         public string? DiscordDiscriminator { get; set; }
+
+        public ulong? DiscordID { get; set; }
         public string? PasswordHash { get; private set; }
         public string UserRole { get; set; }
 
@@ -67,6 +69,16 @@ namespace BobReactRemaster.Data.Models.User
             UserName = username;
             UserRole = User.UserRole.User.ToString();
             DiscordDiscriminator = discriminator;
+            DiscordUserName = username;
+            StreamSubscriptions = new List<StreamSubscription>();
+            RegisteredToMeetingTemplates = new List<MeetingTemplate_Member>();
+            MeetingSubscriptions = new List<MeetingParticipation>();
+        }
+        public Member(string username, ulong DiscordID)
+        {
+            UserName = username;
+            UserRole = User.UserRole.User.ToString();
+            this.DiscordID = DiscordID;
             DiscordUserName = username;
             StreamSubscriptions = new List<StreamSubscription>();
             RegisteredToMeetingTemplates = new List<MeetingTemplate_Member>();

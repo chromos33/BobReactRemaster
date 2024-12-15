@@ -32,7 +32,7 @@ namespace BobReactRemaster.Controllers
         }
         [HttpGet]
         [Route("GetDiscordTokenData")]
-        [Authorize(Policy = Policies.User)]
+        [Authorize(Policy = Policies.Admin)]
         public IActionResult GetDiscordTokenData()
         {
             var Credentials = _context.DiscordCredentials.FirstOrDefault();
@@ -44,7 +44,7 @@ namespace BobReactRemaster.Controllers
         }
         [HttpPost]
         [Route("SetDiscordTokenData")]
-        [Authorize(Policy = Policies.User)]
+        [Authorize(Policy = Policies.Admin)]
         public IActionResult SetDiscordTokenData([FromBody] DiscordTokenData Data)
         {
 
@@ -93,8 +93,12 @@ namespace BobReactRemaster.Controllers
                         var DiscordMember = await Discord.GetMemberByName(Member.UserName);
                         if (DiscordMember != null)
                         {
+                            if (DiscordMember.Username.Contains("kyu"))
+                            {
+                                Console.WriteLine("test");
+                            }
                             BobReactRemaster.Data.Models.User.Member tmp =
-                                new Data.Models.User.Member(DiscordMember.Username, DiscordMember.Discriminator);
+                                new Data.Models.User.Member(DiscordMember.Username, DiscordMember.Id);
                             tmp.ResetPassword();
                             _context.Members.Add(tmp);
                         }
