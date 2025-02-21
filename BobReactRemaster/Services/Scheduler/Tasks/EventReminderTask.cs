@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BobReactRemaster.Data.Models.Meetings;
+using TwitchLib.Client.Models;
 
 namespace BobReactRemaster.Services.Scheduler.Tasks
 {
@@ -18,10 +20,10 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
         private int TemplateID;
         private bool removalQueued;
         private readonly IMessageBus Bus;
-        public EventReminderTask(int TemplateID, IServiceScopeFactory factory, DateTime ExecutionDate)
+        public EventReminderTask(IServiceScopeFactory factory)
         {
             this.factory = factory;
-            NextExecutionDate = ExecutionDate;
+            NextExecutionDate = DateTime.Now;
             this.TemplateID = TemplateID;
             var scope = factory.CreateScope();
             Bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
@@ -33,10 +35,42 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
 
         public void Execute()
         {
-            NextExecutionDate = NextExecutionDate.AddDays(7);
             List<DiscordWhisperData> Output = new List<DiscordWhisperData>();
             var scope = factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var Meetings = context.Meetings.Include(x => x.Subscriber).ThenInclude(x => x.Subscriber).Include(x => x.MeetingTemplate).AsQueryable().Where(x => !x.ReminderSent && x.ReminderDate < DateTime.Now);
+            foreach (Meeting meeting in Meetings)
+            {
+                foreach (var Subscription in meeting.Subscriber.Where(x =>
+                             x.State == Data.Models.Meetings.MeetingParticipationState.Undecided))
+                {
+                    if (Subscription.Subscriber != null && Subscription.Subscriber.DiscordUserName != null)
+                    {
+                        var WhisperData = Output.FirstOrDefault(x => x.MemberName == Subscription.Subscriber.DiscordUserName);
+                        if (WhisperData == null)
+                        {
+                            WhisperData = new DiscordWhisperData(Subscription.Subscriber.DiscordUserName, Subscription.GetReminderMessage());
+                            Output.Add(WhisperData);
+                        }
+                        else
+                        {
+                            WhisperData.AddToMessage(Subscription.GetReminderMessage());
+                        }
+                    }
+                    
+                }
+
+                meeting.ReminderSent = true;
+            }
+            context.SaveChangesAsync();
+            foreach (DiscordWhisperData EventData in Output)
+            {
+                Bus.Publish(EventData);
+            }
+            NextExecutionDate = DateTime.Now;
+            /*
+
             var meetingTemplate = context.MeetingTemplates.Include(x => x.Dates).Include(x => x.LiveMeetings).ThenInclude(y => y.Subscriber).Include(x => x.ReminderTemplate).Include(x => x.Members).ThenInclude(x => x.RegisteredMember).First(x => x.ID == TemplateID);
             foreach(var LiveMeeting in meetingTemplate.LiveMeetings)
             {
@@ -58,6 +92,8 @@ namespace BobReactRemaster.Services.Scheduler.Tasks
             {
                 Bus.Publish(EventData);
             }
+            QueueRemoval();
+            */
         }
 
         public int? GetID()

@@ -25,6 +25,7 @@ namespace BobReactRemaster.Services.Chat.Discord
         private readonly IServiceScopeFactory _scopeFactory;
         private IRelayService _relayService;
         private readonly IConfiguration _configuration;
+        private bool isConnected = false;
         public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, IRelayService relayService, IConfiguration configuration)
         {
             MessageBus = messageBus;
@@ -55,8 +56,12 @@ namespace BobReactRemaster.Services.Chat.Discord
             var member =  context.Members.FirstOrDefault(x => x.DiscordUserName == obj.MemberName);
             if(member != null && obj.Message != "" && member.DiscordID != null)
             {
-                var chatmember = _client.GetUser((ulong)member.DiscordID);
-                await chatmember.SendMessageAsync(obj.Message);
+                var chatmember = await _client.GetUserAsync((ulong)member.DiscordID);
+                if (chatmember != null)
+                {
+                    await chatmember.SendMessageAsync(obj.Message);
+                }
+                
             }
         }
 
@@ -94,7 +99,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                 {
                     foreach (Member member in context.Members.Include(x => x.StreamSubscriptions).ThenInclude(x => x.LiveStream).AsEnumerable().Where(x => x.canBeFoundOnDiscord() && x.HasSubscription(stream)))
                     {
-                        //_client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                        _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
                     }
                 }
             }
@@ -130,9 +135,19 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private async Task Disconnected(Exception exception)
         {
-            Console.WriteLine("Discord Disconnected");
-            await Task.Delay(5000);
-            await Connect();
+            isConnected = false;
+            Console.WriteLine($"Discord Disconnected at {DateTime.Now}: {exception}");
+            try
+            {
+                await Restart();
+                await Connect();
+                await Task.Delay(60000);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Reconnect attempt failed at {DateTime.Now}: {ex}");
+            }
+            Console.WriteLine($"Discord Reconnected at {DateTime.Now}");
         }
 
         private Task Ready()
@@ -145,8 +160,8 @@ namespace BobReactRemaster.Services.Chat.Discord
 
         private Task Connected()
         {
-            Console.WriteLine("Discord Connected");
-            
+            Console.WriteLine($"Discord Connected at {DateTime.Now}");
+            isConnected = true;
             return Task.CompletedTask;
         }
 
@@ -251,7 +266,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                     try
                     {
                         var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
-                        string MessageWithUserName = $"{arg.Author.Username}:{arg.Content}";
+                        string MessageWithUserName = $"{arg.Author.Username}: {arg.Content}";
                         _relayService.RelayMessage(new RelayMessageFromDiscord(
 
                             GuildName,
@@ -317,6 +332,14 @@ namespace BobReactRemaster.Services.Chat.Discord
             return true;
         }
 
+        private async Task<bool> Restart()
+        {
+            await _client.DisposeAsync();
+            InitClient();
+            InitEvents();
+
+            return true;
+        }
         private async Task<bool> Connect()
         {
             

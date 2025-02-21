@@ -80,7 +80,7 @@ namespace BobReactRemaster.Controllers
             var UserName = User.FindFirst("fullName")?.Value;
             if (UserName != null)
             {
-                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).ThenInclude(y => y.RegisteredMember).First(q => q.UserName.ToLower() == UserName);
+                var user = _context.Members.Include(x => x.RegisteredToMeetingTemplates).First(q => q.UserName.ToLower() == UserName);
                 Meeting? tmp = _context.Meetings.Include(x => x.MeetingTemplate).Include(x => x.Subscriber).ThenInclude(x => x.Subscriber).FirstOrDefault(x => x.ID == ID && x.Subscriber.Any(x => x.IsAuthor && x.Subscriber == user));
                 if (tmp != null)
                 {

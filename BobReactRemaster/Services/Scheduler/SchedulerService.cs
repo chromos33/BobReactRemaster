@@ -48,8 +48,8 @@ namespace BobReactRemaster.Services.Scheduler
             foreach (MeetingTemplate template in context.MeetingTemplates.AsQueryable().Include(x => x.Dates).Include(y => y.LiveMeetings).Where(x => x.Dates.Count > 0))
             {
                 Tasks.Add(new EventCreationTask(template.ID, _scopeFactory, template.NextCreateDateTime()));
-                Tasks.Add(new EventReminderTask(template.ID, _scopeFactory, template.NextReminderDateTime()));
             }
+            Tasks.Add(new EventReminderTask(_scopeFactory));
             #endregion
         }
 

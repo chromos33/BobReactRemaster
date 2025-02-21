@@ -31,21 +31,18 @@ namespace BobReactRemaster.Data.Models.Meetings
         }
         public DateTime NextCreateDateTime()
         {
+            //We just do it NOW as this is only caused by Starting the application and  then done Daily thus not as time sensitive as to only run one a Week
+            //thus we prevent Meetings not being created if you add it and the new CreateDateTime is still a week away
+            return DateTime.Now;
+            /*
             var MostCurrentMeeting = LiveMeetings.Where(x => x.MeetingDateStart == LiveMeetings.Max(x => x.MeetingDateStart)).FirstOrDefault();
             if(MostCurrentMeeting != null)
             {
-                if(MostCurrentMeeting.MeetingDateStart.DayOfWeek == DayOfWeek.Sunday)
-                {
-                    return MostCurrentMeeting.MeetingDateStart.SetTime(23, 59);
-                }
-                else
-                {
-                    return MostCurrentMeeting.MeetingDateStart.GetNextDateTimeFromTodayWithDayAndTime(DayOfWeek.Sunday);
-                }
-                
+                var test = MostCurrentMeeting.MeetingDateStart.GetNextDateTimeFromTodayWithDayAndTime(DayOfWeek.Sunday);
+                return test;
             }
-            //today on 23 o'clock create new Meetings from Template if none exist
             return DateTime.Today.SetTime(23,0);
+            */
         }
 
         internal DateTime NextReminderDateTime()
@@ -53,17 +50,8 @@ namespace BobReactRemaster.Data.Models.Meetings
             var MostCurrentMeeting = LiveMeetings.Where(x => x.MeetingDateStart == LiveMeetings.Max(x => x.MeetingDateStart)).FirstOrDefault();
             if (MostCurrentMeeting != null)
             {
-                if (MostCurrentMeeting.ReminderDate.DayOfWeek == DayOfWeek.Sunday)
-                {
-                    return MostCurrentMeeting.ReminderDate.SetTime(18, 0);
-                }
-                else
-                {
-                    return MostCurrentMeeting.ReminderDate.GetNextDateTimeFromTodayWithDayAndTime(DayOfWeek.Sunday);
-                }
-
+                return MostCurrentMeeting.ReminderDate;
             }
-            //today on 23 o'clock create new Meetings from Template if none exist
             return DateTime.Today.SetTime(18, 0);
         }
         //DateTime Parameter for better Testing
@@ -74,7 +62,12 @@ namespace BobReactRemaster.Data.Models.Meetings
             {
                 DateTime nextMeetingStart = Today.GetNextDateTimeWithDayAndTime(template.Start, template.DayOfWeek);
                 DateTime nextMeetingEnd = Today.GetNextDateTimeWithDayAndTime(template.End, template.DayOfWeek);
-                DateTime nextReminder = Today.GetNextDateTimeWithDayAndTime(ReminderTemplate.ReminderTime, ReminderTemplate.ReminderDay);
+                DateTime? nextReminder = null;
+                if (ReminderTemplate != null)
+                {
+                    nextReminder = Today.GetNextDateTimeWithDayAndTime(ReminderTemplate.ReminderTime, ReminderTemplate.ReminderDay);
+                }
+                
                 Meeting tmp = new Meeting(Members,this, nextMeetingStart, nextMeetingEnd, nextReminder);
                 Meetings.Add(tmp);
             }

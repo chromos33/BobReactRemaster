@@ -52,7 +52,7 @@ namespace BobReactRemaster.Data.Models.User
 
         public bool canBeFoundOnDiscord()
         {
-            return !String.IsNullOrEmpty(DiscordDiscriminator) && !String.IsNullOrEmpty(DiscordUserName);
+            return DiscordID != null && DiscordID != 0 && !String.IsNullOrEmpty(DiscordUserName);
         }
         public Member(string username,string password, UserRole userRole)
         {
@@ -135,7 +135,7 @@ namespace BobReactRemaster.Data.Models.User
             {
                 throw new ArgumentNullException("stream must not be null");
             }
-            return StreamSubscriptions.Where(x => x.LiveStream == stream).Count() > 0;
+            return StreamSubscriptions.Where(x => x.LiveStream == stream && x.isSubscribed).Count() > 0;
         }
 
 

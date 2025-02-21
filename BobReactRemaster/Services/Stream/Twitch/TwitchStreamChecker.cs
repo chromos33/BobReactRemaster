@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BobReactRemaster.Data;
@@ -22,10 +23,10 @@ namespace BobReactRemaster.Services.Stream.Twitch
         {
             this.bus = bus;
             this.scopefactory = scopefactory;
-            InitTwitchAPI();
+            InitTwitchAPIAsync();
         }
 
-        private void InitTwitchAPI()
+        private async Task InitTwitchAPIAsync()
         {
             api = new TwitchAPI();
             var scope = scopefactory.CreateScope();
@@ -36,6 +37,19 @@ namespace BobReactRemaster.Services.Stream.Twitch
                 api.Settings.AccessToken = APICredential.Token;
                 api.Settings.ClientId = APICredential.ClientID;
             }
+
+            var NoStreamIDStreams = context.TwitchStreams
+                .Where(x => x.StreamID == null || x.StreamID != null && x.StreamID != "");
+            foreach (var stream in NoStreamIDStreams)
+            {
+                var getStreamResponse = await api.Helix.Users.GetUsersAsync(logins: new List<string>() {stream.StreamName});
+                if (getStreamResponse.Users.Length > 0)
+                {
+                    stream.StreamID = getStreamResponse.Users[0].Id;
+                }
+            }
+
+            await context.SaveChangesAsync();
 
         }
 
@@ -51,7 +65,7 @@ namespace BobReactRemaster.Services.Stream.Twitch
                 {
                     if (!Inited)
                     {
-                        InitTwitchAPI();
+                        InitTwitchAPIAsync();
                         Inited = true;
                     }
 
