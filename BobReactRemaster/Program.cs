@@ -24,9 +24,21 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Serilog;
+using System.IO;
+Directory.CreateDirectory("Logs");
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.File(
+        path: "Logs/log-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 14,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+    )
+    .CreateLogger();
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Host.UseSerilog();
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var serverVersion = new MySqlServerVersion(new Version(10, 3, 8));
@@ -94,7 +106,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    //app.UseHsts();
+    app.UseHsts();
     var cachePeriod = builder.Configuration["StaticFiles:CachePeriod"];
     var staticFileOptions = new StaticFileOptions()
     {
@@ -108,7 +120,7 @@ else
 
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -142,4 +154,15 @@ catch (Exception ex)
     logger.LogError(ex, "An error occurred while seeding the database.");
 }
 
-app.Run();
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

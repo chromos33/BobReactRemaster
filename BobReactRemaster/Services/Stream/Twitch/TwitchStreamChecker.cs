@@ -58,6 +58,7 @@ namespace BobReactRemaster.Services.Stream.Twitch
         public async Task CheckStreams()
 #pragma warning restore 1998
         {
+            Console.WriteLine($"CheckStreams - {DateTime.Now}");
             if (!inProgress)
             {
                 inProgress = true;

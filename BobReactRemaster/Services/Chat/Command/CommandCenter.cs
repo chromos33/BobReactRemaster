@@ -18,6 +18,7 @@ using BobReactRemaster.Services.Scheduler.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace BobReactRemaster.Services.Chat.Commands
 {
@@ -31,7 +32,12 @@ namespace BobReactRemaster.Services.Chat.Commands
         private List<ICommand> ManualCommands = new List<ICommand>();
         private List<ICommand> StaticStreamCommands = new List<ICommand>();
         private List<QuoteCommand> QuoteCommands = new List<QuoteCommand>();
-        public CommandCenter(IServiceScopeFactory scopeFactory, IMessageBus bus)
+
+        public CommandCenter(
+            IServiceScopeFactory scopeFactory,
+            IMessageBus bus,
+            ILogger<CommandCenter> logger
+        ) : base(logger)
         {
             _scopeFactory = scopeFactory;
             this.bus = bus;
@@ -41,11 +47,20 @@ namespace BobReactRemaster.Services.Chat.Commands
             bus.RegisterToEvent<RelayStoppedMessageData>(RemoveRelayCommands);
             bus.RegisterToEvent<QuoteCommandAdded>(AddQuoteCommand);
             RefreshManualCommands();
+            _logger.LogInformation("CommandCenter initialized and event handlers registered.");
         }
 
         private void AddQuoteCommand(QuoteCommandAdded obj)
         {
-            QuoteCommands.FirstOrDefault(x => x.IsFromLiveStream(obj.Stream))?.AddQuoteCommand(obj.Quote);
+            try
+            {
+                QuoteCommands.FirstOrDefault(x => x.IsFromLiveStream(obj.Stream))?.AddQuoteCommand(obj.Quote);
+                _logger.LogInformation("Added quote command for stream: {StreamName}", obj.Stream.StreamName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding quote command for stream: {StreamName}", obj.Stream.StreamName);
+            }
         }
 
         private void RemoveRelayCommands(RelayStoppedMessageData obj)
@@ -55,13 +70,12 @@ namespace BobReactRemaster.Services.Chat.Commands
             {
                 Storage.StopTasks();
                 StreamTasksStorage.Remove(Storage);
+                _logger.LogInformation("Removed relay commands for stream: {StreamName}", obj.Stream.StreamName);
             }
-
         }
 
         private void InitRelayStartCommands(RelayStartedMessageData obj)
         {
-            
             RefreshIntervalCommands();
             if (obj.Stream.UpTimeInterval > 0)
             {
@@ -73,30 +87,30 @@ namespace BobReactRemaster.Services.Chat.Commands
                 var UpTimeTask = obj.Stream.GetUpTimeTask();
                 Storage.AddTask(UpTimeTask);
                 scheduler.AddTask(UpTimeTask);
+                _logger.LogInformation("Added UpTimeTask for stream: {StreamName}", obj.Stream.StreamName);
             }
 
             if (obj.Stream.HasStaticCommands())
             {
                 var Commands = obj.Stream.GetStaticCommands(bus).ToList();
-                //Commands that Require _scopeFactory as they need DataBase Access
-                Commands.Add(new AddQuoteCommand(bus,obj.Stream,_scopeFactory));
+                Commands.Add(new AddQuoteCommand(bus, obj.Stream, _scopeFactory));
                 StaticStreamCommands.AddRange(Commands);
+                _logger.LogInformation("Added static commands for stream: {StreamName}", obj.Stream.StreamName);
             }
-            
+
             if (obj.Stream.HasQuotes())
             {
                 try
                 {
                     var Command = new QuoteCommand(bus, obj.Stream);
                     QuoteCommands.Add(Command);
+                    _logger.LogInformation("Added quote command for stream: {StreamName}", obj.Stream.StreamName);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    _logger.LogError(ex, "Error adding quote command for stream: {StreamName}", obj.Stream.StreamName);
                 }
-                
             }
-            
         }
 
         private void RefreshIntervalCommands(RefreshIntervalRelayCommands? obj = null)
@@ -121,14 +135,14 @@ namespace BobReactRemaster.Services.Chat.Commands
                     if (scheduler.ContainsTask(Task))
                     {
                         scheduler.UpdateTask(Task);
+                        _logger.LogInformation("Updated interval command task for stream: {StreamName}", IntervalCommand.LiveStream.StreamName);
                     }
                     else
                     {
                         scheduler.AddTask(Task);
+                        _logger.LogInformation("Added interval command task for stream: {StreamName}", IntervalCommand.LiveStream.StreamName);
                     }
-                    
                 }
-                
             }
         }
 
@@ -140,35 +154,50 @@ namespace BobReactRemaster.Services.Chat.Commands
             foreach (var ManualCommand in context.ManualCommands.Include(x => x.LiveStream))
             {
                 if (ManualCommand is { LiveStream: { } })
-                    ManualCommands.Add(new ManualRelayCommand(ManualCommand.Trigger, ManualCommand.Response, bus,
-                        ManualCommand.LiveStream));
+                {
+                    ManualCommands.Add(new ManualRelayCommand(ManualCommand.Trigger, ManualCommand.Response, bus, ManualCommand.LiveStream));
+                    _logger.LogInformation("Added manual command: {Trigger} for stream: {StreamName}", ManualCommand.Trigger, ManualCommand.LiveStream.StreamName);
+                }
             }
         }
 
-        
-
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task HandleCommandMessageAsync(CommandMessage msg)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            HandleCommandList(ManualCommands,msg);
-            HandleCommandList(StaticStreamCommands,msg);
-            HandleCommandList(QuoteCommands,msg);
+            try
+            {
+                HandleCommandList(ManualCommands, msg);
+                HandleCommandList(StaticStreamCommands, msg);
+                HandleCommandList(QuoteCommands, msg);
+                _logger.LogInformation("Handled command message: {Message}", msg.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling command message: {Message}", msg.Message);
+            }
         }
 
-        private void HandleCommandList(IEnumerable<ICommand> List,CommandMessage msg)
+        private void HandleCommandList(IEnumerable<ICommand> List, CommandMessage msg)
         {
             foreach (var command in List)
             {
-                if (command.IsTriggerable(msg))
+                try
                 {
-                    command.TriggerCommand(msg);
+                    if (command.IsTriggerable(msg))
+                    {
+                        command.TriggerCommand(msg);
+                        _logger.LogInformation("Triggered command for message: {Message}", msg.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error triggering command for message: {Message}", msg.Message);
                 }
             }
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("CommandCenter background service started.");
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (scheduler == null)
@@ -176,13 +205,13 @@ namespace BobReactRemaster.Services.Chat.Commands
                     using var scope = _scopeFactory.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                     scheduler = (SchedulerService)scope.ServiceProvider.GetServices<IHostedService>()
-                    .FirstOrDefault(x => x.GetType() == typeof(SchedulerService));
+                        .FirstOrDefault(x => x.GetType() == typeof(SchedulerService));
                     RefreshIntervalCommands();
+                    _logger.LogInformation("SchedulerService resolved and interval commands refreshed.");
                 }
                 await Task.Delay(5000, stoppingToken);
             }
-
-            return;
+            _logger.LogInformation("CommandCenter background service stopping.");
         }
     }
 }

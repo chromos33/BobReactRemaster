@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace BobReactRemaster.Services.Chat
 {
@@ -10,7 +11,8 @@ namespace BobReactRemaster.Services.Chat
         private Task _executingTask;
         private readonly CancellationTokenSource _stoppingCts =
                                                        new CancellationTokenSource();
-
+        protected readonly ILogger _logger;
+        protected BackgroundService(ILogger logger) { _logger = logger; }
         protected abstract Task ExecuteAsync(CancellationToken stoppingToken);
         public bool Active;
 

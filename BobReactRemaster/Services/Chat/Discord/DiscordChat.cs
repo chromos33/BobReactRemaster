@@ -14,6 +14,7 @@ using Discord;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using TokenType = Discord.TokenType;
 
 namespace BobReactRemaster.Services.Chat.Discord
@@ -26,7 +27,8 @@ namespace BobReactRemaster.Services.Chat.Discord
         private IRelayService _relayService;
         private readonly IConfiguration _configuration;
         private bool isConnected = false;
-        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, IRelayService relayService, IConfiguration configuration)
+        public DiscordChat(IMessageBus messageBus, IServiceScopeFactory scopeFactory, IRelayService relayService, IConfiguration configuration,
+            ILogger<DiscordChat> logger) : base(logger)
         {
             MessageBus = messageBus;
             _scopeFactory = scopeFactory;
@@ -53,15 +55,24 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var member =  context.Members.FirstOrDefault(x => x.DiscordUserName == obj.MemberName);
-            if(member != null && obj.Message != "" && member.DiscordID != null)
+            var member = context.Members.FirstOrDefault(x => x.DiscordUserName == obj.MemberName);
+            if (member != null && obj.Message != "" && member.DiscordID != null)
             {
                 var chatmember = await _client.GetUserAsync((ulong)member.DiscordID);
                 if (chatmember != null)
                 {
                     await chatmember.SendMessageAsync(obj.Message);
+                    _logger.LogInformation("Sent whisper to {MemberName}", obj.MemberName);
                 }
-                
+                else
+                {
+                    _logger.LogWarning("Could not find Discord user for whisper: {MemberName}", obj.MemberName);
+                }
+            }
+            else
+            {
+                _logger.LogWarning("Invalid whisper request: MemberName={MemberName}, MessageEmpty={IsEmpty}, DiscordIDNull={IsNull}",
+                    obj.MemberName, string.IsNullOrEmpty(obj.Message), member?.DiscordID == null);
             }
         }
 
@@ -69,21 +80,23 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            foreach (Member member in context.Members.AsEnumerable().Where(x => x.canBeFoundOnDiscord() ))
+            foreach (Member member in context.Members.AsEnumerable().Where(x => x.canBeFoundOnDiscord()))
             {
                 string message = obj.Stream.GetSubscriptionCreatedMessage();
-                //_client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                // _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                _logger.LogInformation("Would notify {User} about new stream: {Message}", member.DiscordUserName, message);
             }
         }
 
         internal async Task<SocketGuildUser?> GetMemberByName(string userName)
         {
-
             var users = _client.Guilds.Where(x => x.Name == "Deathmic").FirstOrDefault()?.Users.Where(x => x.Username.ToLower() == userName.ToLower());
-            if(users != null && users.Count() == 1)
+            if (users != null && users.Count() == 1)
             {
+                _logger.LogDebug("Found Discord user by name: {UserName}", userName);
                 return users.FirstOrDefault();
             }
+            _logger.LogWarning("Could not find unique Discord user by name: {UserName}", userName);
             return null;
         }
 
@@ -100,25 +113,30 @@ namespace BobReactRemaster.Services.Chat.Discord
                     foreach (Member member in context.Members.Include(x => x.StreamSubscriptions).ThenInclude(x => x.LiveStream).AsEnumerable().Where(x => x.canBeFoundOnDiscord() && x.HasSubscription(stream)))
                     {
                         _client.GetUser(member.DiscordUserName, member.DiscordDiscriminator).SendMessageAsync(message);
+                        _logger.LogInformation("Notified {User} about stream start: {StreamName}", member.DiscordUserName, obj.Streamname);
                     }
                 }
+            }
+            else
+            {
+                _logger.LogWarning("Stream not found for StreamStarted event: {StreamName}", obj.Streamname);
             }
         }
 
         private void RelayMessageReceived(DiscordRelayMessageData obj)
         {
             ((SocketTextChannel)_client.GetChannel(obj.DiscordChannelID)).SendMessageAsync(obj.Message);
+            _logger.LogInformation("Relayed message to channel {ChannelId}: {Message}", obj.DiscordChannelID, obj.Message);
         }
 
         private void InitClient()
         {
-            
             var discordConfig = new DiscordSocketConfig { MessageCacheSize = 100 };
             discordConfig.AlwaysDownloadUsers = true;
             discordConfig.LargeThreshold = 250;
             discordConfig.GatewayIntents = GatewayIntents.All;
             _client = new DiscordSocketClient(discordConfig);
-            
+            _logger.LogInformation("Initialized Discord client");
         }
         private void InitEvents()
         {
@@ -130,13 +148,13 @@ namespace BobReactRemaster.Services.Chat.Discord
             _client.Connected += Connected;
             _client.Ready += Ready;
             _client.Disconnected += Disconnected;
-
+            _logger.LogInformation("Initialized Discord client events");
         }
 
         private async Task Disconnected(Exception exception)
         {
             isConnected = false;
-            Console.WriteLine($"Discord Disconnected at {DateTime.Now}: {exception}");
+            _logger.LogWarning(exception, "Discord Disconnected at {Time}", DateTime.Now);
             try
             {
                 await Restart();
@@ -145,22 +163,22 @@ namespace BobReactRemaster.Services.Chat.Discord
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Reconnect attempt failed at {DateTime.Now}: {ex}");
+                _logger.LogError(ex, "Reconnect attempt failed at {Time}", DateTime.Now);
             }
-            Console.WriteLine($"Discord Reconnected at {DateTime.Now}");
+            _logger.LogInformation("Discord Reconnected at {Time}", DateTime.Now);
         }
 
         private Task Ready()
         {
+            _logger.LogInformation("Discord client is ready");
             _client.DownloadUsersAsync(_client.Guilds.Where(x => x.Name == "Deathmic"));
             _client.DownloadUsersAsync(_client.Guilds.Where(x => x.Name == "Phantastische Partie"));
             return Task.CompletedTask;
         }
 
-
         private Task Connected()
         {
-            Console.WriteLine($"Discord Connected at {DateTime.Now}");
+            _logger.LogInformation("Discord Connected at {Time}", DateTime.Now);
             isConnected = true;
             return Task.CompletedTask;
         }
@@ -177,16 +195,18 @@ namespace BobReactRemaster.Services.Chat.Discord
                 {
                     if (!context.DiscordTextChannels.Any(x => x.ChannelID == TextChannel.Id))
                     {
-                        var channel = (SocketTextChannel) TextChannel;
-                        var NewTextChannel = new TextChannel(channel.Id,channel.Name,channel.Guild.Name);
+                        var channel = (SocketTextChannel)TextChannel;
+                        var NewTextChannel = new TextChannel(channel.Id, channel.Name, channel.Guild.Name);
                         context.DiscordTextChannels.Add(NewTextChannel);
                         write = true;
+                        _logger.LogInformation("Added new Discord text channel: {ChannelName} ({ChannelId})", channel.Name, channel.Id);
                     }
                 }
             }
             if (write)
             {
                 context.SaveChanges();
+                _logger.LogInformation("Saved new Discord text channels to database");
             }
             return Task.CompletedTask;
         }
@@ -195,7 +215,7 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             if (arg2.GetType() == typeof(SocketTextChannel))
             {
-                var textchannel = (SocketTextChannel) arg2;
+                var textchannel = (SocketTextChannel)arg2;
                 if (textchannel.Category.Name.ToLower() == "community streams")
                 {
                     using var scope = _scopeFactory.CreateScope();
@@ -203,13 +223,13 @@ namespace BobReactRemaster.Services.Chat.Discord
                     var channel = context.DiscordTextChannels.FirstOrDefault(x => x.ChannelID == arg2.Id);
                     if (channel != null)
                     {
-                        var tmpchannel = (SocketTextChannel) arg2;
-                        channel.Update(tmpchannel.Name,tmpchannel.Guild.Name);
+                        var tmpchannel = (SocketTextChannel)arg2;
+                        channel.Update(tmpchannel.Name, tmpchannel.Guild.Name);
                         context.SaveChanges();
+                        _logger.LogInformation("Updated Discord text channel: {ChannelName} ({ChannelId})", tmpchannel.Name, tmpchannel.Id);
                     }
                 }
             }
-            
             return Task.CompletedTask;
         }
 
@@ -222,8 +242,8 @@ namespace BobReactRemaster.Services.Chat.Discord
             {
                 context.DiscordTextChannels.Remove(channel);
                 context.SaveChanges();
+                _logger.LogInformation("Removed Discord text channel: {ChannelId}", arg.Id);
             }
-
             return Task.CompletedTask;
         }
 
@@ -231,7 +251,7 @@ namespace BobReactRemaster.Services.Chat.Discord
         {
             if (arg.GetType() == typeof(SocketTextChannel))
             {
-                var TextChannel = (SocketTextChannel) arg;
+                var TextChannel = (SocketTextChannel)arg;
                 if (TextChannel.Category.Name.ToLower() == "community streams")
                 {
                     using var scope = _scopeFactory.CreateScope();
@@ -244,6 +264,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                         NewTextChannel.IsPermanentRelayChannel = true;
                         context.DiscordTextChannels.Add(NewTextChannel);
                         context.SaveChanges();
+                        _logger.LogInformation("Created new Discord text channel: {ChannelName} ({ChannelId})", channel.Name, channel.Id);
                     }
                 }
             }
@@ -255,6 +276,7 @@ namespace BobReactRemaster.Services.Chat.Discord
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var streams = context.TwitchStreams.Include(x => x.RelayChannel).AsEnumerable();
             var LiveStreams = streams.Cast<LiveStream>();
+            _logger.LogDebug("Fetched {Count} relay live streams", LiveStreams.Count());
             return LiveStreams.ToList();
         }
         private Task MessageReceived(SocketMessage arg)
@@ -268,15 +290,15 @@ namespace BobReactRemaster.Services.Chat.Discord
                         var GuildName = ((SocketTextChannel)arg.Channel).Guild.Name;
                         string MessageWithUserName = $"{arg.Author.Username}: {arg.Content}";
                         _relayService.RelayMessage(new RelayMessageFromDiscord(
-
                             GuildName,
                             arg.Channel.Name,
                             MessageWithUserName
-                        ),GetRelayLiveStreams());
+                        ), GetRelayLiveStreams());
+                        _logger.LogInformation("Relayed message from Discord user {User}: {Message}", arg.Author.Username, arg.Content);
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        _logger.LogError(e, "Exception in MessageReceived");
                     }
                 }
                 else
@@ -296,6 +318,7 @@ namespace BobReactRemaster.Services.Chat.Discord
                             var userRegistrationService = scope.ServiceProvider.GetRequiredService<IUserRegistrationService>();
                             var Password = userRegistrationService.RegisterUser(arg.Author.Username, arg.Author.Id);
                             Message += $" Password: {Password}";
+                            _logger.LogInformation("Registered new user {UserName} via !wil command", arg.Author.Username);
                         }
                         arg.Author.SendMessageAsync(Message);
                     }
@@ -311,12 +334,12 @@ namespace BobReactRemaster.Services.Chat.Discord
                         if (user == null)
                         {
                             var userRegistrationService = scope.ServiceProvider.GetRequiredService<IUserRegistrationService>();
-                            var Password = userRegistrationService.RegisterUser(arg.Author.Username, arg.Author.Id,false);
+                            var Password = userRegistrationService.RegisterUser(arg.Author.Username, arg.Author.Id, false);
                             Message += $" Password: {Password}";
+                            _logger.LogInformation("Registered new user {UserName} via !wilnsb command", arg.Author.Username);
                         }
                         arg.Author.SendMessageAsync(Message);
                     }
-
                 }
             }
             return Task.CompletedTask;
@@ -337,37 +360,38 @@ namespace BobReactRemaster.Services.Chat.Discord
             await _client.DisposeAsync();
             InitClient();
             InitEvents();
-
+            _logger.LogInformation("Restarted Discord client");
             return true;
         }
         private async Task<bool> Connect()
         {
-            
             var Credential = GetCredentials();
             if (Credential != null)
             {
                 await _client.LoginAsync(TokenType.Bot, Credential.Token);
                 await _client.StartAsync();
+                _logger.LogInformation("Connected Discord client as bot");
                 return true;
-
             }
-
+            _logger.LogError("Failed to connect Discord client: No credentials found");
             return false;
-            
-            //await dsharpclient.ConnectAsync();
-            return true;
-
         }
 
         private DiscordCredentials GetCredentials()
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            return context.DiscordCredentials.FirstOrDefault();
+            var creds = context.DiscordCredentials.FirstOrDefault();
+            if (creds == null)
+            {
+                _logger.LogError("No Discord credentials found in database");
+            }
+            return creds;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Starting DiscordChat background service");
             if (await Connect())
             {
                 while (!stoppingToken.IsCancellationRequested)
@@ -375,8 +399,8 @@ namespace BobReactRemaster.Services.Chat.Discord
                     await Task.Delay(5000, stoppingToken);
                 }
             }
+            _logger.LogInformation("Stopping DiscordChat background service");
             return;
         }
-
     }
 }
